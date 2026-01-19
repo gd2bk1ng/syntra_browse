@@ -1,30 +1,27 @@
 /* ================================================================================================
-   Syntra Browser — Axiom Zero
-   Advanced AGI-Driven Intent Engine & Cognitive Rendering System
+   SYNTRA BROWSER — AXIOM ZERO
    ------------------------------------------------------------------------------------------------
    File:        src/conduit/mod.rs
-   Module:      Conduit (Inter-Module Communication)
-   Author:      Alexandr Roussinov (gd2bk1ng)
-   Created:     2026
-   License:     MIT
-   Repository:  https://github.com/gd2bk1ng/syntra_browse
-   ------------------------------------------------------------------------------------------------
-   Overview:
-   The Conduit module provides the communication backbone for Syntra’s subsystems. It enables
-   message passing, event routing, and decoupled interaction between AGI components, the renderer,
-   and the cognitive cortex.
+   Module:      Conduit (Inter‑Module Communication)
+   Author:      Alexandr Roussinov
+   Description: Message‑passing infrastructure for decoupled communication between Syntra’s
+                subsystems. Provides a clean, observable channel for AGI, Cortex, Renderer, and
+                Utilities to exchange structured messages.
 
-   Notes for Future Engineers (2050+):
-   - Keep communication channels simple and predictable.
-   - Avoid global state; the conduit should remain explicit and observable.
-   - This module is the nervous system of Syntra — treat it with care.
+   Overview:
+     • ConduitMessage — Typed messages exchanged between modules.
+     • Conduit        — Lightweight communication channel (MPSC).
+     • try_recv       — Non‑blocking message polling.
+
+   Notes:
+     The Conduit is Syntra’s nervous system. Keep it simple, predictable, and observable.
    ================================================================================================ */
 
 #![allow(dead_code)]
 
 use std::sync::mpsc::{Sender, Receiver, channel};
 
-/// A lightweight message type used for inter-module communication.
+/// A lightweight message type used for inter‑module communication.
 #[derive(Debug, Clone)]
 pub enum ConduitMessage {
     Log(String),
