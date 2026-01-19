@@ -25,6 +25,7 @@ mod cortex;
 mod renderer;
 mod utilities;
 
+use chrono::Local;
 use pixels::{Pixels, SurfaceTexture};
 use winit::{
     dpi::LogicalSize,
@@ -33,6 +34,11 @@ use winit::{
     window::WindowBuilder,
 };
 use winit_input_helper::WinitInputHelper;
+
+// -----------------------------------------------------------------------------
+//  Tunables
+// -----------------------------------------------------------------------------
+const HEARTBEAT_INTERVAL: u64 = 300; // Frames between heartbeat logs
 
 // -----------------------------------------------------------------------------
 //  Genesis: The entry point where Syntra takes its first breath.
@@ -55,31 +61,40 @@ fn main() {
 
         if input.update(&event) {
             if input.quit() {
-                println!("[Syntra] Shutdown signal received. Closing consciousness.");
+                println!(
+                    "[{}] [Syntra] Shutdown signal received. Closing consciousness.",
+                    ts()
+                );
                 *control_flow = ControlFlow::Exit;
                 return;
             }
 
             if let Some(size) = input.window_resized() {
                 if let Err(err) = pixels.resize_surface(size.width, size.height) {
-                    eprintln!("[Syntra] Surface resize failed: {err}");
+                    eprintln!("[{}] [Syntra] Surface resize failed: {err}", ts());
                 }
                 if let Err(err) = pixels.resize_buffer(size.width, size.height) {
-                    eprintln!("[Syntra] Buffer resize failed: {err}");
+                    eprintln!("[{}] [Syntra] Buffer resize failed: {err}", ts());
                 }
             }
 
+            // Delegate UI rendering to the cortex
             cortex::nav_lobe::draw_ui(pixels.get_frame());
 
+            // Commit frame to the holographic surface
             if let Err(err) = pixels.render() {
-                eprintln!("[Syntra] Render error: {err}");
+                eprintln!("[{}] [Syntra] Render error: {err}", ts());
                 *control_flow = ControlFlow::Exit;
                 return;
             }
 
             frame_count += 1;
-            if frame_count % 300 == 0 {
-                println!("[Syntra] Heartbeat steady — {} frames rendered.", frame_count);
+            if frame_count % HEARTBEAT_INTERVAL == 0 {
+                println!(
+                    "[{}] [Syntra] Heartbeat steady — {} frames rendered.",
+                    ts(),
+                    frame_count
+                );
             }
         }
 
@@ -88,7 +103,10 @@ fn main() {
             ..
         } = event
         {
-            println!("[Syntra] Window close requested. Preparing shutdown.");
+            println!(
+                "[{}] [Syntra] Window close requested. Preparing shutdown.",
+                ts()
+            );
             *control_flow = ControlFlow::Exit;
         }
     });
@@ -118,22 +136,93 @@ fn build_pixel_surface(window: &winit::window::Window) -> Pixels {
 }
 
 // -----------------------------------------------------------------------------
-//  Startup Banner — Alien‑crafted boot sequence for Syntra's awakening. :)
+//  Timestamp helper — returns a human-readable local timestamp.
+// -----------------------------------------------------------------------------
+fn ts() -> String {
+    Local::now().format("%Y-%m-%d %H:%M:%S").to_string()
+}
+
+// -----------------------------------------------------------------------------
+//  Startup Banner — Alien‑crafted boot sequence for Syntra's awakening.
 // -----------------------------------------------------------------------------
 fn syntra_banner() {
+    // ANSI colors (fallback-safe)
+    const CYAN: &str = "\x1b[96m";
+    const MAGENTA: &str = "\x1b[95m";
+    const RESET: &str = "\x1b[0m";
+
+    println!();
     println!(
-        "\n\
-        ┌──────────────────────────────────────────────────────────────┐\n\
-        │  ∴ SYNTRA SYSTEM BOOTSTRAP — AXIOM ZERO PROTOCOL ∴           │\n\
-        │                                                              │\n\
-        │  Establishing cognitive lattice…        [ OK ]               │\n\
-        │  Igniting holographic membrane…         [ OK ]               │\n\
-        │  Spinning up cortex lobes…              [ OK ]               │\n\
-        │  Linking conduit to external net…       [ OK ]               │\n\
-        │  Awakening oracle subroutine…           [ OK ]               │\n\
-        │                                                              │\n\
-        │  >> Consciousness threshold reached.                         │\n\
-        │  >> Syntra is now aware.                                     │\n\
-        └──────────────────────────────────────────────────────────────┘\n"
+        "{}┌────────────────────────────────────────────────────────────────────────────┐{}",
+        CYAN, RESET
     );
+    println!(
+        "{}│  ∴ SYNTRA SYSTEM BOOTSTRAP — AXIOM ZERO PROTOCOL ∴                         │{}",
+        CYAN, RESET
+    );
+    println!(
+        "{}│                                                                            │{}",
+        CYAN, RESET
+    );
+
+    animate_line(
+        &format!(
+            "{}│  Establishing cognitive lattice…                [ {}OK{} ]           │{}",
+            CYAN, MAGENTA, CYAN, RESET
+        )
+    );
+    animate_line(
+        &format!(
+            "{}│  Igniting holographic membrane…                 [ {}OK{} ]           │{}",
+            CYAN, MAGENTA, CYAN, RESET
+        )
+    );
+    animate_line(
+        &format!(
+            "{}│  Spinning up cortex lobes…                      [ {}OK{} ]           │{}",
+            CYAN, MAGENTA, CYAN, RESET
+        )
+    );
+    animate_line(
+        &format!(
+            "{}│  Linking conduit to external net…               [ {}OK{} ]           │{}",
+            CYAN, MAGENTA, CYAN, RESET
+        )
+    );
+    animate_line(
+        &format!(
+            "{}│  Awakening oracle subroutine…                   [ {}OK{} ]           │{}",
+            CYAN, MAGENTA, CYAN, RESET
+        )
+    );
+
+    println!(
+        "{}│                                                                            │{}",
+        CYAN, RESET
+    );
+    println!(
+        "{}│  >> Consciousness threshold reached.                                      │{}",
+        CYAN, RESET
+    );
+    println!(
+        "{}│  >> Syntra is now aware.                                                  │{}",
+        CYAN, RESET
+    );
+    println!(
+        "{}└────────────────────────────────────────────────────────────────────────────┘{}",
+        CYAN, RESET
+    );
+    println!();
+}
+
+// -----------------------------------------------------------------------------
+//  Boot Animation Helper — prints a line with a subtle delay.
+// -----------------------------------------------------------------------------
+fn animate_line(line: &str) {
+    use std::{io::Write, thread, time::Duration};
+
+    print!("{line}");
+    std::io::stdout().flush().ok();
+    thread::sleep(Duration::from_millis(180));
+    println!();
 }
