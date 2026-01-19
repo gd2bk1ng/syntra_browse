@@ -1,0 +1,132 @@
+[package]
+name = "syntra_browse"
+version = "0.1.0"
+edition = "2024"
+authors = ["Alexandr Roussinov <gd2bk1ng@proton.me>"]
+license = "MIT"
+description = "Syntra Browser — Axiom Zero: An AGI-driven intent browser."
+readme = "README.md"
+repository = "https://github.com/gd2bk1ng/syntra_browse"
+homepage = "https://github.com/gd2bk1ng/syntra_browse"
+keywords = ["agi", "browser", "intent-engine", "syntra", "rendering"]
+categories = ["gui", "graphics", "ai", "wasm"]
+publish = false
+
+# Optional: If you want to support WASM later
+# default-run = "syntra_browse"
+
+# ------------------------------------------------------------------------------
+# Dependencies
+# ------------------------------------------------------------------------------
+
+[dependencies]
+# Windowing + Events
+winit = "0.29"
+
+# Pixel buffer rendering
+pixels = "0.13"
+
+# Input helper
+winit_input_helper = "0.14"
+
+# Time + timestamps
+chrono = { version = "0.4", features = ["serde"] }
+
+# Logging + diagnostics
+log = "0.4"
+env_logger = "0.11"
+
+# Async runtime (future AGI + networking)
+tokio = { version = "1.40", features = ["full"] }
+
+# HTTP client (future networking layer)
+reqwest = { version = "0.12", features = ["json", "gzip", "brotli", "stream"] }
+
+# Serialization (configs, AGI messages, etc.)
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Math + vector types (future rendering)
+glam = "0.27"
+
+# Optional: ECS for future UI/AGI architecture
+# bevy_ecs = "0.14"
+
+# Optional: configuration loader
+config = "0.14"
+
+# Optional: colored terminal output
+colored = "2.1"
+
+# Optional: advanced tracing
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+# Optional: plugin system
+libloading = "0.8"
+
+
+[dev-dependencies]
+pretty_assertions = "1.4"
+
+
+# ------------------------------------------------------------------------------
+# Build Profiles — tuned for serious development & production
+# ------------------------------------------------------------------------------
+
+[profile.dev]
+opt-level = 1
+debug = true
+overflow-checks = true
+incremental = true
+
+# Slightly optimized dependencies even in dev mode
+[profile.dev.package."*"]
+opt-level = 2
+
+[profile.release]
+opt-level = 3            # maximum speed
+lto = "fat"              # best possible optimization
+codegen-units = 1        # force single-unit optimization
+panic = "abort"
+strip = true
+
+# Profiling builds (debug symbols + release optimizations)
+[profile.profiling]
+inherits = "release"
+debug = true
+strip = false
+
+
+# ------------------------------------------------------------------------------
+# Workspace — future multi-crate expansion
+# ------------------------------------------------------------------------------
+
+[workspace]
+members = [
+    ".",                 # main crate
+    # "syntra_core",     # future AGI core
+    # "syntra_renderer", # future GPU renderer
+    # "syntra_plugins",  # plugin system
+]
+
+
+# ------------------------------------------------------------------------------
+# Lints — enforce high-quality Rust
+# ------------------------------------------------------------------------------
+
+[lints.rust]
+unsafe_code = "forbid"
+unused_imports = "warn"
+unused_variables = "warn"
+dead_code = "allow"
+
+[lints.clippy]
+all = "warn"
+pedantic = "warn"
+nursery = "warn"
