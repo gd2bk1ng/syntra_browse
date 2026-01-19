@@ -1,7 +1,8 @@
 /* ================================================================================================
    SYNTRA BROWSER — AXIOM ZERO
-   -----------------------------------------------------------------------------------------------
+   ------------------------------------------------------------------------------------------------
    File:        src/main.rs
+   Module:      Binary Entrypoint
    Author:      Alexandr Roussinov
    Description: Primary executable entrypoint for the Syntra Browser. This file initializes the
                 Syntra runtime, invokes the Genesis bootstrap sequence, and prepares the system
@@ -19,9 +20,10 @@
      user‑intent flows.
 
    License: MIT
+   Repository:  https://github.com/gd2bk1ng/syntra_browse
    ================================================================================================ */
 
-use syntra::genesis;
+use syntra_browse::genesis;
 
 /// Entry point for the Syntra Browser executable.
 ///
@@ -38,7 +40,7 @@ fn main() {
     genesis::main();
 
     // Placeholder for future runtime orchestration
-    // syntra::renderer::start();
-    // syntra::agi_core::boot();
-    // syntra::cortex::run();
+    // syntra_browse::renderer::start();
+    // syntra_browse::agi_core::boot();
+    // syntra_browse::cortex::run();
 }
