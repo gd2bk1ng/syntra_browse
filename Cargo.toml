@@ -12,49 +12,72 @@ keywords = ["agi", "browser", "intent-engine", "syntra", "rendering"]
 categories = ["gui", "graphics", "ai", "wasm"]
 publish = false
 
-# ------------------------------------------------------------------------------
-# Library Target — enables syntra_browse to expose a reusable library API
-# ------------------------------------------------------------------------------
-
+# ================================================================================================
+# Library Target — exposes the Syntra API for internal and future multi-crate use
+# ================================================================================================
 [lib]
 name = "syntra"
 path = "src/lib.rs"
 
-# Optional: If you want to support WASM later
-# default-run = "syntra_browse"
+# ================================================================================================
+# Binary Targets — main runtime + experimental sandbox
+# ================================================================================================
+[[bin]]
+name = "syntra"
+path = "src/main.rs"
 
-# ------------------------------------------------------------------------------
-# Dependencies
-# ------------------------------------------------------------------------------
+[[bin]]
+name = "syntra_trials"
+path = "trials/main.rs"
 
+# ================================================================================================
+# Dependencies — core engine, rendering, AGI, networking, diagnostics
+# ================================================================================================
 [dependencies]
 winit = "0.29"
 pixels = "0.13"
 winit_input_helper = "0.14"
+
 chrono = { version = "0.4", features = ["serde"] }
 log = "0.4"
 env_logger = "0.11"
+
 tokio = { version = "1.40", features = ["full"] }
 reqwest = { version = "0.12", features = ["json", "gzip", "brotli", "stream"] }
+
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 toml = "0.8"
+
 anyhow = "1.0"
 thiserror = "1.0"
+
 glam = "0.27"
 config = "0.14"
 colored = "2.1"
+
 tracing = "0.1"
 tracing-subscriber = "0.3"
+
 libloading = "0.8"
 
+# ================================================================================================
+# Dev Dependencies — testing, assertions, diagnostics
+# ================================================================================================
 [dev-dependencies]
 pretty_assertions = "1.4"
 
-# ------------------------------------------------------------------------------
-# Build Profiles — tuned for serious development & production
-# ------------------------------------------------------------------------------
+# ================================================================================================
+# Optional Features — AGI expansion, WASM future support
+# ================================================================================================
+[features]
+default = []
+agi = ["serde", "serde_json"]
+wasm = []
 
+# ================================================================================================
+# Build Profiles — tuned for serious development & production
+# ================================================================================================
 [profile.dev]
 opt-level = 1
 debug = true
@@ -76,10 +99,9 @@ inherits = "release"
 debug = true
 strip = false
 
-# ------------------------------------------------------------------------------
-# Workspace — future multi-crate expansion
-# ------------------------------------------------------------------------------
-
+# ================================================================================================
+# Workspace — future multi-crate expansion (Syntra Core, Renderer, Plugins)
+# ================================================================================================
 [workspace]
 members = [
     ".",                 # main crate
@@ -88,10 +110,9 @@ members = [
     # "syntra_plugins",
 ]
 
-# ------------------------------------------------------------------------------
-# Lints — enforce high-quality Rust
-# ------------------------------------------------------------------------------
-
+# ================================================================================================
+# Lints — enforce high-quality Rust across the entire codebase
+# ================================================================================================
 [lints.rust]
 unsafe_code = "forbid"
 unused_imports = "warn"
