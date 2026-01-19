@@ -1,22 +1,20 @@
 /* ================================================================================================
-   Syntra Browser — Axiom Zero
-   Advanced AGI-Driven Intent Engine & Cognitive Rendering System
+   SYNTRA BROWSER — AXIOM ZERO
    ------------------------------------------------------------------------------------------------
    File:        src/utilities/mod.rs
    Module:      Utilities (Helpers & System Tools)
-   Author:      Alexandr Roussinov (gd2bk1ng)
-   Created:     2026
-   License:     MIT
-   Repository:  https://github.com/gd2bk1ng/syntra_browse
-   ------------------------------------------------------------------------------------------------
-   Overview:
-   The Utilities module provides shared helper functions, logging tools, time utilities, and other
-   cross-cutting concerns used throughout the Syntra architecture.
+   Author:      Alexandr Roussinov
+   Description: Shared helper functions, logging utilities, and cross‑module tools used throughout
+                the Syntra architecture.
 
-   Notes for Future Engineers (2050+):
-   - Keep utilities lightweight and dependency-free.
-   - Avoid letting this module become a dumping ground.
-   - Every utility should have a clear, single responsibility.
+   Overview:
+     • timestamp  — RFC3339 UTC timestamp generator.
+     • log_info   — Pretty info‑level logger.
+     • log_warn   — Pretty warning logger.
+     • log_error  — Pretty error logger.
+
+   Notes:
+     Keep utilities lightweight and dependency‑free where possible.
    ================================================================================================ */
 
 #![allow(dead_code)]
