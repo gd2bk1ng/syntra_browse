@@ -90,6 +90,7 @@ axiom_zero/
 git clone https://github.com/gd2bk1ng/syntra_browse.git
 cd syntra_browse/axiom_zero
 cargo run
+```
 
-Syntra’s internal layout mirrors a living system:
+
 
