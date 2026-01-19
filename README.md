@@ -1,54 +1,95 @@
-**The Future Syntra Browser** is a cutting-edge, lightweight, and ultra-secure web browser built entirely in Rust, designed to redefine how we interact with the web. Featuring a sleek, futuristic holographic UI and a voice-driven AGI assistant, Syntra Browser aims to deliver a browsing experience that is fast, intuitive, and deeply personalized.
+# 🌌 Syntra Browser — Axiom Zero  
+### *The Intent‑Driven Interface of Tomorrow*  
+**Created by Alexandr Roussinov — Founding Developer of Syntra Browser and Syntra Programming Language**
+
+![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
+![Rust](https://img.shields.io/badge/rust-1.70+-orange.svg)
+![CI](https://github.com/gd2bk1ng/syntra_browse/workflows/CI/badge.svg)
+![Latest Release](https://img.shields.io/github/v/release/gd2bk1ng/syntra_browse)
 
 ---
 
-## 🚀 Project Vision
+## ✨ Overview
 
-Syntra Browser is more than just a browser — it’s a platform for next-generation web interaction. By combining Rust’s unparalleled safety and performance with innovative voice-command technology and a minimalist, holographic interface, Syntra empowers users to navigate the web effortlessly and securely.
+**Syntra Browser — Axiom Zero** is not a traditional browser.  
+It is an **intent engine**, a **living interface**, and the first step toward a new class of AGI‑driven human–machine interaction.
 
----
-
-## 🔍 Key Features
-
-- **Lightweight & Portable:** Minimal dependencies and lean architecture ensure fast startup and low resource usage across platforms.
-- **Futuristic Holographic UI:** A visually stunning interface inspired by sci-fi aesthetics, designed for clarity and ease of use.
-- **Simplified Navigation:** Brand-focused address bar eliminates URL clutter, making browsing feel natural and direct.
-- **Voice-Driven AGI Assistant (Future Integration):** Navigate and control the browser using natural language commands for a hands-free experience.
-- **Built from the Ground Up in Rust:** Leveraging Rust’s memory safety and concurrency features to build a secure and robust browser engine.
-- **Open Source & Community-Driven:** Released under the MIT License, inviting collaboration and innovation from developers worldwide.
+Syntra interprets user intent, renders a holographic UI through a neural‑inspired architecture, and evolves toward a multi‑modal, multi‑window consciousness.  
+This is the **Genesis build** — the moment Syntra takes its first breath.
 
 ---
 
-## ⚙️ Technical Overview
+## 🧠 Core Principles
 
-- **Rendering:** Custom pixel buffer rendering using `pixels` and `winit` crates for efficient cross-platform window management.
-- **Networking:** Planned from-scratch HTTP/HTTPS client implementation for full control over security and performance.
-- **UI Components:** Modular design allowing incremental addition of navigation controls, tabs, and voice interaction widgets.
-- **Voice Interface:** Integration roadmap for a Syntra Language Pack — a specialized AGI language to interpret user intent and automate web tasks.
+### **1. Browsing should feel alive**  
+The interface is not static. It responds, adapts, and evolves with the user.
 
----
+### **2. Intent is the new input**  
+Voice, gesture, context, and AGI interpretation replace traditional navigation.
 
-## 📅 Roadmap & Contribution
-
-The project is currently in active development with an estimated timeline of 3 months to MVP. Contributions, ideas, and sponsorships are warmly welcomed to help bring this vision to life.
+### **3. Architecture should mirror cognition**  
+Modules are structured like cortical lobes, conduits, and oracles — not folders and files.
 
 ---
 
-## 📂 Repository Structure
+## 🚀 Features
 
-- `src/` — Rust source code files, including main entry point and modules.
-- `assets/` — Static assets like icons, fonts, or UI resources (planned).
-- `docs/` — Documentation, design specs, and technical notes.
-- `tests/` — Unit and integration tests.
+### **Cognitive Architecture**
+- Cortex‑inspired module layout  
+- Intent‑driven UI flow  
+- Oracle subsystem for AGI interpretation (in progress)
+
+### **Holographic Rendering**
+- GPU‑accelerated pixel membrane  
+- Modular renderer pipeline  
+- Future neural‑accelerated rendering hooks
+
+### **Voice & AGI Integration**
+- Voice node for real‑time input  
+- AGI assistant channel (coming soon)  
+- Designed for multi‑modal perception
+
+### **Networking & Conduits**
+- Secure async networking layer  
+- Extensible for future protocol support  
+- Built for streaming, AGI calls, and real‑time data flow
+
+### **Extensibility**
+- Plugin‑ready architecture  
+- Multi‑window consciousness planned  
+- WASM target support on the horizon
 
 ---
 
-## 💡 Join the Journey
+## 🧩 Project Structure
 
-Syntra Browser is a gift to the community and a beacon for the future of browsing. Whether you’re a developer, designer, or visionary, your input can help shape the next era of web interaction.
+```bash
+axiom_zero/
+├── src/
+│   ├── genesis.rs        # Awakening sequence (entry point)
+│   ├── cortex/           # Sensory & UI lobes
+│   ├── conduit/          # Networking synapses
+│   ├── renderer/         # Holographic projection engine
+│   ├── agi_core/         # Oracle chamber (AGI intent)
+│   └── utilities/        # Internal tools & diagnostics
+├── artifacts/            # Visual DNA
+├── codex/                # Documentation & scrolls
+└── trials/               # Proving grounds (tests)
+```
 
----
+## 🛠 Getting Started
 
-**License:** MIT License  
-**Author:** Alexandr Roussinov (gd2bk1ng)  
-**Year:** 2026
+### **Prerequisites**
+- Rust **1.70+**
+- Cargo
+- (Optional) `wasm32-unknown-unknown` target for future WASM builds
+
+### **Clone & Run**
+
+```bash
+git clone https://github.com/gd2bk1ng/syntra_browse.git
+cd syntra_browse/axiom_zero
+cargo run
+
+Syntra’s internal layout mirrors a living system:
+
