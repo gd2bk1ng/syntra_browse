@@ -43,7 +43,7 @@ const HEARTBEAT_INTERVAL: u64 = 300; // Frames between heartbeat logs
 // -----------------------------------------------------------------------------
 //  Genesis: The entry point where Syntra takes its first breath.
 // -----------------------------------------------------------------------------
-fn main() {
+pub fn main() {
     syntra_banner();
 
     let event_loop = EventLoop::new();
