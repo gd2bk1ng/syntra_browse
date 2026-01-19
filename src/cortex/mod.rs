@@ -11,6 +11,7 @@
      • Cortex<R>     — Generic orchestrator over any Reasoner implementation.
      • handle_intent — Converts raw input into structured intent and refines it.
      • pump_messages — Processes conduit messages and logs them.
+     • nav_lobe      — UI/navigation lobe used by the Genesis loop.
 
    Notes:
      The Cortex is the conductor of Syntra’s cognitive orchestra. Keep orchestration logic clean,
@@ -18,6 +19,8 @@
    ================================================================================================ */
 
 #![allow(dead_code)]
+
+pub mod nav_lobe;
 
 use crate::agi_core::{Intent, Reasoner, NullReasoner};
 use crate::conduit::{Conduit, ConduitMessage};
