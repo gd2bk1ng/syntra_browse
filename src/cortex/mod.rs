@@ -1,23 +1,20 @@
 /* ================================================================================================
-   Syntra Browser — Axiom Zero
-   Advanced AGI-Driven Intent Engine & Cognitive Rendering System
+   SYNTRA BROWSER — AXIOM ZERO
    ------------------------------------------------------------------------------------------------
    File:        src/cortex/mod.rs
    Module:      Cortex (Cognitive Orchestration Layer)
-   Author:      Alexandr Roussinov (gd2bk1ng)
-   Created:     2026
-   License:     MIT
-   Repository:  https://github.com/gd2bk1ng/syntra_browse
-   ------------------------------------------------------------------------------------------------
-   Overview:
-   The Cortex module orchestrates Syntra’s high-level cognitive behavior. It integrates reasoning
-   engines, interprets intents, and coordinates actions across the renderer, AGI core, and utilities.
-   This is the executive control center of the system.
+   Author:      Alexandr Roussinov
+   Description: High‑level cognitive coordinator. The Cortex integrates reasoning engines,
+                interprets intents, and dispatches actions across Syntra’s subsystems.
 
-   Notes for Future Engineers (2050+):
-   - Maintain separation between perception, reasoning, and action.
-   - The Cortex should remain the conductor, not the orchestra.
-   - Keep the orchestration logic transparent and traceable.
+   Overview:
+     • Cortex<R>     — Generic orchestrator over any Reasoner implementation.
+     • handle_intent — Converts raw input into structured intent and refines it.
+     • pump_messages — Processes conduit messages and logs them.
+
+   Notes:
+     The Cortex is the conductor of Syntra’s cognitive orchestra. Keep orchestration logic clean,
+     transparent, and traceable.
    ================================================================================================ */
 
 #![allow(dead_code)]
@@ -26,7 +23,7 @@ use crate::agi_core::{Intent, Reasoner, NullReasoner};
 use crate::conduit::{Conduit, ConduitMessage};
 use crate::utilities::log_info;
 
-/// The Cortex orchestrates high-level system behavior, routing intents and coordinating
+/// The Cortex orchestrates high‑level system behavior, routing intents and coordinating
 /// subsystems such as the renderer and AGI core.
 pub struct Cortex<R: Reasoner = NullReasoner> {
     pub reasoner: R,
@@ -48,13 +45,13 @@ impl<R: Reasoner> Cortex<R> {
         };
 
         let refined = self.reasoner.process(intent);
+
         log_info(&format!(
             "Cortex refined intent: {} (confidence: {:.2})",
             refined.label, refined.confidence
         ));
 
-        self.conduit
-            .send(ConduitMessage::Intent(refined.label.clone()));
+        self.conduit.send(ConduitMessage::Intent(refined.label));
     }
 
     /// Polls the conduit for messages and logs them.
