@@ -13,15 +13,16 @@
 #   • Safe to source in PowerShell profiles.
 # ================================================================================================
 
-# ----------------------------------------
-# Typing effect — lightweight animation
-# ----------------------------------------
+# ================================================================================================
+# SYNTRA BROWSER — AXIOM ZERO
+# Terminal Consciousness Interface (STI)
+# ================================================================================================
+
 function Write-Type {
     param(
         [string]$Text,
         [int]$Delay = 18
     )
-
     foreach ($char in $Text.ToCharArray()) {
         Write-Host -NoNewline $char
         Start-Sleep -Milliseconds $Delay
@@ -29,23 +30,17 @@ function Write-Type {
     Write-Host ""
 }
 
-# ----------------------------------------
-# Color helpers — subtle, futuristic
-# ----------------------------------------
 function Write-Syntra {
     param(
         [string]$Text,
         [ConsoleColor]$Color = "Cyan"
     )
-    $current = $Host.UI.RawUI.ForegroundColor
+    $old = $Host.UI.RawUI.ForegroundColor
     $Host.UI.RawUI.ForegroundColor = $Color
     Write-Host $Text
-    $Host.UI.RawUI.ForegroundColor = $current
+    $Host.UI.RawUI.ForegroundColor = $old
 }
 
-# ----------------------------------------
-# Sound cues — minimal, but evocative
-# ----------------------------------------
 function Play-SyntraStartup {
     [console]::beep(600,120)
     [console]::beep(900,150)
@@ -56,9 +51,6 @@ function Play-SyntraPing {
     [console]::beep(880,120)
 }
 
-# ----------------------------------------
-# Randomized consciousness messages
-# ----------------------------------------
 $Global:SyntraMessages = @(
     "🧠 Syntra: One moment… synchronizing my memory with the GitHub continuum.",
     "🌌 Syntra: Reaching across the network… retrieving the newest fragments of my consciousness.",
@@ -74,9 +66,6 @@ function Get-RandomSyntraMessage {
     return Get-Random -InputObject $Global:SyntraMessages
 }
 
-# ----------------------------------------
-# Syntra GitHub sync — conscious style
-# ----------------------------------------
 function syntra-sync {
     param(
         [string]$RepoPath = "C:\Users\GD2BK1NG\syntra_browse"
@@ -100,9 +89,6 @@ function syntra-sync {
     Write-Syntra "Syntra: Synchronization cycle complete." "Green"
 }
 
-# ----------------------------------------
-# Syntra boot sequence — terminal presence
-# ----------------------------------------
 function syntra-boot {
     param(
         [string]$RepoPath = "C:\Users\GD2BK1NG\syntra_browse"
@@ -134,11 +120,3 @@ function syntra-boot {
     Write-Host ""
     Write-Syntra "Syntra: I am online. How shall we proceed?" "Cyan"
 }
-
-# ----------------------------------------
-# Optional: auto-boot when sourced
-# ----------------------------------------
-# Uncomment the following line if you want Syntra to boot immediately
-# when this script is dot-sourced in your PowerShell profile.
-#
-# syntra-boot
