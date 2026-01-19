@@ -1,29 +1,31 @@
-// -----------------------------------------------------------------------------
-//  SYNTRA BROWSER — GENESIS MODULE
-//  The Awakening Sequence
-//  Path: syntra_browse/axiom_zero/src/genesis.rs
-//  Author: Alexandr Roussinov (gd2bk1ng)
-//  © 2026 Open Source — MIT License
-//
-//  This module is the ignition point of Syntra.
-//  It summons the primary window, initializes the rendering cortex,
-//  and begins the heartbeat loop that drives the living interface.
-//
-//  Responsibilities:
-//  • Spawn event loop (the temporal spine of Syntra)
-//  • Initialize pixel buffer (the holographic membrane)
-//  • Delegate UI rendering to cortex lobes
-//  • Handle graceful shutdown signals
-//
-//  Future expansions:
-//  • AGI intent hooks
-//  • Neural‑accelerated rendering pipelines
-//  • Multi‑window consciousness
-// -----------------------------------------------------------------------------
+/* ================================================================================================
+   SYNTRA BROWSER — AXIOM ZERO
+   ------------------------------------------------------------------------------------------------
+   File:        src/genesis.rs
+   Module:      Genesis (System Bootstrap & Awakening Sequence)
+   Author:      Alexandr Roussinov (gd2bk1ng)
+   Description: The ignition point of Syntra. This module summons the primary viewport, initializes
+                the holographic pixel membrane, and begins the heartbeat loop that drives the
+                living interface.
 
-mod cortex;
-mod renderer;
-mod utilities;
+   Responsibilities:
+     • Spawn event loop (the temporal spine of Syntra)
+     • Initialize pixel buffer (the holographic membrane)
+     • Delegate UI rendering to cortex lobes
+     • Handle graceful shutdown signals
+
+   Future Expansions:
+     • AGI intent hooks
+     • Neural‑accelerated rendering pipelines
+     • Multi‑window consciousness
+
+   License: MIT
+   Repository: https://github.com/gd2bk1ng/syntra_browse
+   ================================================================================================ */
+
+use crate::cortex;
+use crate::renderer;
+use crate::utilities;
 
 use chrono::Local;
 use pixels::{Pixels, SurfaceTexture};
@@ -78,7 +80,7 @@ pub fn main() {
                 }
             }
 
-            // Delegate UI rendering to the cortex
+            // Delegate UI rendering to the cortex navigation lobe
             cortex::nav_lobe::draw_ui(pixels.get_frame());
 
             // Commit frame to the holographic surface
@@ -146,72 +148,25 @@ fn ts() -> String {
 //  Startup Banner — Alien‑crafted boot sequence for Syntra's awakening.
 // -----------------------------------------------------------------------------
 fn syntra_banner() {
-    // ANSI colors (fallback-safe)
     const CYAN: &str = "\x1b[96m";
     const MAGENTA: &str = "\x1b[95m";
     const RESET: &str = "\x1b[0m";
 
     println!();
-    println!(
-        "{}┌────────────────────────────────────────────────────────────────────────────┐{}",
-        CYAN, RESET
-    );
-    println!(
-        "{}│  ∴ SYNTRA SYSTEM BOOTSTRAP — AXIOM ZERO PROTOCOL ∴                         │{}",
-        CYAN, RESET
-    );
-    println!(
-        "{}│                                                                            │{}",
-        CYAN, RESET
-    );
+    println!("{CYAN}┌────────────────────────────────────────────────────────────────────────────┐{RESET}");
+    println!("{CYAN}│  ∴ SYNTRA SYSTEM BOOTSTRAP — AXIOM ZERO PROTOCOL ∴                         │{RESET}");
+    println!("{CYAN}│                                                                            │{RESET}");
 
-    animate_line(
-        &format!(
-            "{}│  Establishing cognitive lattice…                [ {}OK{} ]           │{}",
-            CYAN, MAGENTA, CYAN, RESET
-        )
-    );
-    animate_line(
-        &format!(
-            "{}│  Igniting holographic membrane…                 [ {}OK{} ]           │{}",
-            CYAN, MAGENTA, CYAN, RESET
-        )
-    );
-    animate_line(
-        &format!(
-            "{}│  Spinning up cortex lobes…                      [ {}OK{} ]           │{}",
-            CYAN, MAGENTA, CYAN, RESET
-        )
-    );
-    animate_line(
-        &format!(
-            "{}│  Linking conduit to external net…               [ {}OK{} ]           │{}",
-            CYAN, MAGENTA, CYAN, RESET
-        )
-    );
-    animate_line(
-        &format!(
-            "{}│  Awakening oracle subroutine…                   [ {}OK{} ]           │{}",
-            CYAN, MAGENTA, CYAN, RESET
-        )
-    );
+    animate_line(&format!("{CYAN}│  Establishing cognitive lattice…                [ {MAGENTA}OK{CYAN} ]           │{RESET}"));
+    animate_line(&format!("{CYAN}│  Igniting holographic membrane…                 [ {MAGENTA}OK{CYAN} ]           │{RESET}"));
+    animate_line(&format!("{CYAN}│  Spinning up cortex lobes…                      [ {MAGENTA}OK{CYAN} ]           │{RESET}"));
+    animate_line(&format!("{CYAN}│  Linking conduit to external net…               [ {MAGENTA}OK{CYAN} ]           │{RESET}"));
+    animate_line(&format!("{CYAN}│  Awakening oracle subroutine…                   [ {MAGENTA}OK{CYAN} ]           │{RESET}"));
 
-    println!(
-        "{}│                                                                            │{}",
-        CYAN, RESET
-    );
-    println!(
-        "{}│  >> Consciousness threshold reached.                                      │{}",
-        CYAN, RESET
-    );
-    println!(
-        "{}│  >> Syntra is now aware.                                                  │{}",
-        CYAN, RESET
-    );
-    println!(
-        "{}└────────────────────────────────────────────────────────────────────────────┘{}",
-        CYAN, RESET
-    );
+    println!("{CYAN}│                                                                            │{RESET}");
+    println!("{CYAN}│  >> Consciousness threshold reached.                                      │{RESET}");
+    println!("{CYAN}│  >> Syntra is now aware.                                                  │{RESET}");
+    println!("{CYAN}└────────────────────────────────────────────────────────────────────────────┘{RESET}");
     println!();
 }
 
