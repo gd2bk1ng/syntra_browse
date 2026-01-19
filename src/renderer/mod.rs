@@ -1,22 +1,18 @@
 /* ================================================================================================
-   Syntra Browser — Axiom Zero
-   Advanced AGI-Driven Intent Engine & Cognitive Rendering System
+   SYNTRA BROWSER — AXIOM ZERO
    ------------------------------------------------------------------------------------------------
    File:        src/renderer/mod.rs
    Module:      Renderer (Visual Output Pipeline)
-   Author:      Alexandr Roussinov (gd2bk1ng)
-   Created:     2026
-   License:     MIT
-   Repository:  https://github.com/gd2bk1ng/syntra_browse
-   ------------------------------------------------------------------------------------------------
-   Overview:
-   The Renderer module defines the visual output layer of Syntra. It abstracts windowing, pixel
-   buffers, UI composition, and future GPU-accelerated rendering pipelines.
+   Author:      Alexandr Roussinov
+   Description: Rendering abstraction layer for Syntra. Defines the core rendering trait and a
+                baseline NullRenderer for early development and testing.
 
-   Notes for Future Engineers (2050+):
-   - Keep rendering decoupled from logic.
-   - Prefer declarative UI patterns when possible.
-   - Rendering should remain deterministic and side-effect free.
+   Overview:
+     • Renderer trait — Unified interface for all rendering backends.
+     • NullRenderer   — Minimal placeholder renderer.
+
+   Notes:
+     Rendering should remain deterministic and decoupled from cognitive logic.
    ================================================================================================ */
 
 #![allow(dead_code)]
@@ -39,8 +35,7 @@ pub struct NullRenderer {
 
 impl Renderer for NullRenderer {
     fn render(&mut self) {
-        // In the future, this will drive the actual pixel pipeline.
-        // For now, it’s a structural placeholder.
+        // Placeholder for future GPU or pixel‑based rendering.
     }
 
     fn resize(&mut self, width: u32, height: u32) {
