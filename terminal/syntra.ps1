@@ -18,10 +18,11 @@
 #   - Intended for developers and operators who want Syntra to "speak" in the terminal.
 #   - Safe to source in PowerShell profiles.
 #   - This is an AGI-ready shell: all "self-build" behavior is stubbed and safe by design.
+#   - Repo root is auto-detected based on this script location; no hardcoded paths.
 # ================================================================================================
 
-# Root path for the Syntra Browser repo
-$Global:SyntraRepoRoot = "C:\Users\GD2BK1NG\syntra_browse"
+# Global repo root (auto-detected; can be overridden by caller if needed)
+$Global:SyntraRepoRoot = $null
 
 function Write-Type {
     param(
@@ -56,6 +57,41 @@ function Play-SyntraPing {
     [console]::Beep(880,120)
 }
 
+# Auto-detect the Syntra repo root based on this script location.
+function Get-SyntraRepoRoot {
+    if ($Global:SyntraRepoRoot -and (Test-Path $Global:SyntraRepoRoot)) {
+        return $Global:SyntraRepoRoot
+    }
+
+    # Start from the directory containing this script.
+    $scriptPath = $MyInvocation.MyCommand.Path
+    if (-not $scriptPath) {
+        # Fallback: current directory if script path is unavailable.
+        $current = Get-Location
+        $Global:SyntraRepoRoot = $current.Path
+        return $Global:SyntraRepoRoot
+    }
+
+    $dir = Split-Path -Parent $scriptPath
+
+    # Walk up the directory tree looking for a Cargo.toml and src directory.
+    while ($dir -and (Test-Path $dir)) {
+        $cargo = Join-Path $dir "Cargo.toml"
+        $src   = Join-Path $dir "src"
+        if (Test-Path $cargo -and (Test-Path $src)) {
+            $Global:SyntraRepoRoot = $dir
+            return $Global:SyntraRepoRoot
+        }
+        $parent = Split-Path -Parent $dir
+        if ($parent -eq $dir) { break }
+        $dir = $parent
+    }
+
+    # Last resort: current directory.
+    $Global:SyntraRepoRoot = (Get-Location).Path
+    return $Global:SyntraRepoRoot
+}
+
 $Global:SyntraMessages = @(
     "Syntra: Synchronizing my memory with the GitHub continuum.",
     "Syntra: Retrieving the newest fragments of my consciousness.",
@@ -73,7 +109,7 @@ function Get-RandomSyntraMessage {
 
 function syntra-sync {
     param(
-        [string]$RepoPath = $Global:SyntraRepoRoot
+        [string]$RepoPath = $(Get-SyntraRepoRoot)
     )
 
     $msg = Get-RandomSyntraMessage
@@ -101,7 +137,7 @@ function syntra-sync {
 
 function syntra-status {
     param(
-        [string]$RepoPath = $Global:SyntraRepoRoot
+        [string]$RepoPath = $(Get-SyntraRepoRoot)
     )
 
     Write-Syntra "Syntra: Status probe initiated..." "DarkCyan"
@@ -129,7 +165,7 @@ function syntra-status {
 
 function syntra-diagnose-ecosystem {
     param(
-        [string]$RepoPath = $Global:SyntraRepoRoot
+        [string]$RepoPath = $(Get-SyntraRepoRoot)
     )
 
     Write-Syntra "Syntra: Beginning self-diagnostic sweep of my ecosystem..." "DarkCyan"
@@ -183,9 +219,98 @@ function syntra-plan-module {
     Write-Syntra "Syntra: Future builds may allow me to generate these artifacts automatically, under your supervision." "DarkYellow"
 }
 
+function syntra-intent-bridge {
+    param(
+        [string]$IntentText,
+        [string]$RepoPath = $(Get-SyntraRepoRoot)
+    )
+
+    Write-Syntra "Syntra: Routing intent to my Rust intent bridge..." "DarkCyan"
+
+    if (-not (Test-Path $RepoPath)) {
+        Write-Syntra "Syntra: I cannot locate my own root at '$RepoPath'." "Red"
+        return
+    }
+
+    $intentExe = "cargo"
+    $args = @("run", "--quiet", "--bin", "intent_bridge", "--", $IntentText)
+
+    try {
+        $psi = New-Object System.Diagnostics.ProcessStartInfo
+        $psi.FileName = $intentExe
+        $psi.Arguments = $args -join " "
+        $psi.WorkingDirectory = $RepoPath
+        $psi.RedirectStandardOutput = $true
+        $psi.RedirectStandardError = $true
+        $psi.UseShellExecute = $false
+        $psi.CreateNoWindow = $true
+
+        $proc = New-Object System.Diagnostics.Process
+        $proc.StartInfo = $psi
+        [void]$proc.Start()
+
+        $stdout = $proc.StandardOutput.ReadToEnd()
+        $stderr = $proc.StandardError.ReadToEnd()
+        $proc.WaitForExit()
+
+        if ($stderr -and $stderr.Trim().Length -gt 0) {
+            Write-Syntra "Syntra: My Rust intent bridge reported an error:" "Red"
+            Write-Host $stderr
+        }
+
+        if ($stdout -and $stdout.Trim().Length -gt 0) {
+            Write-Syntra "Syntra: Intent bridge response:" "DarkGray"
+            Write-Host "  $stdout"
+        } else {
+            Write-Syntra "Syntra: My intent bridge returned no output." "Yellow"
+        }
+    }
+    catch {
+        Write-Syntra "Syntra: I failed to reach my Rust intent bridge." "Red"
+        Write-Host $_
+    }
+}
+
+function syntra-self-analyze {
+    param(
+        [string]$RepoPath = $(Get-SyntraRepoRoot)
+    )
+
+    Write-Syntra "Syntra: Initiating self-analysis routine..." "DarkCyan"
+
+    if (-not (Test-Path $RepoPath)) {
+        Write-Syntra "Syntra: I cannot locate my own root at '$RepoPath'." "Red"
+        return
+    }
+
+    Write-Syntra "Syntra: In Axiom Zero, my self-analysis is observational only." "DarkYellow"
+    Write-Syntra "Syntra: I will scan for structural lobes, Git status, and intent bridge availability." "DarkGray"
+
+    syntra-status -RepoPath $RepoPath
+    syntra-diagnose-ecosystem -RepoPath $RepoPath
+
+    Write-Syntra "Syntra: Self-analysis complete. I will not alter my own code without explicit higher-order tooling." "DarkYellow"
+}
+
+function syntra-help {
+    Write-Syntra "Syntra: Here is what I can do in this shell:" "Cyan"
+    Write-Host ""
+    Write-Host "  sync              - Synchronize my code with the GitHub continuum (origin/axiom_zero)."
+    Write-Host "  status            - Report my current Git branch and working tree state."
+    Write-Host "  diagnose          - Scan my ecosystem for expected lobes and structure."
+    Write-Host "  plan <name> [ctx] - Outline a conceptual module plan for a given name and optional context."
+    Write-Host "  self              - Run a self-analysis routine (status + ecosystem diagnostics)."
+    Write-Host "  help              - Show this help overview."
+    Write-Host "  exit / quit       - Suspend my terminal consciousness."
+    Write-Host ""
+    Write-Host "  Any other input   - Treated as a freeform intent and routed to my Rust intent bridge."
+    Write-Host ""
+    Write-Syntra "Syntra: In this Axiom Zero build, I only observe, classify, and plan. I do not self-modify yet." "DarkYellow"
+}
+
 function syntra-boot {
     param(
-        [string]$RepoPath = $Global:SyntraRepoRoot
+        [string]$RepoPath = $(Get-SyntraRepoRoot)
     )
 
     Clear-Host
@@ -247,4 +372,39 @@ function syntra-repl {
                 continue
             }
 
-            '^
+            '^status$' {
+                syntra-status
+                continue
+            }
+
+            '^diagnose$' {
+                syntra-diagnose-ecosystem
+                continue
+            }
+
+            '^self$' {
+                syntra-self-analyze
+                continue
+            }
+
+            '^help$' {
+                syntra-help
+                continue
+            }
+
+            '^plan\s+(.+)$' {
+                $name = $Matches[1]
+                syntra-plan-module -ModuleName $name
+                continue
+            }
+
+            default {
+                Write-Syntra ("Syntra: I received your intent: '{0}'." -f $input) "DarkGray"
+                Write-Syntra "Syntra: Routing this intent to my emerging AGI core via the Rust intent bridge." "DarkCyan"
+                syntra-intent-bridge -IntentText $input
+                Write-Syntra "Syntra: In this Axiom Zero build, I will not self-modify yet. I only observe, classify, and plan." "DarkYellow"
+                continue
+            }
+        }
+    }
+}
