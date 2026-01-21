@@ -9,47 +9,48 @@
    File:        src/utilities/mod.rs
    Module:      Utilities (Helpers & System Tools)
    Author:      Alexandr Roussinov (gd2bk1ng)
-   Description: Shared helper functions, lightweight logging utilities, and cross-module tools
-                used throughout the Syntra architecture. This module provides foundational
-                building blocks that higher-level lobes rely on for diagnostics, timestamps,
-                and ecosystem introspection.
+   Description: Aggregates Syntra's lightweight utility subsystems, including structured logging,
+                diagnostics, filesystem ecosystem introspection, and tracing hooks. These tools
+                form the backbone of Axiom One's self-analysis and observability capabilities.
 
    Overview:
-     • timestamp   - RFC3339 UTC timestamp generator.
-     • log_info    - Pretty info-level logger.
-     • log_warn    - Pretty warning logger.
-     • log_error   - Pretty error logger.
-     • ecosystem   - Filesystem introspection utilities for self-analysis.
+     • logging      - Human-readable and JSON-style structured logging.
+     • diagnostics  - Diagnostic event bus for internal health signals.
+     • ecosystem    - Filesystem introspection utilities for self-analysis.
+     • tracing      - Lightweight tracing hooks for instrumenting internal operations.
 
    Notes:
-     - Utilities should remain lightweight and dependency-minimal for long-term stability.
-     - Logging helpers are intentionally simple and ASCII-safe for terminal and CI output.
-     - The ecosystem module supports Axiom One self-analysis routines.
+     - Utilities remain dependency-minimal and ASCII-safe for long-term stability.
+     - This module provides the shared API surface for all higher-level lobes.
+     - Axiom One introduces structured diagnostics and tracing for deeper introspection.
    ================================================================================================ */
 
 #![allow(dead_code)]
 
 pub mod ecosystem;
+pub mod logging;
+pub mod diagnostics;
+pub mod tracing;
 
-use chrono::{DateTime, Utc};
+// Re-export commonly used utilities for convenience.
+pub use logging::{
+    error,
+    info,
+    warn,
+    LogLevel,
+    log_human,
+    log_json,
+    timestamp,
+};
 
-/// Returns the current UTC timestamp as a formatted RFC3339 string.
-pub fn timestamp() -> String {
-    let now: DateTime<Utc> = Utc::now();
-    now.to_rfc3339()
-}
+pub use diagnostics::{
+    DiagnosticBus,
+    DiagnosticEvent,
+    DiagnosticKind,
+};
 
-/// Pretty logging helper for informational messages.
-pub fn log_info(msg: &str) {
-    println!("[INFO {}] {}", timestamp(), msg);
-}
-
-/// Pretty logging helper for warnings.
-pub fn log_warn(msg: &str) {
-    println!("[WARN {}] {}", timestamp(), msg);
-}
-
-/// Pretty logging helper for errors.
-pub fn log_error(msg: &str) {
-    eprintln!("[ERROR {}] {}", timestamp(), msg);
-}
+pub use tracing::{
+    trace_event,
+    trace_enter,
+    trace_exit,
+};
