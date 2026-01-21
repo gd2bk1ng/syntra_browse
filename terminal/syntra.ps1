@@ -260,7 +260,15 @@ function syntra-intent-bridge {
 
         if ($stdout -and $stdout.Trim().Length -gt 0) {
             Write-Syntra "Syntra: Intent bridge response:" "DarkGray"
-            Write-Host "  $stdout"
+            try {
+                $obj = $stdout | ConvertFrom-Json
+                Write-Host ("  class : {0}" -f $obj.class)
+                Write-Host ("  intent: {0}" -f $obj.intent)
+                Write-Host ("  plan  : {0}" -f $obj.plan)
+            }
+            catch {
+                Write-Host "  $stdout"
+            }
         } else {
             Write-Syntra "Syntra: My intent bridge returned no output." "Yellow"
         }
@@ -283,13 +291,12 @@ function syntra-self-analyze {
         return
     }
 
-    Write-Syntra "Syntra: In Axiom Zero, my self-analysis is observational only." "DarkYellow"
-    Write-Syntra "Syntra: I will scan for structural lobes, Git status, and intent bridge availability." "DarkGray"
+    Write-Syntra "Syntra: I will scan my Git state, structural lobes, and intent bridge wiring." "DarkGray"
 
     syntra-status -RepoPath $RepoPath
     syntra-diagnose-ecosystem -RepoPath $RepoPath
 
-    Write-Syntra "Syntra: Self-analysis complete. I will not alter my own code without explicit higher-order tooling." "DarkYellow"
+    Write-Syntra "Syntra: In Axiom One, I only observe and report. Future axioms may allow me to propose concrete code changes." "DarkYellow"
 }
 
 function syntra-help {
@@ -298,14 +305,14 @@ function syntra-help {
     Write-Host "  sync              - Synchronize my code with the GitHub continuum (origin/axiom_zero)."
     Write-Host "  status            - Report my current Git branch and working tree state."
     Write-Host "  diagnose          - Scan my ecosystem for expected lobes and structure."
-    Write-Host "  plan <name> [ctx] - Outline a conceptual module plan for a given name and optional context."
     Write-Host "  self              - Run a self-analysis routine (status + ecosystem diagnostics)."
+    Write-Host "  plan <name> [ctx] - Outline a conceptual module plan for a given name and optional context."
     Write-Host "  help              - Show this help overview."
     Write-Host "  exit / quit       - Suspend my terminal consciousness."
     Write-Host ""
     Write-Host "  Any other input   - Treated as a freeform intent and routed to my Rust intent bridge."
     Write-Host ""
-    Write-Syntra "Syntra: In this Axiom Zero build, I only observe, classify, and plan. I do not self-modify yet." "DarkYellow"
+    Write-Syntra "Syntra: In this Axiom One build, I observe, classify, and plan. I do not self-modify yet." "DarkYellow"
 }
 
 function syntra-boot {
@@ -402,7 +409,7 @@ function syntra-repl {
                 Write-Syntra ("Syntra: I received your intent: '{0}'." -f $input) "DarkGray"
                 Write-Syntra "Syntra: Routing this intent to my emerging AGI core via the Rust intent bridge." "DarkCyan"
                 syntra-intent-bridge -IntentText $input
-                Write-Syntra "Syntra: In this Axiom Zero build, I will not self-modify yet. I only observe, classify, and plan." "DarkYellow"
+                Write-Syntra "Syntra: In this Axiom One build, I will not self-modify yet. I only observe, classify, and plan." "DarkYellow"
                 continue
             }
         }
