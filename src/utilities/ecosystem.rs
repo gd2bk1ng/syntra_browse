@@ -1,5 +1,5 @@
 /* ================================================================================================
-   SYNTRA BROWSER - AXIOM ZERO
+   SYNTRA BROWSER - AXIOM ONE
    ------------------------------------------------------------------------------------------------
    SIGIL:
          .\s/.
@@ -10,12 +10,21 @@
    Module:      Utilities - Ecosystem Introspection
    Author:      Alexandr Roussinov (gd2bk1ng)
    Description: Provides utilities for inspecting Syntra's filesystem ecosystem, including
-                structural lobe detection and basic banner validation.
+                structural lobe detection and basic banner validation. Supports Axiom One
+                self-analysis and diagnostic routines.
+
+   Overview:
+     • ExpectedLobe         - Describes a structural lobe Syntra expects to find.
+     • scan_lobes           - Check presence of expected lobes under a repo root.
+     • has_syntra_banner    - Detect Syntra's standard banner in a file.
+     • find_files_missing_banner - Recursively find Rust files missing the banner.
 
    Notes:
-     - This module is observational only in Axiom One (no self-modification).
-     - Designed to support self-analysis, diagnostics, and future self-healing routines.
+     - Observational only in Axiom One (no self-modification).
+     - Designed to integrate with AGI Core ecosystem models and diagnostics.
    ================================================================================================ */
+
+#![allow(dead_code)]
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -27,6 +36,15 @@ use crate::agi_core::EcosystemLobe;
 pub struct ExpectedLobe {
     pub name: String,
     pub relative_path: String,
+}
+
+impl ExpectedLobe {
+    pub fn new(name: &str, relative_path: &str) -> Self {
+        Self {
+            name: name.to_string(),
+            relative_path: relative_path.to_string(),
+        }
+    }
 }
 
 /// Scan the filesystem for expected lobes and return their presence state.
@@ -47,7 +65,7 @@ pub fn scan_lobes(repo_root: &Path, expected: &[ExpectedLobe]) -> Vec<EcosystemL
 /// Perform a lightweight banner check on a file (does it contain the SYNTRA header marker?).
 pub fn has_syntra_banner(path: &Path) -> bool {
     if let Ok(content) = fs::read_to_string(path) {
-        content.contains("SYNTRA BROWSER - AXIOM ZERO")
+        content.contains("SYNTRA BROWSER - AXIOM")
     } else {
         false
     }
