@@ -1,5 +1,5 @@
 /* ================================================================================================
-   SYNTRA BROWSER - AXIOM ZERO
+   SYNTRA BROWSER - AXIOM ONE
    ------------------------------------------------------------------------------------------------
    SIGIL:
          .\s/.
@@ -10,11 +10,19 @@
    Module:      Utilities - Logging Facade
    Author:      Alexandr Roussinov (gd2bk1ng)
    Description: Provides a lightweight, structured logging facade for Syntra. Supports both
-                human-readable and JSON-style logs, suitable for terminals and CI pipelines.
+                human-readable and JSON-style logs, suitable for terminals, CI pipelines, and
+                future telemetry collectors.
+
+   Overview:
+     • LogLevel   - Basic severity levels (info, warn, error).
+     • timestamp  - RFC3339 UTC timestamp generator.
+     • log_human  - Human-readable log lines.
+     • log_json   - Single-line JSON-style logs (ASCII-safe).
+     • info/warn/error - Convenience helpers for common severities.
 
    Notes:
      - Designed to remain dependency-minimal and ASCII-safe.
-     - Can be wired into future telemetry and tracing systems.
+     - Intended as the foundation for higher-level diagnostics and telemetry.
    ================================================================================================ */
 
 #![allow(dead_code)]
@@ -82,15 +90,17 @@ fn escape_json(input: &str) -> String {
     out
 }
 
-/// Convenience helpers.
+/// Convenience helper for info-level logs.
 pub fn info(msg: &str) {
     log_human(LogLevel::Info, msg);
 }
 
+/// Convenience helper for warning-level logs.
 pub fn warn(msg: &str) {
     log_human(LogLevel::Warn, msg);
 }
 
+/// Convenience helper for error-level logs.
 pub fn error(msg: &str) {
     log_human(LogLevel::Error, msg);
 }
