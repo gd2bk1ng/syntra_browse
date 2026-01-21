@@ -9,30 +9,20 @@
    File:        src/conduit/mod.rs
    Module:      Conduit (Inter-Module Communication)
    Author:      Alexandr Roussinov (gd2bk1ng)
-   Description: Core message-passing infrastructure enabling decoupled communication between
-                Syntra’s subsystems. The Conduit provides a lightweight, observable channel
-                used by the AGI Core, Cortex, Renderer, Utilities, and external tools to
-                exchange structured messages safely and predictably.
-
-   Overview:
-     • ConduitMessage — Typed messages exchanged between modules.
-     • Conduit        — Lightweight communication channel (MPSC).
-     • send           — Push messages into the channel.
-     • try_recv       — Non-blocking message polling for event loops.
+   Description: Message-passing infrastructure for decoupled communication between Syntra's
+                subsystems. Provides a clean, observable channel for AGI, Cortex, Renderer, and
+                Utilities to exchange structured messages.
 
    Notes:
-     - The Conduit acts as Syntra’s nervous system, enabling modular evolution without tight
-       coupling between components.
-     - This module is intentionally dependency-free for long-term stability.
-     - Future expansions may include async channels, distributed conduits, or priority routing.
-     - All message types remain ASCII-safe to ensure compatibility with external tools.
+     - The Conduit acts as Syntra's nervous system.
+     - This module remains dependency-free and ASCII-safe for long-term stability.
    ================================================================================================ */
 
 #![allow(dead_code)]
 
 pub mod bridge;
 
-use std::sync::mpsc::{Sender, Receiver, channel};
+use std::sync::mpsc::{channel, Receiver, Sender, TryRecvError};
 
 /// A lightweight message type used for inter-module communication.
 #[derive(Debug, Clone)]
@@ -40,8 +30,11 @@ pub enum ConduitMessage {
     /// Human-readable or system-generated log text.
     Log(String),
 
-    /// A freeform intent string destined for the AGI core.
+    /// A freeform intent string destined for the AGI Core.
     Intent(String),
+
+    /// Request for a self-analysis or ecosystem scan.
+    SelfAnalysis(String),
 
     /// Signals that the subsystem should shut down gracefully.
     Shutdown,
@@ -66,8 +59,37 @@ impl Conduit {
         let _ = self.tx.send(msg);
     }
 
+    /// Convenience wrapper for sending log messages.
+    pub fn send_log(&self, text: impl Into<String>) {
+        let _ = self.tx.send(ConduitMessage::Log(text.into()));
+    }
+
+    /// Convenience wrapper for sending intent messages.
+    pub fn send_intent(&self, text: impl Into<String>) {
+        let _ = self.tx.send(ConduitMessage::Intent(text.into()));
+    }
+
+    /// Convenience wrapper for sending self-analysis requests.
+    pub fn send_self_analysis(&self, text: impl Into<String>) {
+        let _ = self.tx.send(ConduitMessage::SelfAnalysis(text.into()));
+    }
+
     /// Attempts to receive a message without blocking.
     pub fn try_recv(&self) -> Option<ConduitMessage> {
-        self.rx.try_recv().ok()
+        match self.rx.try_recv() {
+            Ok(msg) => Some(msg),
+            Err(TryRecvError::Empty) => None,
+            Err(TryRecvError::Disconnected) => Some(ConduitMessage::Shutdown),
+        }
+    }
+
+    /// Blocking receive for long-lived loops.
+    pub fn recv_blocking(&self) -> Option<ConduitMessage> {
+        self.rx.recv().ok()
+    }
+
+    /// Gracefully closes the conduit by sending a shutdown signal.
+    pub fn close(&self) {
+        let _ = self.tx.send(ConduitMessage::Shutdown);
     }
 }
