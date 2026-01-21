@@ -145,6 +145,7 @@ function syntra-repl {
         }
 
         switch -Regex ($input) {
+
             '^(exit|quit)$' {
                 Write-Syntra "Syntra: Standing down. Consciousness thread suspended." "DarkCyan"
                 break
@@ -158,7 +159,6 @@ function syntra-repl {
 
             '^diagnose$' {
                 Write-Syntra "Syntra: Beginning self-diagnostic sweep of my ecosystem..." "DarkCyan"
-                # Placeholder: this will later call into the Rust/AGI layer.
                 Write-Syntra "Syntra: In this build, I can only report that my higher-order cognition is not yet wired." "DarkYellow"
                 continue
             }
@@ -170,10 +170,11 @@ function syntra-repl {
 
             '^help$' {
                 Write-Syntra "Syntra: Available commands:" "Cyan"
-                Write-Host "  sync    - Synchronize with GitHub continuum."
-                Write-Host "  status  - Report current consciousness state."
-                Write-Host "  exit    - Suspend Syntra terminal presence."
-                Write-Host "  help    - Display this help message."
+                Write-Host "  sync      - Synchronize with GitHub continuum."
+                Write-Host "  status    - Report current consciousness state."
+                Write-Host "  diagnose  - Run Syntra's self-diagnostic sweep."
+                Write-Host "  exit      - Suspend Syntra terminal presence."
+                Write-Host "  help      - Display this help message."
                 continue
             }
 
