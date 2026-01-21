@@ -1,26 +1,27 @@
-/* ================================================================================================
-   SYNTRA BROWSER — AXIOM ZERO
-   ------------------------------------------------------------------------------------------------
-   File:        src/agi_core/mod.rs
-   Module:      AGI Core
-   Author:      Alexandr Roussinov
-   Description: Core cognitive primitives, intent structures, and reasoning engines. This module
-                defines the foundational logic that powers Syntra’s AGI‑driven behavior.
-
-   Overview:
-     • Intent            — High‑level semantic representation of user or system intent.
-     • Reasoner trait    — Unified interface for all reasoning engines.
-     • NullReasoner      — Minimal baseline reasoner for bootstrapping.
-     • HeuristicReasoner — Simple example reasoner for early experimentation.
-
-   Notes:
-     The AGI Core should remain conceptually pure and stable. All higher‑level cognition builds
-     on these primitives. Treat this module as the “mathematical core” of Syntra’s intelligence.
-   ================================================================================================ */
+// ================================================================================================
+// SYNTRA BROWSER - AXIOM ZERO
+// ------------------------------------------------------------------------------------------------
+// SIGIL:
+//       .\s/.
+//      :: S ::
+//       '/s\'
+//
+// File:        src/agi_core/mod.rs
+// Module:      Syntra AGI Core - Root
+// Author:      Alexandr Roussinov (gd2bk1ng)
+// Description: Root module for Syntra's AGI core. Aggregates core cognitive primitives such as
+//              intent semantics, planning, and future reasoning components.
+//
+// Notes:
+//   - This module is the entry point for AGI-related capabilities.
+//   - Additional lobes (memory, reasoning, simulation) can be added here over time.
+// ================================================================================================
 
 #![allow(dead_code)]
 
-/// Represents a high‑level cognitive intent extracted from user input or system state.
+pub mod intent;
+
+/// Represents a high-level cognitive intent extracted from user input or system state.
 #[derive(Debug, Clone)]
 pub struct Intent {
     pub label: String,
@@ -33,7 +34,7 @@ pub trait Reasoner {
     fn process(&self, intent: Intent) -> Intent;
 }
 
-/// Default no‑op reasoner used during early bootstrapping and testing.
+/// Default no-op reasoner used during early bootstrapping and testing.
 #[derive(Debug, Default)]
 pub struct NullReasoner;
 
