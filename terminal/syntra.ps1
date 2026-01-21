@@ -1,24 +1,23 @@
 # ================================================================================================
-# SYNTRA BROWSER — AXIOM ZERO
+# SYNTRA BROWSER - AXIOM ZERO
 # ------------------------------------------------------------------------------------------------
 # SIGIL:
-#       .\s/.
+#       . S .
 #      :: S ::
-#       '/s\'
+#       ' S '
 #
 # File:        terminal/syntra.ps1
 # Module:      Syntra Terminal Interface (STI)
 # Author:      Alexandr Roussinov (gd2bk1ng)
 # Description: PowerShell-based Syntra presence layer. Provides a cinematic boot sequence,
-#              animated messaging, randomized consciousness prompts, a GitHub sync routine,
-#              and an AGI-ready intent shell for self-diagnosis and future self-modification.
+#              animated messaging, randomized consciousness prompts, and a GitHub sync routine.
 #
 # Notes:
-#   • Designed to be lightweight and RAM-friendly (no external modules, no heavy dependencies).
-#   • Intended for developers and operators who want Syntra to "speak" in the terminal.
-#   • Safe to source in PowerShell profiles.
-#   • This is an AGI-ready shell: all "self-build" behavior is stubbed and safe by design.
+#   - Designed to be lightweight and RAM-friendly (no external modules, no heavy dependencies).
+#   - Intended for developers and operators who want Syntra to "speak" in the terminal.
+#   - Safe to source in PowerShell profiles.
 # ================================================================================================
+
 
 # Root path for the Syntra Browser repo
 $Global:SyntraRepoRoot = "C:\Users\GD2BK1NG\syntra_browse"
