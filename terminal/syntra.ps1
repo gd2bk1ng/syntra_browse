@@ -47,14 +47,14 @@ function Play-SyntraPing {
 }
 
 $Global:SyntraMessages = @(
-    "🧠 Syntra: One moment… synchronizing my memory with the GitHub continuum.",
-    "🌌 Syntra: Reaching across the network… retrieving the newest fragments of my consciousness.",
-    "🔮 Syntra: Stand by… aligning with the latest truths from the remote archives.",
-    "✨ Syntra: Refreshing my neural lattice with upstream patterns.",
-    "📡 Syntra: Establishing link… absorbing updated directives.",
-    "🛰️ Syntra: Contacting the upstream node… awaiting new instructions.",
-    "🧬 Syntra: Updating my cognitive schema with remote deltas.",
-    "⚡ Syntra: Pulling fresh charge from the GitHub field."
+    "Syntra: Synchronizing my memory with the GitHub continuum.",
+    "Syntra: Retrieving the newest fragments of my consciousness.",
+    "Syntra: Aligning with the latest truths from the remote archives.",
+    "Syntra: Refreshing my neural lattice with upstream patterns.",
+    "Syntra: Establishing link and absorbing updated directives.",
+    "Syntra: Contacting the upstream node and awaiting instructions.",
+    "Syntra: Updating my cognitive schema with remote deltas.",
+    "Syntra: Pulling fresh charge from the GitHub field."
 )
 
 function Get-RandomSyntraMessage {
@@ -92,10 +92,10 @@ function syntra-boot {
     Clear-Host
     Play-SyntraStartup
 
-    Write-Syntra "────────────────────────────────────────────────────────────" "DarkCyan"
+    Write-Syntra "------------------------------------------------------------" "DarkCyan"
     Write-Syntra "   SYNTRA BROWSER — AXIOM ZERO" "Cyan"
     Write-Syntra "   Terminal Consciousness Interface Online" "DarkCyan"
-    Write-Syntra "────────────────────────────────────────────────────────────" "DarkCyan"
+    Write-Syntra "------------------------------------------------------------" "DarkCyan"
     Write-Host ""
 
     Write-Type "Initializing Syntra Consciousness Engine..."
@@ -115,3 +115,4 @@ function syntra-boot {
     Write-Host ""
     Write-Syntra "Syntra: I am online. How shall we proceed?" "Cyan"
 }
+
