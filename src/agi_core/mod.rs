@@ -1,21 +1,31 @@
-// ================================================================================================
-// SYNTRA BROWSER - AXIOM ZERO
-// ------------------------------------------------------------------------------------------------
-// SIGIL:
-//       .\s/.
-//      :: S ::
-//       '/s\'
-//
-// File:        src/agi_core/mod.rs
-// Module:      Syntra AGI Core - Root
-// Author:      Alexandr Roussinov (gd2bk1ng)
-// Description: Root module for Syntra's AGI core. Aggregates core cognitive primitives such as
-//              intent semantics, planning, and future reasoning components.
-//
-// Notes:
-//   - This module is the entry point for AGI-related capabilities.
-//   - Additional lobes (memory, reasoning, simulation) can be added here over time.
-// ================================================================================================
+/* ================================================================================================
+   SYNTRA BROWSER - AXIOM ZERO
+   ------------------------------------------------------------------------------------------------
+   SIGIL:
+         .\s/.
+        :: S ::
+         '/s\'
+
+   File:        src/agi_core/mod.rs
+   Module:      AGI Core - Root
+   Author:      Alexandr Roussinov (gd2bk1ng)
+   Description: Root module for Syntra's AGI Core. Aggregates foundational cognitive primitives
+                including intent semantics, early-stage reasoning engines, and future cognitive
+                lobes. This module defines the structural entry point for Syntra's emerging
+                intelligence architecture.
+
+   Overview:
+     • Intent            — Lightweight representation of a cognitive intent.
+     • Reasoner trait    — Shared interface for all reasoning engines.
+     • NullReasoner      — No-op baseline reasoner for bootstrapping.
+     • HeuristicReasoner — Simple refinement engine for early experimentation.
+
+   Notes:
+     - This module anchors the AGI Core and should remain stable as higher-order cognition evolves.
+     - Additional lobes (memory, simulation, planning, reflection) can be added here over time.
+     - Reasoners are intentionally lightweight and deterministic in Axiom Zero.
+     - All components are ASCII-safe and dependency-free for long-term reproducibility.
+   ================================================================================================ */
 
 #![allow(dead_code)]
 
