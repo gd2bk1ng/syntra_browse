@@ -1,6 +1,11 @@
 # ================================================================================================
 # SYNTRA BROWSER — AXIOM ZERO
 # ------------------------------------------------------------------------------------------------
+# SIGIL:
+#       .\s/.
+#      :: S ::
+#       '/s\'
+#
 # File:        terminal/syntra.ps1
 # Module:      Syntra Terminal Interface (STI)
 # Author:      Alexandr Roussinov (gd2bk1ng)
@@ -95,6 +100,12 @@ function syntra-boot {
     Write-Syntra "------------------------------------------------------------" "DarkCyan"
     Write-Syntra "   SYNTRA BROWSER — AXIOM ZERO" "Cyan"
     Write-Syntra "   Terminal Consciousness Interface Online" "DarkCyan"
+    Write-Host ""
+
+    Write-Syntra "       .\s/." "Cyan"
+    Write-Syntra "      :: S ::" "Cyan"
+    Write-Syntra "       '/s\'" "Cyan"
+
     Write-Syntra "------------------------------------------------------------" "DarkCyan"
     Write-Host ""
 
@@ -114,5 +125,63 @@ function syntra-boot {
 
     Write-Host ""
     Write-Syntra "Syntra: I am online. How shall we proceed?" "Cyan"
+	
+	Write-Host ""
+    Write-Syntra "Syntra: I am online. How shall we proceed?" "Cyan"
+
+    syntra-repl
 }
 
+function syntra-repl {
+    param(
+        [string]$Prompt = "syntra> "
+    )
+
+    while ($true) {
+        $input = Read-Host $Prompt
+
+        if ([string]::IsNullOrWhiteSpace($input)) {
+            continue
+        }
+
+        switch -Regex ($input) {
+            '^(exit|quit)$' {
+                Write-Syntra "Syntra: Standing down. Consciousness thread suspended." "DarkCyan"
+                break
+            }
+
+            '^sync$' {
+                Write-Syntra "Syntra: Initiating manual sync cycle..." "DarkCyan"
+                syntra-sync
+                continue
+            }
+
+            '^diagnose$' {
+                Write-Syntra "Syntra: Beginning self-diagnostic sweep of my ecosystem..." "DarkCyan"
+                # Placeholder: this will later call into the Rust/AGI layer.
+                Write-Syntra "Syntra: In this build, I can only report that my higher-order cognition is not yet wired." "DarkYellow"
+                continue
+            }
+
+            '^status$' {
+                Write-Syntra "Syntra: Status — Axiom Zero online. Awaiting higher-order directives." "Cyan"
+                continue
+            }
+
+            '^help$' {
+                Write-Syntra "Syntra: Available commands:" "Cyan"
+                Write-Host "  sync    - Synchronize with GitHub continuum."
+                Write-Host "  status  - Report current consciousness state."
+                Write-Host "  exit    - Suspend Syntra terminal presence."
+                Write-Host "  help    - Display this help message."
+                continue
+            }
+
+            default {
+                Write-Syntra "Syntra: I received your intent: '$input'." "DarkGray"
+                Write-Syntra "Syntra: Higher-order AGI interpretation is not yet wired in this build." "DarkYellow"
+                continue
+            }
+        }
+    }
+}
