@@ -25,12 +25,20 @@ pub mod memory_lobe;
 pub mod plan_lobe;
 pub mod reflection_lobe;
 pub mod evolution_lobe;
+pub mod perception_lobe;
+pub mod action_lobe;
+pub mod knowledge_lobe;
+pub mod execution_lobe;
 
 pub use request_lobe::{Request, RequestKind, RequestLobe};
 pub use memory_lobe::{MemoryLobe, MemoryEntry};
 pub use plan_lobe::PlanLobe;
 pub use reflection_lobe::ReflectionLobe;
 pub use evolution_lobe::EvolutionLobe;
+pub use perception_lobe::{PerceptionLobe, Perception};
+pub use action_lobe::{ActionLobe, ActionResult};
+pub use knowledge_lobe::{KnowledgeLobe, KnowledgeEntry};
+pub use execution_lobe::{ExecutionLobe, Task, TaskStep};
 
 pub mod nav_lobe;
 
