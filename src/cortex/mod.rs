@@ -20,6 +20,18 @@
 
 #![allow(dead_code)]
 
+pub mod request_lobe;
+pub mod memory_lobe;
+pub mod plan_lobe;
+pub mod reflection_lobe;
+pub mod evolution_lobe;
+
+pub use request_lobe::{Request, RequestKind, RequestLobe};
+pub use memory_lobe::{MemoryLobe, MemoryEntry};
+pub use plan_lobe::PlanLobe;
+pub use reflection_lobe::ReflectionLobe;
+pub use evolution_lobe::EvolutionLobe;
+
 pub mod nav_lobe;
 
 use crate::agi_core::{Intent, Reasoner, NullReasoner};
