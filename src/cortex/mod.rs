@@ -33,6 +33,7 @@
      • Evolution Lobe     — Architectural improvement narratives.
      • Sandbox Lobe       — In‑memory self‑modification workspace (Axiom Four).
      • Meta‑Evolution     — Higher‑order evolution proposals (Axiom Four).
+     • Maintenance Lobe   — System health & recovery knowledge (Axiom Four).
      • nav_lobe           — UI/navigation lobe for future browser surfaces.
 
    Notes:
@@ -58,6 +59,7 @@ pub mod knowledge_lobe;
 pub mod execution_lobe;
 pub mod sandbox_lobe;
 pub mod meta_evolution_lobe;
+pub mod maintenance_lobe;
 
 pub use request_lobe::{Request, RequestKind, RequestLobe};
 pub use memory_lobe::{MemoryLobe, MemoryEntry};
@@ -70,6 +72,7 @@ pub use knowledge_lobe::{KnowledgeLobe, KnowledgeEntry};
 pub use execution_lobe::{ExecutionLobe, Task, TaskStep};
 pub use sandbox_lobe::{SandboxSession, SandboxFile, SandboxPatch};
 pub use meta_evolution_lobe::{MetaEvolutionLobe, EvolutionProposal, FileChange};
+pub use maintenance_lobe::MaintenanceLobe;
 
 pub mod nav_lobe;
 
@@ -161,16 +164,43 @@ impl<R: Reasoner> Cortex<R> {
 
         let response = match plan.class.as_str() {
             /* ------------------------------------------------------------------------------------
+               MAINTENANCE — System Health & Recovery (Axiom Four)
+               ------------------------------------------------------------------------------------ */
+            "maintenance" => {
+                let arg = plan
+                    .intent
+                    .split_whitespace()
+                    .skip(1)
+                    .collect::<Vec<_>>()
+                    .join(" ");
+                match arg.as_str() {
+                    "rust"       => MaintenanceLobe::rust_toolchain(),
+                    "cargo"      => MaintenanceLobe::cargo_cache(),
+                    "git"        => MaintenanceLobe::git_recovery(),
+                    "shell"      => MaintenanceLobe::shell_integrity(),
+                    "reinstall"  => MaintenanceLobe::full_reinstall(),
+                    "full"       => MaintenanceLobe::all(),
+                    _            => MaintenanceLobe::overview(),
+                }
+            }
+
+            /* ------------------------------------------------------------------------------------
                BROWSE — Fetch + Perceive + Store
                ------------------------------------------------------------------------------------ */
             "browse" => {
-                let parts: Vec<&str> = plan.intent.split_whitespace().collect();
-                if parts.len() >= 2 {
-                    let url = parts[1];
-                    let result = ActionLobe::fetch_url(url);
+                // Expect: "browse <url>"
+                let mut parts = plan.intent.split_whitespace();
+                let _ = parts.next(); // consume "browse"
+                if let Some(first) = parts.next() {
+                    // Allow URLs with spaces (e.g., quoted or multi-part)
+                    let url = std::iter::once(first)
+                        .chain(parts)
+                        .collect::<Vec<_>>()
+                        .join(" ");
+                    let result = ActionLobe::fetch_url(&url);
                     if result.success {
                         let perception = PerceptionLobe::perceive(&result.output);
-                        self.knowledge.store(url, perception.clone());
+                        self.knowledge.store(&url, perception.clone());
                         format!(
                             "Fetched and perceived '{}'.\nTitle: {:?}\nSummary:\n{}",
                             url,
@@ -189,7 +219,13 @@ impl<R: Reasoner> Cortex<R> {
                KNOWLEDGE — Semantic Memory Search
                ------------------------------------------------------------------------------------ */
             "knowledge" => {
-                let query = plan.intent.split_whitespace().skip(1).collect::<Vec<_>>().join(" ");
+                // Expect: "knowledge <query>" or "search <query>"
+                let query = plan
+                    .intent
+                    .split_whitespace()
+                    .skip(1)
+                    .collect::<Vec<_>>()
+                    .join(" ");
                 if query.is_empty() {
                     "Usage: knowledge <query>".to_string()
                 } else {
@@ -215,7 +251,13 @@ impl<R: Reasoner> Cortex<R> {
                TASK — Multi-Step Execution
                ------------------------------------------------------------------------------------ */
             "task" => {
-                let name = plan.intent.split_whitespace().skip(1).collect::<Vec<_>>().join(" ");
+                // Expect: "task <name>"
+                let name = plan
+                    .intent
+                    .split_whitespace()
+                    .skip(1)
+                    .collect::<Vec<_>>()
+                    .join(" ");
                 if name.is_empty() {
                     "Usage: task <name>".to_string()
                 } else {
@@ -232,7 +274,13 @@ impl<R: Reasoner> Cortex<R> {
                PERCEPTION — Parse & Summarize Text
                ------------------------------------------------------------------------------------ */
             "perception" => {
-                let text = plan.intent.split_whitespace().skip(1).collect::<Vec<_>>().join(" ");
+                // Expect: "perceive <text>"
+                let text = plan
+                    .intent
+                    .split_whitespace()
+                    .skip(1)
+                    .collect::<Vec<_>>()
+                    .join(" ");
                 if text.is_empty() {
                     "Usage: perceive <text>".to_string()
                 } else {
@@ -248,6 +296,7 @@ impl<R: Reasoner> Cortex<R> {
                ACTION — System Commands
                ------------------------------------------------------------------------------------ */
             "action" => {
+                // Expect: "act <cmd> [args...]"
                 let mut parts = plan.intent.split_whitespace().skip(1);
                 if let Some(cmd) = parts.next() {
                     let args: Vec<&str> = parts.collect();
@@ -274,7 +323,13 @@ impl<R: Reasoner> Cortex<R> {
                SANDBOX — Self‑Modification Workspace Introspection
                ------------------------------------------------------------------------------------ */
             "sandbox" => {
-                let cmd = plan.intent.split_whitespace().skip(1).collect::<Vec<_>>().join(" ");
+                // Expect: "sandbox diff" or "sandbox snapshot"
+                let cmd = plan
+                    .intent
+                    .split_whitespace()
+                    .skip(1)
+                    .collect::<Vec<_>>()
+                    .join(" ");
                 match cmd.as_str() {
                     "diff" => self.sandbox.diff(),
                     "snapshot" => {
@@ -307,25 +362,33 @@ impl<R: Reasoner> Cortex<R> {
             /* ------------------------------------------------------------------------------------
                PLANNING — Multi-Step Plans
                ------------------------------------------------------------------------------------ */
-            "planning" => PlanLobe::generate_plan(&plan.intent),
+            "planning" => {
+                PlanLobe::generate_plan(&plan.intent)
+            }
 
             /* ------------------------------------------------------------------------------------
                SELF-REFLECTION — Introspection
                ------------------------------------------------------------------------------------ */
-            "self_reflection" => ReflectionLobe::self_reflect(),
+            "self_reflection" => {
+                ReflectionLobe::self_reflect()
+            }
 
             /* ------------------------------------------------------------------------------------
                FREEFORM — General Reflection
                ------------------------------------------------------------------------------------ */
-            "freeform" => ReflectionLobe::reflect(&plan.intent),
+            "freeform" => {
+                ReflectionLobe::reflect(&plan.intent)
+            }
 
             /* ------------------------------------------------------------------------------------
                FALLBACK
                ------------------------------------------------------------------------------------ */
-            other => format!(
-                "I classified this as '{}' but have no handler yet.\nPlan: {}",
-                other, plan.plan
-            ),
+            other => {
+                format!(
+                    "I classified this as '{}' but have no handler yet.\nPlan: {}",
+                    other, plan.plan
+                )
+            }
         };
 
         // Store response in memory.
@@ -354,4 +417,3 @@ impl<R: Reasoner> Cortex<R> {
         }
     }
 }
-```
