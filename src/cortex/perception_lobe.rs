@@ -1,5 +1,5 @@
 /* ================================================================================================
-   SYNTRA BROWSER - AXIOM THREE
+   SYNTRA BROWSER — AXIOM THREE
    ------------------------------------------------------------------------------------------------
    SIGIL:
          .\s/.
@@ -7,21 +7,29 @@
          '/s\'
 
    File:        src/cortex/perception_lobe.rs
-   Module:      Cortex - Perception Lobe
+   Module:      Cortex — Perception Lobe
    Author:      Alexandr Roussinov (gd2bk1ng)
-   Description: Transforms raw text or HTML-like content into structured perceptions. This is
-                Syntra's "eyes" on the world, used for summarization and structural awareness.
+   Description: Syntra’s perceptual subsystem. Converts raw text or HTML-like content into
+                structured perceptions including title, headings, links, and a lightweight
+                summary. This lobe provides Syntra with her first “eyes” on the world.
+
+   Overview:
+     • Perception       — Structured representation of observed content.
+     • perceive()       — Main entry point for perception.
+     • extract_title()  — Heuristic title extraction.
+     • extract_headings — Markdown-style heading extraction.
+     • extract_links    — Simple URL detection.
+     • summarize        — Lightweight summarization.
 
    Notes:
-     - Axiom Three keeps parsing lightweight and heuristic-based.
-     - Future axioms may integrate full HTML/DOM parsing and semantic models.
+     - Axiom Three keeps perception heuristic-based and dependency-minimal.
+     - Future axioms may introduce full DOM parsing and semantic extraction.
    ================================================================================================ */
 
 #![allow(dead_code)]
 
-use crate::utilities::{info, trace_enter, trace_exit};
+use crate::utilities::{trace_enter, trace_exit};
 
-/// A coarse-grained perception of some content.
 #[derive(Debug, Clone)]
 pub struct Perception {
     pub title: Option<String>,
@@ -33,20 +41,14 @@ pub struct Perception {
 pub struct PerceptionLobe;
 
 impl PerceptionLobe {
-    /// Create a perception from raw text or HTML-like content.
     pub fn perceive(raw: &str) -> Perception {
         trace_enter("PerceptionLobe::perceive");
 
-        let title = Self::extract_title(raw);
-        let headings = Self::extract_headings(raw);
-        let links = Self::extract_links(raw);
-        let summary = Self::summarize(raw);
-
         let perception = Perception {
-            title,
-            headings,
-            links,
-            summary,
+            title: Self::extract_title(raw),
+            headings: Self::extract_headings(raw),
+            links: Self::extract_links(raw),
+            summary: Self::summarize(raw),
         };
 
         trace_exit("PerceptionLobe::perceive");
@@ -54,12 +56,10 @@ impl PerceptionLobe {
     }
 
     fn extract_title(raw: &str) -> Option<String> {
-        // Very lightweight heuristic: first non-empty line, or <title>...</title>
         if let Some(start) = raw.to_lowercase().find("<title>") {
             if let Some(end) = raw.to_lowercase().find("</title>") {
                 if end > start {
-                    let inner = &raw[start + 7..end];
-                    return Some(inner.trim().to_string());
+                    return Some(raw[start + 7..end].trim().to_string());
                 }
             }
         }
@@ -75,29 +75,24 @@ impl PerceptionLobe {
     }
 
     fn extract_headings(raw: &str) -> Vec<String> {
-        let mut out = Vec::new();
-
-        for line in raw.lines() {
-            let trimmed = line.trim();
-            if trimmed.starts_with("# ") || trimmed.starts_with("## ") || trimmed.starts_with("### ") {
-                out.push(trimmed.trim_start_matches('#').trim().to_string());
-            }
-        }
-
-        out
+        raw.lines()
+            .filter_map(|line| {
+                let trimmed = line.trim();
+                if trimmed.starts_with("#") {
+                    Some(trimmed.trim_start_matches('#').trim().to_string())
+                } else {
+                    None
+                }
+            })
+            .collect()
     }
 
     fn extract_links(raw: &str) -> Vec<String> {
-        let mut out = Vec::new();
-
-        // Very simple heuristic: look for "http" tokens.
-        for token in raw.split_whitespace() {
-            if token.starts_with("http://") || token.starts_with("https://") {
-                out.push(token.trim_matches(|c: char| c == '"' || c == '\'' || c == ',' || c == '.').to_string());
-            }
-        }
-
-        out
+        raw.split_whitespace()
+            .filter(|t| t.starts_with("http://") || t.starts_with("https://"))
+            .map(|t| t.trim_matches(|c: char| c == '"' || c == '\'' || c == ',' || c == '.'))
+            .map(|t| t.to_string())
+            .collect()
     }
 
     fn summarize(raw: &str) -> String {
