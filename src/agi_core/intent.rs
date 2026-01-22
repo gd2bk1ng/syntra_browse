@@ -1,5 +1,5 @@
 /* ================================================================================================
-   SYNTRA BROWSER — AXIOM FOUR
+   SYNTRA BROWSER — AXIOM FIVE
    ------------------------------------------------------------------------------------------------
    SIGIL:
          .\s/.
@@ -12,21 +12,21 @@
    Description: Unified semantic intent engine for Syntra’s emerging AGI Core. This module
                 classifies freeform text into structured intent classes, generates high-level
                 plans, and provides safe ASCII output for the intent bridge. It merges Axiom Zero’s
-                deterministic classifier with Axiom Three/Four’s expanded semantic domains.
+                deterministic classifier with Axiom Three/Four/Five’s expanded semantic domains.
 
    Overview:
      • Intent           — Raw user intent with confidence metadata.
      • IntentPlan       — Classified intent with semantic class + high-level plan.
      • Reasoner         — Trait for pluggable reasoning engines.
-     • NullReasoner     — Deterministic, dependency-free classifier (Axiom Zero → Four).
-     • classify_domain  — Maps text to semantic domains (maintenance, evolution, browse, etc.).
+     • NullReasoner     — Deterministic, dependency-free classifier (Axiom Zero → Five).
+     • classify_domain  — Maps text to semantic domains (maintenance, evaluation, evolution, etc.).
      • plan_for_domain  — Produces high-level plans for each domain.
      • escape_json      — Ensures safe ASCII output for terminals and bridges.
 
    Notes:
      - This module is intentionally deterministic and ASCII-safe.
      - It forms the canonical semantic backbone for Syntra’s cognition.
-     - Axiom Four introduces maintenance/self-healing semantics.
+     - Axiom Five introduces self-evaluation and version comparison semantics.
      - Future axioms may introduce probabilistic reasoning or multi-step planning.
    ================================================================================================ */
 
@@ -63,11 +63,11 @@ pub trait Reasoner {
 }
 
 /* ------------------------------------------------------------------------------------------------
-   NULL REASONER (Axiom Zero → Four)
+   NULL REASONER (Axiom Zero → Five)
    ------------------------------------------------------------------------------------------------ */
 
 /// Deterministic, dependency-free semantic classifier.
-/// This is Syntra’s canonical intent engine until Axiom Five introduces adaptive reasoning.
+/// This is Syntra’s canonical intent engine until Axiom Six introduces adaptive reasoning.
 pub struct NullReasoner;
 
 impl Reasoner for NullReasoner {
@@ -84,13 +84,18 @@ impl Reasoner for NullReasoner {
 }
 
 /* ------------------------------------------------------------------------------------------------
-   SEMANTIC CLASSIFICATION (Axiom Four)
+   SEMANTIC CLASSIFICATION (Axiom Five)
    ------------------------------------------------------------------------------------------------ */
 
 /// Maps raw text into semantic domains.
 /// This is the heart of Syntra’s early cognition.
 pub fn classify_domain(intent: &str) -> String {
     let lower = intent.to_lowercase();
+
+    // --- Axiom Five: Evaluation -------------------------------------------------
+    if lower.starts_with("evaluate ") || lower.starts_with("evaluation ") {
+        return "evaluation".to_string();
+    }
 
     // --- Axiom Four: Maintenance ------------------------------------------------
     if lower.starts_with("maintenance ") {
@@ -145,13 +150,20 @@ pub fn classify_domain(intent: &str) -> String {
 }
 
 /* ------------------------------------------------------------------------------------------------
-   HIGH-LEVEL PLANNING (Axiom Four)
+   HIGH-LEVEL PLANNING (Axiom Five)
    ------------------------------------------------------------------------------------------------ */
 
 /// Produces a high-level plan for the classified domain.
 /// These plans are descriptive, not executable — the Cortex handles execution.
 pub fn plan_for_domain(classification: &str, intent: &str) -> String {
     match classification {
+        // --- Axiom Five: Evaluation --------------------------------------------
+        "evaluation" => {
+            "Compare two versions of a module or text, highlight strengths, weaknesses, risks, \
+             and provide a qualitative verdict."
+                .to_string()
+        }
+
         // --- Axiom Four: Maintenance -------------------------------------------
         "maintenance" => {
             "Provide system maintenance guidance: Rust toolchain, Cargo cache, Git recovery, \
