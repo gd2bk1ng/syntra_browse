@@ -1,5 +1,5 @@
 /* ================================================================================================
-   SYNTRA BROWSER — AXIOM THREE
+   SYNTRA BROWSER — AXIOM FOUR
    ------------------------------------------------------------------------------------------------
    SIGIL:
          .\s/.
@@ -11,31 +11,34 @@
    Author:      Alexandr Roussinov (gd2bk1ng)
    Description: The Cortex is Syntra’s high‑level cognitive conductor. It integrates the AGI Core
                 (intent semantics), the Conduit (message bus), and all cognitive lobes introduced
-                across Axiom Zero → Axiom Three. The Cortex receives raw user input, refines it
-                through the Reasoner, routes it to the appropriate lobe, stores memory, and
-                returns structured responses.
+                across Axiom Zero → Axiom Four. The Cortex receives raw user input, refines it
+                through the Reasoner, routes it to the appropriate lobe, stores memory, manages
+                a self‑modification sandbox, and returns structured responses.
 
    Overview:
      • Cortex<R>        — Generic orchestrator over any Reasoner implementation.
      • handle_intent    — Legacy Axiom Zero/One intent dispatch.
-     • process          — Axiom Three cognitive pipeline (classification → routing → memory).
+     • process          — Axiom Three/Four cognitive pipeline (classification → routing → memory).
      • pump_messages    — Polls the Conduit for logs, intents, and shutdown signals.
 
    Integrated Lobes:
-     • Request Lobe     — High-level request classification (Axiom Two).
-     • Memory Lobe      — Stores intents + responses (Axiom Two).
-     • Knowledge Lobe   — Semantic memory from browsing (Axiom Three).
-     • Execution Lobe   — Multi-step workflows (Axiom Three).
-     • Perception Lobe  — Content parsing and summarization (Axiom Three).
-     • Action Lobe      — External actions (fetch, run commands).
-     • Reflection Lobe  — Self-analysis and introspection.
-     • Plan Lobe        — Multi-step planning.
-     • Evolution Lobe   — Architectural improvement proposals.
+     • Request Lobe       — High-level request classification (Axiom Two).
+     • Memory Lobe        — Stores intents + responses (Axiom Two).
+     • Knowledge Lobe     — Semantic memory from browsing (Axiom Three).
+     • Execution Lobe     — Multi-step workflows (Axiom Three).
+     • Perception Lobe    — Content parsing and summarization (Axiom Three).
+     • Action Lobe        — External actions (fetch, run commands).
+     • Reflection Lobe    — Self-analysis and introspection.
+     • Plan Lobe          — Multi-step planning.
+     • Evolution Lobe     — Architectural improvement narratives.
+     • Sandbox Lobe       — In‑memory self‑modification workspace (Axiom Four).
+     • Meta‑Evolution     — Higher‑order evolution proposals (Axiom Four).
+     • nav_lobe           — UI/navigation lobe for future browser surfaces.
 
    Notes:
      - The Cortex is intentionally modular and ASCII-safe.
      - It is the central nervous system of Syntra’s cognition.
-     - Axiom Four will introduce a Self‑Modification Sandbox and Meta‑Cortex.
+     - Axiom Four introduces a safe self‑modification sandbox; no direct writes to disk occur here.
    ================================================================================================ */
 
 #![allow(dead_code)]
@@ -53,6 +56,8 @@ pub mod perception_lobe;
 pub mod action_lobe;
 pub mod knowledge_lobe;
 pub mod execution_lobe;
+pub mod sandbox_lobe;
+pub mod meta_evolution_lobe;
 
 pub use request_lobe::{Request, RequestKind, RequestLobe};
 pub use memory_lobe::{MemoryLobe, MemoryEntry};
@@ -63,6 +68,8 @@ pub use perception_lobe::{PerceptionLobe, Perception};
 pub use action_lobe::{ActionLobe, ActionResult};
 pub use knowledge_lobe::{KnowledgeLobe, KnowledgeEntry};
 pub use execution_lobe::{ExecutionLobe, Task, TaskStep};
+pub use sandbox_lobe::{SandboxSession, SandboxFile, SandboxPatch};
+pub use meta_evolution_lobe::{MetaEvolutionLobe, EvolutionProposal, FileChange};
 
 pub mod nav_lobe;
 
@@ -85,6 +92,7 @@ pub struct Cortex<R: Reasoner = NullReasoner> {
     pub conduit: Conduit,
     pub memory: MemoryLobe,
     pub knowledge: KnowledgeLobe,
+    pub sandbox: SandboxSession,
 }
 
 impl<R: Reasoner> Cortex<R> {
@@ -95,6 +103,7 @@ impl<R: Reasoner> Cortex<R> {
             conduit,
             memory: MemoryLobe::new(),
             knowledge: KnowledgeLobe::new(),
+            sandbox: SandboxSession::new(),
         }
     }
 
@@ -123,10 +132,10 @@ impl<R: Reasoner> Cortex<R> {
     }
 
     /* --------------------------------------------------------------------------------------------
-       AXIOM THREE — FULL COGNITIVE PIPELINE
+       AXIOM THREE / FOUR — FULL COGNITIVE PIPELINE
        -------------------------------------------------------------------------------------------- */
 
-    /// Axiom Three: full cognitive processing pipeline.
+    /// Axiom Three/Four: full cognitive processing pipeline.
     /// Returns a human-readable response string.
     pub fn process(&mut self, raw: &str) -> String {
         log_info(&format!("Cortex::process received: {}", raw));
@@ -254,9 +263,46 @@ impl<R: Reasoner> Cortex<R> {
             }
 
             /* ------------------------------------------------------------------------------------
-               EVOLUTION — Architectural Proposals
+               EVOLUTION — Architectural Proposals (Axiom Four)
                ------------------------------------------------------------------------------------ */
-            "evolution" => EvolutionLobe::propose_evolution(&plan.intent),
+            "evolution" => {
+                let proposal = MetaEvolutionLobe::generate_proposal(&plan.intent);
+                MetaEvolutionLobe::describe_proposal(&proposal)
+            }
+
+            /* ------------------------------------------------------------------------------------
+               SANDBOX — Self‑Modification Workspace Introspection
+               ------------------------------------------------------------------------------------ */
+            "sandbox" => {
+                let cmd = plan.intent.split_whitespace().skip(1).collect::<Vec<_>>().join(" ");
+                match cmd.as_str() {
+                    "diff" => self.sandbox.diff(),
+                    "snapshot" => {
+                        let files = self.sandbox.snapshot();
+                        if files.is_empty() {
+                            "Sandbox is empty.".to_string()
+                        } else {
+                            let mut out = String::new();
+                            for file in files {
+                                out.push_str(&format!("File: {}\n", file.path));
+                                out.push_str("  --- content (truncated) ---\n");
+                                let preview: String = file
+                                    .content
+                                    .lines()
+                                    .take(8)
+                                    .collect::<Vec<_>>()
+                                    .join("\n");
+                                out.push_str(&preview);
+                                out.push_str("\n\n");
+                            }
+                            out
+                        }
+                    }
+                    _ => {
+                        "Sandbox commands:\n  sandbox diff\n  sandbox snapshot".to_string()
+                    }
+                }
+            }
 
             /* ------------------------------------------------------------------------------------
                PLANNING — Multi-Step Plans
@@ -308,3 +354,4 @@ impl<R: Reasoner> Cortex<R> {
         }
     }
 }
+```
