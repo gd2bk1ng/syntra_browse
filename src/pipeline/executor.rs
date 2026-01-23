@@ -1,6 +1,10 @@
 // file: src/pipeline/executor.rs
 // This is a non-intelligent pipeline executor.
 
+// No actors yet.
+// No feedback yet.
+// Just proof of flow.
+
 use crate::intent::pipeline_map::Pipeline;
 
 pub fn execute_pipeline(pipeline: Pipeline) {
