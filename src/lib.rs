@@ -34,6 +34,18 @@
 
 #![deny(unsafe_code)]
 #![warn(missing_docs)]
+#![deny(missing_docs)]
+
+//! # Syntra Browser Library
+//!
+//! This crate provides the core API for the Syntra Browser project.
+//! It includes modules for AGI-driven intent browsing, rendering, and more.
+//!
+//! # Examples
+//!
+//! ```rust
+//! // Example usage here
+//! ```
 
 //! # Syntra Library API
 //!
