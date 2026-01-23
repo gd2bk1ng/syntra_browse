@@ -110,6 +110,13 @@ fn main() {
         );
     }
 
+ // ------------------------------------------------------------
+// OPTION C — CLI Cognitive Inspection
+// ------------------------------------------------------------
+
+inspect_context(&cognitive_context, 20);
+
+
     println!(
         "Total cognitive events recorded: {}",
         cognitive_context.total_events()
