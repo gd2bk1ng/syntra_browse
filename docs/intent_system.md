@@ -1,25 +1,33 @@
 # INTENT SYSTEM
 
-An intent in Syntra is a declarative goal expressed
-without prescribing execution.
+An intent in Syntra is a declarative expression of purpose.
 
-Intent exists to decouple:
-• What is desired
-• From how it is achieved
-• And when it is executed
+It defines what is desired, not how it is achieved.
 
-## Current State
+Intent exists to prevent premature coupling between
+goals and mechanisms.
+
+## Properties of Intent
+
+• Declarative, not imperative
+• Structured, not ambiguous
+• Observable, not implicit
+• Non-executable by default
+
+## Current Implementation
 
 • Intent ontology is defined and versioned
-• Intents are human-authored
-• Intents are not yet executable artifacts
+• Intents exist as formal artifacts
+• Intents are not yet executable entities
 
-## Roadmap Integration
+## Planned Integration
 
 Intents will be:
 • Parsed into structured representations
-• Resolved into pipeline templates
-• Bound to actor graphs at runtime
+• Bound to pipeline templates
+• Resolved into actor graphs
 
-This separation is intentional.
-Syntra refuses to collapse desire into mechanism prematurely.
+Until that binding exists, intent remains descriptive.
+
+Syntra does not collapse desire into action
+without an explicit cognitive step.
