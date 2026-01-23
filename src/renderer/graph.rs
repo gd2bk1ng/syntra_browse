@@ -1,38 +1,58 @@
 /* ================================================================================================
-   SYNTRA BROWSER — AXIOM THREE
+   SYNTRA BROWSER - AXIOM THREE
    ------------------------------------------------------------------------------------------------
+   SIGIL:
+         .\s/.
+        :: S ::
+         '/s\'
+
    File:        src/renderer/graph.rs
-   Module:      Render Graph
+   Module:      Render Graph Skeleton
    Author:      Alexandr Roussinov (gd2bk1ng)
-   Description: Placeholder for the RenderGraph structure representing a GPU rendering pipeline
-                graph. This will evolve to support complex frame composition and resource management.
+   Description: Minimal RenderGraph abstraction for future GPU-accelerated rendering in Syntra.
 
    Notes:
-     Currently minimal, designed for future expansion.
+     - Axiom Three defines nodes and passes conceptually.
    ================================================================================================ */
 
-/// A simple placeholder struct representing a render graph.
-///
-/// In future, this will contain nodes, resources, and commands for GPU rendering.
-#[derive(Debug, Default)]
+/// Represents a GPU rendering pipeline graph composed of render nodes.
+#[derive(Debug, Clone, Default)]
 pub struct RenderGraph {
-    /// Name or identifier of this render graph.
-    pub name: String,
+    /// Collection of render nodes that form the graph.
+    pub nodes: Vec<RenderNode>,
 }
 
 impl RenderGraph {
-    /// Creates a new empty RenderGraph with the given name.
-    pub fn new(name: impl Into<String>) -> Self {
-        Self { name: name.into() }
+    /// Creates a new empty RenderGraph.
+    pub fn new() -> Self {
+        Self {
+            nodes: Vec::new(),
+        }
     }
 
-    /// Adds a render pass or node to the graph.
+    /// Adds a render node to the graph.
     ///
-    /// # Note
+    /// # Parameters
     ///
-    /// Currently a stub; to be implemented.
-    pub fn add_pass(&mut self, _pass_name: &str) {
-        // Placeholder for adding a render pass to the graph.
-        println!("Adding render pass to graph '{}': {}", self.name, _pass_name);
+    /// - `node`: The `RenderNode` to add.
+    pub fn add_node(&mut self, node: RenderNode) {
+        self.nodes.push(node);
+        println!("Added node '{}' to RenderGraph.", node.name);
+    }
+}
+
+/// Represents a single node or pass in the render graph.
+///
+/// Each node may correspond to a rendering pass or stage.
+#[derive(Debug, Clone)]
+pub struct RenderNode {
+    /// Name or identifier of the render node.
+    pub name: String,
+}
+
+impl RenderNode {
+    /// Creates a new RenderNode with the given name.
+    pub fn new(name: impl Into<String>) -> Self {
+        Self { name: name.into() }
     }
 }
