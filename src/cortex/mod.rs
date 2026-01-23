@@ -9,11 +9,11 @@
    File:        src/cortex/mod.rs
    Module:      Cortex (Cognitive Orchestration Layer)
    Author:      Alexandr Roussinov (gd2bk1ng)
-   Description: The Cortex is Syntra’s high‑level cognitive conductor. It integrates the AGI Core
+   Description: The Cortex is Syntra’s high-level cognitive conductor. It integrates the AGI Core
                 (intent semantics), the Conduit (message bus), and all cognitive lobes introduced
                 across Axiom Zero → Axiom Four. The Cortex receives raw user input, refines it
                 through the Reasoner, routes it to the appropriate lobe, stores memory, manages
-                a self‑modification sandbox, and returns structured responses.
+                a self-modification sandbox, and returns structured responses.
 
    Overview:
      • Cortex<R>        — Generic orchestrator over any Reasoner implementation.
@@ -31,22 +31,18 @@
      • Reflection Lobe    — Self-analysis and introspection.
      • Plan Lobe          — Multi-step planning.
      • Evolution Lobe     — Architectural improvement narratives.
-     • Sandbox Lobe       — In‑memory self‑modification workspace (Axiom Four).
-     • Meta‑Evolution     — Higher‑order evolution proposals (Axiom Four).
+     • Sandbox Lobe       — In-memory self-modification workspace (Axiom Four).
+     • Meta-Evolution     — Higher-order evolution proposals (Axiom Four).
      • Maintenance Lobe   — System health & recovery knowledge (Axiom Four).
      • nav_lobe           — UI/navigation lobe for future browser surfaces.
 
    Notes:
      - The Cortex is intentionally modular and ASCII-safe.
      - It is the central nervous system of Syntra’s cognition.
-     - Axiom Four introduces a safe self‑modification sandbox; no direct writes to disk occur here.
+     - Axiom Four introduces a safe self-modification sandbox; no direct writes to disk occur here.
    ================================================================================================ */
 
 #![allow(dead_code)]
-
-/* ------------------------------------------------------------------------------------------------
-   MODULE DECLARATIONS
-   ------------------------------------------------------------------------------------------------ */
 
 pub mod request_lobe;
 pub mod memory_lobe;
@@ -60,6 +56,7 @@ pub mod execution_lobe;
 pub mod sandbox_lobe;
 pub mod meta_evolution_lobe;
 pub mod maintenance_lobe;
+pub mod nav_lobe;
 
 pub use request_lobe::{Request, RequestKind, RequestLobe};
 pub use memory_lobe::{MemoryLobe, MemoryEntry};
@@ -74,21 +71,18 @@ pub use sandbox_lobe::{SandboxSession, SandboxFile, SandboxPatch};
 pub use meta_evolution_lobe::{MetaEvolutionLobe, EvolutionProposal, FileChange};
 pub use maintenance_lobe::MaintenanceLobe;
 
-pub mod nav_lobe;
-
-/* ------------------------------------------------------------------------------------------------
-   IMPORTS
-   ------------------------------------------------------------------------------------------------ */
-
 use crate::agi_core::{Intent, Reasoner, NullReasoner, IntentPlan};
 use crate::conduit::{Conduit, ConduitMessage};
 use crate::utilities::log_info;
+use crate::terminal;
 
-/* ------------------------------------------------------------------------------------------------
-   CORTEX STRUCTURE
-   ------------------------------------------------------------------------------------------------ */
+/// Simple placeholder for a future Cortex run loop.
+pub fn run() {
+    println!("🧠 Cortex: starting cognitive orchestration loop (stub)");
+    terminal::print_terminal_hint();
+}
 
-/// The Cortex orchestrates high‑level system behavior, routing intents and coordinating
+/// The Cortex orchestrates high-level system behavior, routing intents and coordinating
 /// subsystems such as the renderer, AGI core, and all cognitive lobes.
 pub struct Cortex<R: Reasoner = NullReasoner> {
     pub reasoner: R,
@@ -174,13 +168,13 @@ impl<R: Reasoner> Cortex<R> {
                     .collect::<Vec<_>>()
                     .join(" ");
                 match arg.as_str() {
-                    "rust"       => MaintenanceLobe::rust_toolchain(),
-                    "cargo"      => MaintenanceLobe::cargo_cache(),
-                    "git"        => MaintenanceLobe::git_recovery(),
-                    "shell"      => MaintenanceLobe::shell_integrity(),
-                    "reinstall"  => MaintenanceLobe::full_reinstall(),
-                    "full"       => MaintenanceLobe::all(),
-                    _            => MaintenanceLobe::overview(),
+                    "rust" => MaintenanceLobe::rust_toolchain(),
+                    "cargo" => MaintenanceLobe::cargo_cache(),
+                    "git" => MaintenanceLobe::git_recovery(),
+                    "shell" => MaintenanceLobe::shell_integrity(),
+                    "reinstall" => MaintenanceLobe::full_reinstall(),
+                    "full" => MaintenanceLobe::all(),
+                    _ => MaintenanceLobe::overview(),
                 }
             }
 
@@ -320,7 +314,7 @@ impl<R: Reasoner> Cortex<R> {
             }
 
             /* ------------------------------------------------------------------------------------
-               SANDBOX — Self‑Modification Workspace Introspection
+               SANDBOX — Self-Modification Workspace Introspection
                ------------------------------------------------------------------------------------ */
             "sandbox" => {
                 // Expect: "sandbox diff" or "sandbox snapshot"
@@ -353,42 +347,32 @@ impl<R: Reasoner> Cortex<R> {
                             out
                         }
                     }
-                    _ => {
-                        "Sandbox commands:\n  sandbox diff\n  sandbox snapshot".to_string()
-                    }
+                    _ => "Sandbox commands:\n  sandbox diff\n  sandbox snapshot".to_string(),
                 }
             }
 
             /* ------------------------------------------------------------------------------------
                PLANNING — Multi-Step Plans
                ------------------------------------------------------------------------------------ */
-            "planning" => {
-                PlanLobe::generate_plan(&plan.intent)
-            }
+            "planning" => PlanLobe::generate_plan(&plan.intent),
 
             /* ------------------------------------------------------------------------------------
                SELF-REFLECTION — Introspection
                ------------------------------------------------------------------------------------ */
-            "self_reflection" => {
-                ReflectionLobe::self_reflect()
-            }
+            "self_reflection" => ReflectionLobe::self_reflect(),
 
             /* ------------------------------------------------------------------------------------
                FREEFORM — General Reflection
                ------------------------------------------------------------------------------------ */
-            "freeform" => {
-                ReflectionLobe::reflect(&plan.intent)
-            }
+            "freeform" => ReflectionLobe::reflect(&plan.intent),
 
             /* ------------------------------------------------------------------------------------
                FALLBACK
                ------------------------------------------------------------------------------------ */
-            other => {
-                format!(
-                    "I classified this as '{}' but have no handler yet.\nPlan: {}",
-                    other, plan.plan
-                )
-            }
+            other => format!(
+                "I classified this as '{}' but have no handler yet.\nPlan: {}",
+                other, plan.plan
+            ),
         };
 
         // Store response in memory.
