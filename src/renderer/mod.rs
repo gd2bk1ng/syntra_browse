@@ -20,6 +20,8 @@
 
 #![allow(dead_code)]
 
+pub mod backend_example;
+
 /// Submodule defining the render graph structure and logic.
 pub mod graph;
 
