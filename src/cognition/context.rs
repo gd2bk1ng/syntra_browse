@@ -1,4 +1,11 @@
 // file: src/cognition/context.rs
+// Deterministic
+// Observable
+// Honest
+// No autonomy
+
+//This is not learning.
+//This is recorded experience.
 
 use std::time::{SystemTime, Duration};
 
