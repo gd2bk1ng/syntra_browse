@@ -16,7 +16,15 @@
      - Axiom Three focuses on clarity of architecture over implementation detail.
    ================================================================================================ */
 
+pub mod ui;
+
 pub fn print_syntra_browser_overview() {
+   println!("Syntra Browser — AGI-native browser architecture (Axiom Three)");
+    println!("UI:");
+    println!("  • Winit window");
+    println!("  • GPU-accelerated pixel buffer");
+    println!("  • Tab strip + address bar (coming)");
+    println!("  • AGI-native UI overlays (future)");
     println!("Syntra Browser — AGI-native browser architecture (Axiom Three)");
     println!("Layers:");
     println!("  • Core runtime: Syntra VM / JIT, actor scheduler, tensor engine");
@@ -27,3 +35,6 @@ pub fn print_syntra_browser_overview() {
     println!("  • ML/AGI integration: differentiable layout, predictive rendering");
     println!("  • Extensions: Syntra Apps & plugins written in Syntra Language");
 }
+
+
+
