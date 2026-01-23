@@ -1,32 +1,42 @@
 # THE COGNITIVE LOOP
 
-Syntra’s architecture is organized around a single invariant:
+Syntra is organized around a single invariant:
 
-Cognition is a loop, not a function.
+Cognition is not a function.
+It is a loop.
 
-The loop consists of five phases:
+The Syntra cognitive loop consists of five phases:
 
 1. Intent Declaration
-   Intents are structured descriptions of desired outcomes.
-   They are not commands, and they do not imply implementation.
+   Intents describe desired outcomes without prescribing
+   implementation, timing, or mechanism.
 
 2. Pipeline Resolution
-   Intents are translated into staged execution pipelines.
-   Each stage represents a transformation of context.
+   Intents are transformed into structured execution plans
+   composed of ordered reasoning or action stages.
 
 3. Actor Execution
-   Pipelines are executed by autonomous actors scheduled
-   by the runtime kernel.
+   Pipelines are executed by autonomous actors under
+   deterministic scheduling control.
 
 4. Observation
    Execution is continuously observed through diagnostics,
    tracing, and logging.
 
 5. Context Update
-   Observations are recorded into a cognitive context,
-   enabling future introspection and adaptation.
+   Observations are recorded into a shared cognitive context
+   for future introspection and adaptation.
 
-At Axiom Zero, phases 1, 3, and 4 are operational.
-Phases 2 and 5 are instantiated conceptually and under construction.
+## Current State (Axiom Zero)
 
-This loop is the contract Syntra enforces on itself.
+Operational:
+• Intent declaration (human-authored)
+• Actor execution
+• Observation
+
+Instantiated but non-executing:
+• Pipeline resolution
+• Context propagation
+
+The loop is defined before it is automated.
+This is a design constraint, not an omission.
