@@ -2,18 +2,27 @@
 
 Observation is a first-class concern in Syntra.
 
-The system is designed to be:
-• Observable before intelligent
-• Inspectable before autonomous
+The system is designed to be observable
+before it is intelligent.
 
-Diagnostics currently provide:
+## Current Capabilities
+
 • Execution tracing
-• Scheduling visibility
-• Failure reporting
+• Scheduler visibility
+• Failure and anomaly reporting
 
-These signals will later feed:
+## Purpose
+
+Diagnostics exist to:
+• Expose internal behavior
+• Enable debugging
+• Prevent hidden state
+
+## Future Integration
+
+Observed signals will later feed:
 • Cognitive context updates
-• Confidence scoring
+• Confidence estimation
 • Adaptive behavior
 
-Introspection begins with honesty.
+Introspection begins with visibility.
