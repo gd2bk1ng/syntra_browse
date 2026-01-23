@@ -4,6 +4,7 @@ Pipelines represent structured reasoning and execution flows.
 
 A pipeline is composed of ordered stages.
 Each stage:
+
 • Consumes context
 • Produces artifacts or decisions
 • Emits observability signals
@@ -12,12 +13,17 @@ Each stage:
 
 At Axiom Zero:
 • Pipelines exist as blueprints
-• Execution is handled directly by actors
+• Actors execute responsibilities directly
 
-Future phases introduce:
-• A pipeline executor
-• Stage-level arbitration
-• Dynamic pipeline reconfiguration
+This separation ensures that reasoning semantics
+are understood before automation.
 
-The blueprint phase exists to ensure that
-execution semantics are understood before automation.
+## Future Execution Model
+
+A pipeline executor will:
+• Instantiate stages dynamically
+• Route context between stages
+• Adapt execution based on observation
+
+Blueprints exist to constrain complexity,
+not to delay execution indefinitely.
