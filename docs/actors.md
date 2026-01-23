@@ -1,21 +1,31 @@
 # ACTORS
 
-Actors are the fundamental units of action in Syntra.
+Actors are the fundamental units of execution in Syntra.
 
-An actor:
+An actor is not a thread.
+An actor is not a task.
+An actor is a bounded responsibility.
+
+## Actor Properties
+
 • Owns its execution context
-• Operates autonomously
+• Executes autonomously
 • Is scheduled deterministically
-• Can be observed externally
+• Can be externally observed
 
-Actors do not represent threads or tasks.
-They represent bounded responsibility.
+## Current Role
 
 At Axiom Zero:
 • Actors execute runtime responsibilities
-• Actors do not yet negotiate intent
+• Actors do not negotiate intent
+• Actors do not modify themselves
 
-Future phases introduce:
+## Future Role
+
+Later phases introduce:
 • Intent-bound actors
 • Actor collectives
-• Self-modifying actor graphs
+• Dynamic actor graphs
+
+Actors are designed to act first,
+and reason later.
