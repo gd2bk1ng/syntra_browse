@@ -18,6 +18,8 @@
      - No learning, no adaptation, no autonomy.
    ================================================================================================ */
 
+use syntra::cli::inspect::inspect_context;
+
 use syntra::cognition::context::CognitiveContext;
 use syntra::cognition::observation::ObservationEmitter;
 
@@ -29,7 +31,7 @@ use syntra::pipeline::executor::execute_pipeline_with_actor;
 fn main() {
     env_logger::init();
 
-    println!("🧪 Syntra Trials — Axiom Three");
+    println!("Syntra Trials — Axiom Three");
     println!("Executable intent with actor-backed pipelines");
 
     let mut cognitive_context = CognitiveContext::new();
