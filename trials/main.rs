@@ -34,6 +34,10 @@ fn main() {
     println!("Syntra Trials — Axiom Three");
     println!("Executable intent with actor-backed pipelines");
 
+    // ------------------------------------------------------------
+    // Cognitive context initialization
+    // ------------------------------------------------------------
+
     let mut cognitive_context = CognitiveContext::new();
     let mut observer = ObservationEmitter::new(&mut cognitive_context);
 
@@ -45,7 +49,7 @@ fn main() {
     );
 
     // ------------------------------------------------------------
-    // OPTION A + D — Intent → Pipeline → Actor-backed Execution
+    // Intent → Pipeline → Actor-backed Execution
     // ------------------------------------------------------------
 
     let intent = Intent::RunTrial;
@@ -69,24 +73,19 @@ fn main() {
     let execution_result = execute_pipeline_with_actor(&pipeline, &mut observer);
 
     // ------------------------------------------------------------
-    // OPTION C — Failure-aware routing (non-adaptive)
+    // Failure-aware routing (non-adaptive)
     // ------------------------------------------------------------
 
-    if !execution_result {
-        observer.emit(
-            "pipeline_system",
-            "pipeline_failed",
-            None,
-            false,
-        );
-    } else {
-        observer.emit(
-            "pipeline_system",
-            "pipeline_succeeded",
-            None,
-            true,
-        );
-    }
+    observer.emit(
+        "pipeline_system",
+        if execution_result {
+            "pipeline_succeeded"
+        } else {
+            "pipeline_failed"
+        },
+        None,
+        execution_result,
+    );
 
     observer.emit(
         "trial_executor",
@@ -96,26 +95,10 @@ fn main() {
     );
 
     // ------------------------------------------------------------
-    // OPTION B — Cognitive inspection
+    // CLI Cognitive Inspection (single inspection surface)
     // ------------------------------------------------------------
 
-    println!("--- Cognitive Context Inspection ---");
-    for record in cognitive_context.recent(10) {
-        println!(
-            "[{:?}] actor={} event={} success={}",
-            record.timestamp,
-            record.actor,
-            record.event,
-            record.success
-        );
-    }
-
- // ------------------------------------------------------------
-// OPTION C — CLI Cognitive Inspection
-// ------------------------------------------------------------
-
-inspect_context(&cognitive_context, 20);
-
+    inspect_context(&cognitive_context, 20);
 
     println!(
         "Total cognitive events recorded: {}",
