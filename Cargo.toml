@@ -1,10 +1,10 @@
 [package]
 name = "syntra_browse"
-version = "0.1.0"
+version = "0.3.0"
 edition = "2024"
 authors = ["Alexandr Roussinov <gd2bk1ng@proton.me>"]
 license = "MIT"
-description = "Syntra Browser — Axiom Zero: An AGI-driven intent browser."
+description = "Syntra Browser — Axiom Three: An AGI-driven intent browser."
 readme = "README.md"
 repository = "https://github.com/gd2bk1ng/syntra_browse"
 homepage = "https://github.com/gd2bk1ng/syntra_browse"
@@ -20,7 +20,7 @@ name = "syntra"
 path = "src/lib.rs"
 
 # ================================================================================================
-# Binary Targets — main runtime + experimental sandbox
+# Binary Targets — main runtime + experimental sandbox + compiler demo
 # ================================================================================================
 [[bin]]
 name = "syntra"
@@ -29,6 +29,10 @@ path = "src/main.rs"
 [[bin]]
 name = "syntra_trials"
 path = "trials/main.rs"
+
+[[bin]]
+name = "syntra_compiler_demo"
+path = "src/bin/syntra_compiler_demo.rs"
 
 # ================================================================================================
 # Dependencies — core engine, rendering, AGI, networking, diagnostics
