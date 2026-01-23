@@ -1,28 +1,29 @@
 # AXIOM ZERO
 
-Axiom Zero is the foundational state of the Syntra system:
-the moment before intent becomes execution,
-and execution becomes cognition.
+Axiom Zero is the foundational state of the Syntra system.
 
-It does not claim intelligence.
-It establishes the conditions under which intelligence
-can emerge, be observed, and be shaped.
+It represents the moment before intent becomes execution,
+and before execution becomes cognition.
 
-Syntra, at Axiom Zero, is a cognitive runtime kernel.
+Syntra, at Axiom Zero, is not an intelligent system.
+It is a cognitive runtime kernel designed to make
+intelligence possible without pretending it already exists.
 
-It is capable of:
-• Receiving structured intent
-• Scheduling autonomous actors
-• Executing deterministic pipelines
-• Observing its own internal behavior
+Axiom Zero establishes:
 
-It is not yet capable of:
-• Arbitrating conflicting intents
-• Maintaining long-term cognitive memory
-• Adapting its behavior autonomously
+• A deterministic runtime
+• Autonomous execution units
+• Intent as a first-class concept
+• Full internal observability
 
-These limitations are known, documented, and intentional.
+What it does not establish is autonomy, learning, or agency.
+Those emerge later, or not at all.
 
-Axiom Zero exists to ensure that every future layer of
-intelligence rests on a system that is inspectable,
-composable, and honest about its state.
+This restraint is intentional.
+
+Axiom Zero exists so that every future layer of intelligence
+rests on a system that is inspectable, composable,
+and truthful about its capabilities.
+
+Nothing in Syntra is allowed to claim more
+than it can justify at runtime.
