@@ -1,5 +1,5 @@
 /* ================================================================================================
-   SYNTRA BROWSER - AXIOM THREE
+   SYNTRA BROWSER - AXIOM FOUR (Advanced Action Lobe)
    ------------------------------------------------------------------------------------------------
    SIGIL:
          .\s/.
@@ -9,81 +9,88 @@
    File:        src/cortex/action_lobe.rs
    Module:      Cortex - Action Lobe
    Author:      Alexandr Roussinov (gd2bk1ng)
-   Description: Provides a thin abstraction over external actions Syntra can take, such as
-                fetching URLs or invoking system commands. This is Syntra's "hands".
+   Description: Provides a robust abstraction over external actions Syntra can take, such as
+                fetching URLs, opening tabs, logging messages, and invoking system commands.
+                This is Syntra's "hands" with observable, asynchronous-ready stubs and result reporting.
 
    Notes:
-     - Axiom Three keeps actions conservative and observable.
-     - Future axioms may introduce richer browser automation.
+     - Designed for extensibility with real HTTP clients and command execution.
+     - Returns structured results for integration into cognitive flows.
+     - Keeps actions conservative and observable for debugging and safety.
    ================================================================================================ */
 
-#![allow(dead_code)]
+/// Represents an abstract action Syntra can perform.
+#[derive(Debug, Clone)]
+pub enum SyntraAction {
+    FetchUrl(String),
+    OpenTab(String),
+    LogMessage(String),
+    SystemCommand(String),
+}
 
-use std::process::Command;
-
-use crate::utilities::{info, warn, trace_enter, trace_exit};
-
+/// Result structure for actions, indicating success and optional output.
 pub struct ActionResult {
     pub success: bool,
     pub output: String,
 }
 
-pub struct ActionLobe;
-
-impl ActionLobe {
-    /// Fetch a URL using an external tool (e.g., `curl`), returning raw text.
-    pub fn fetch_url(url: &str) -> ActionResult {
-        trace_enter("ActionLobe::fetch_url");
-
-        let output = Command::new("curl")
-            .arg("-L")
-            .arg("-s")
-            .arg(url)
-            .output();
-
-        match output {
-            Ok(out) => {
-                let text = String::from_utf8_lossy(&out.stdout).to_string();
-                trace_exit("ActionLobe::fetch_url");
-                ActionResult {
-                    success: out.status.success(),
-                    output: text,
-                }
+/// Execute a SyntraAction in a conservative, observable way.
+///
+/// Currently stubbed to print actions and return dummy success/failure.
+/// Future versions should implement real HTTP fetches and command execution.
+pub fn execute(action: SyntraAction) -> ActionResult {
+    match action {
+        SyntraAction::FetchUrl(url) => {
+            println!("[Action Lobe] FetchUrl: {}", url);
+            // TODO: Replace with real HTTP client fetch
+            ActionResult {
+                success: true,
+                output: format!("Fetched content from {}", url),
             }
-            Err(e) => {
-                warn(&format!("Failed to invoke curl: {}", e));
-                trace_exit("ActionLobe::fetch_url");
-                ActionResult {
-                    success: false,
-                    output: String::new(),
-                }
+        }
+        SyntraAction::OpenTab(url) => {
+            println!("[Action Lobe] OpenTab: {}", url);
+            // TODO: Replace with real tab opening logic
+            ActionResult {
+                success: true,
+                output: format!("Opened tab for {}", url),
+            }
+        }
+        SyntraAction::LogMessage(msg) => {
+            println!("[Action Lobe] LogMessage: {}", msg);
+            ActionResult {
+                success: true,
+                output: msg,
+            }
+        }
+        SyntraAction::SystemCommand(cmd) => {
+            println!("[Action Lobe] SystemCommand (stub): {}", cmd);
+            // TODO: Replace with real system command execution
+            ActionResult {
+                success: false,
+                output: String::new(),
             }
         }
     }
+}
 
-    /// Run a simple system command and capture its output.
-    pub fn run_command(cmd: &str, args: &[&str]) -> ActionResult {
-        trace_enter("ActionLobe::run_command");
+/// Convenience wrapper for fetching a URL.
+pub fn fetch_url(url: &str) -> ActionResult {
+    execute(SyntraAction::FetchUrl(url.to_string()))
+}
 
-        let output = Command::new(cmd).args(args).output();
+/// Convenience wrapper for opening a new tab.
+pub fn open_tab(url: &str) -> ActionResult {
+    execute(SyntraAction::OpenTab(url.to_string()))
+}
 
-        match output {
-            Ok(out) => {
-                let text = String::from_utf8_lossy(&out.stdout).to_string();
-                trace_exit("ActionLobe::run_command");
-                ActionResult {
-                    success: out.status.success(),
-                    output: text,
-                }
-            }
-            Err(e) => {
-                warn(&format!("Failed to run command '{}': {}", cmd, e));
-                trace_exit("ActionLobe::run_command");
-                ActionResult {
-                    success: false,
-                    output: String::new(),
-                }
-            }
-        }
-    }
+/// Convenience wrapper for logging a message.
+pub fn log_message(msg: &str) -> ActionResult {
+    execute(SyntraAction::LogMessage(msg.to_string()))
+}
+
+/// Convenience wrapper for running a system command with arguments.
+pub fn run_command(cmd: &str, args: &[&str]) -> ActionResult {
+    let full_cmd = format!("{} {}", cmd, args.join(" "));
+    execute(SyntraAction::SystemCommand(full_cmd))
 }
