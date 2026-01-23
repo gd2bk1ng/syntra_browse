@@ -1,20 +1,24 @@
 # SYSTEM STATUS — AXIOM ZERO
 
-Operational:
+## Operational
+
 ✔ Runtime kernel
 ✔ Actor scheduler
 ✔ Diagnostics & tracing
 ✔ Trial execution framework
 
-Instantiated (non-executing):
+## Instantiated (Non-Executing)
+
 ◻ Intent ontology
 ◻ Cognitive pipeline
-◻ Context propagation
+◻ Cognitive context
 
-Explicitly Out of Scope (for now):
+## Explicitly Out of Scope
+
 ✖ Learning
 ✖ Autonomy
-✖ External claims of intelligence
+✖ Claims of intelligence
 
 Syntra is not unfinished.
+
 It is deliberately staged.
