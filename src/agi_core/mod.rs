@@ -25,12 +25,17 @@
 pub mod intent;
 pub mod reasoner;
 pub mod ecosystem;
+pub mod self_mod;
 
 pub use intent::{
     classify_domain, escape_json, multi_step_plan, plan_for_domain, Intent, IntentLog, IntentPlan,
 };
 pub use reasoner::{NullReasoner, ProbReasoner, Reasoner};
 pub use ecosystem::{EcosystemLobe, EcosystemModel};
+pub use self_mod::{
+    ChangeKind, ChangeProposal, CircularDependency, DeadCodeReport, RefactorSuggestion,
+    SelfModEngine,
+};
 
 /* ------------------------------------------------------------------------------------------------
    THOUGHT STREAM (Cortex-Level)
