@@ -1,6 +1,11 @@
 /* ================================================================================================
    SYNTRA BROWSER — BEHAVIORAL MONITOR MODULE
    ------------------------------------------------------------------------------------------------
+   SIGIL:
+         .\s/.
+        :: S ::
+         '/s\'
+
    File:        src/browser/behavioral_monitor.rs
    Module:      Behavioral Authentication
    Author:      Alexandr Roussinov (gd2bk1ng)
