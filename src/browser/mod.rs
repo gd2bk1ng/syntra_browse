@@ -16,7 +16,29 @@
      - Axiom Three focuses on clarity of architecture over implementation detail.
    ================================================================================================ */
 
+/* ================================================================================================
+   SYNTRA BROWSER - AXIOM THREE
+   ------------------------------------------------------------------------------------------------
+   SIGIL:
+         .\s/.
+        :: S ::
+         '/s\'
+
+   File:        src/browser/mod.rs
+   Module:      Syntra Browser Skeleton
+   Author:      Alexandr Roussinov (gd2bk1ng)
+   Description: High-level browser module wiring together the UI, tab strip, address bar, renderer,
+                and AGI overlay.
+
+   Notes:
+     - Axiom Three focuses on clarity of architecture over implementation detail.
+   ================================================================================================ */
+
 pub mod ui;
+pub mod tabs;
+pub mod address_bar;
+pub mod renderer;
+pub mod agi_overlay;
 
 pub fn print_syntra_browser_overview() {
    println!("Syntra Browser — AGI-native browser architecture (Axiom Three)");
