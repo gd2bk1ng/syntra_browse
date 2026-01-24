@@ -7,49 +7,60 @@
          '/s\'
 
    File:        src/ui/lock_screen.rs
-   Module:      UI Lock Screen Component
+   Module:      Async UI Lock Screen Component with Session Unlock Flow
    Author:      Alexandr Roussinov (gd2bk1ng)
-   Description: Provides a lock screen UI displayed when behavioral monitoring detects
-                unauthorized access. Prompts the user to re-authenticate using cryptographic
-                challenge-response for secure unlocking.
+   Description: Displays a lock screen, prompts for cryptographic signature re-authentication,
+                unlocks the session on success, and triggers adaptive learning update.
    ================================================================================================ */
 
-use std::io::{self, Write};
+use tokio::io::{self, AsyncBufReadExt, AsyncWriteExt, BufReader};
 use ring::signature::UnparsedPublicKey;
 use ring::signature::ED25519;
 use data_encoding::BASE64;
 
+use crate::browser::session_manager::SessionManager;
+use crate::agi_core::behavioral_profile::{CreatorProfile, TypingPattern};
+
 const CREATOR_PUBLIC_KEY_BASE64: &str = "YOUR_BASE64_ENCODED_PUBLIC_KEY_HERE";
 
-/// Displays a simple terminal lock screen and prompts for cryptographic signature re-authentication.
-///
-/// Replace this with your actual UI framework code.
-pub fn show_lock_screen(challenge: &[u8]) {
-    println!("\n🔒 Session Locked due to inactivity or unauthorized access.");
-    println!("Please sign the following challenge to continue:\n");
+/// Shows the lock screen, prompts for signature asynchronously, verifies, unlocks session,
+/// and updates behavioral profile adaptively.
+pub async fn show_lock_screen(
+    challenge: &[u8],
+    session_manager: &SessionManager,
+    behavioral_monitor: &mut BehavioralMonitor,
+) {
+    println!("\n🔒 Session Locked. Please sign the following challenge to unlock:\n");
     println!("{}", BASE64.encode(challenge));
-    println!("\nEnter base64-encoded signature: ");
+    print!("Enter base64-encoded signature: ");
+    io::stdout().flush().await.unwrap();
 
-    io::stdout().flush().unwrap();
-
-    let mut signature_input = String::new();
-    if let Err(_) = io::stdin().read_line(&mut signature_input) {
+    let stdin = io::stdin();
+    let mut reader = BufReader::new(stdin);
+    let mut signature_b64 = String::new();
+    if let Err(_) = reader.read_line(&mut signature_b64).await {
         println!("Failed to read input. Try again.");
         return;
     }
-
-    let signature_b64 = signature_input.trim();
+    let signature_b64 = signature_b64.trim();
 
     if verify_signature(challenge, signature_b64) {
         println!("✅ Authentication successful. Unlocking session...");
-        // Call session unlock logic here
+        session_manager.unlock().await;
+
+        // Optional: Update behavioral profile adaptively after unlock
+        let live_pattern = behavioral_monitor.extract_typing_pattern();
+        behavioral_monitor.profile.adapt(&live_pattern, 0.05);
+        behavioral_monitor.profile.save().await;
+
+        println!("Behavioral profile updated. You may resume.");
     } else {
         println!("❌ Invalid signature. Session remains locked.");
         // Optionally retry or exit
     }
 }
 
-/// Verifies the signed challenge (nonce) from user input.
+/// Verifies the signed challenge.
 fn verify_signature(challenge: &[u8], signature_b64: &str) -> bool {
     let public_key_bytes = match BASE64.decode(CREATOR_PUBLIC_KEY_BASE64.as_bytes()) {
         Ok(bytes) => bytes,
