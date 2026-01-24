@@ -10,13 +10,14 @@
    Module:      AGI Core — Unified Cognition
    Author:      Alexandr Roussinov (gd2bk1ng)
    Description: Unified AGI Core for Syntra. Merges Axiom Three’s simple reasoning interface with
-                Axiom Five’s semantic intent engine. Provides a dual-interface Reasoner trait for
-                maximum compatibility and flexibility.
+                Axiom Five’s semantic intent engine and Axiom Six’s self-modification engine.
+                Provides a dual-interface Reasoner trait and a Cortex-level ThoughtStream.
 
    Overview:
      • intent.rs        — Intent, IntentPlan, classifier, planner, JSON escaping, IntentLog.
      • reasoner.rs      — Reasoner trait + NullReasoner / ProbReasoner implementations.
      • ecosystem.rs     — EcosystemLobe + EcosystemModel (structural health model).
+     • self_mod.rs      — SelfModEngine + change proposals, refactors, patch hints.
      • ThoughtStream    — Cortex-level thought stream built on IntentLog.
    ================================================================================================ */
 
@@ -33,8 +34,8 @@ pub use intent::{
 pub use reasoner::{NullReasoner, ProbReasoner, Reasoner};
 pub use ecosystem::{EcosystemLobe, EcosystemModel};
 pub use self_mod::{
-    ChangeKind, ChangeProposal, CircularDependency, DeadCodeReport, RefactorSuggestion,
-    SelfModEngine,
+    ChangeKind, ChangeProposal, CircularDependency, DeadCodeReport, EvolutionPlan,
+    RefactorSuggestion, SelfModEngine,
 };
 
 /* ------------------------------------------------------------------------------------------------
@@ -45,6 +46,11 @@ use intent::{IntentLog as CoreIntentLog, IntentPlan as CoreIntentPlan};
 
 /// Central thought stream for Syntra.
 /// Collects IntentPlan entries from the AGI Core and exposes them for introspection.
+///
+/// Design:
+///   - Read-only from the outside (no mutation without explicit push).
+///   - Bounded capacity to avoid unbounded memory growth.
+///   - Intended as a mirror of Syntra's recent "thoughts".
 #[derive(Debug)]
 pub struct ThoughtStream {
     log: CoreIntentLog,
