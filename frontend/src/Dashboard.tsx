@@ -46,7 +46,7 @@ const Dashboard: React.FC = () => {
   }, []);
 
   if (!progress) {
-    return <div>Loading Astra's learning progress...</div>;
+    return <div>Loading Syntra's learning progress...</div>;
   }
 
   const barData = [
