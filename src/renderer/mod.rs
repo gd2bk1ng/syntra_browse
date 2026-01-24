@@ -5,7 +5,9 @@
    Module:      Renderer (Visual Output Pipeline)
    Author:      Alexandr Roussinov (gd2bk1ng)
    Description: Rendering abstraction layer for Syntra. Defines core rendering traits,
-                a baseline NullRenderer, and GPU backend integration skeleton.
+                a baseline NullRenderer, and GPU backend integration skeleton. Also a High-level HTML
+                renderer skeleton was added. For now, it just draws a content area and a
+                placeholder page color.
 
    Overview:
      • Renderer trait — Unified interface for all rendering backends.
@@ -21,6 +23,38 @@
 #![allow(dead_code)]
 
 pub mod backend_example;
+
+pub struct HtmlRenderer {
+    current_url: Option<String>,
+}
+
+impl HtmlRenderer {
+    pub fn new() -> Self {
+        Self { current_url: None }
+    }
+
+    pub fn load_url(&mut self, url: &str) {
+        self.current_url = Some(url.to_string());
+    }
+
+    pub fn draw(&self, frame: &mut [u8], width: u32, height: u32) {
+        let content_top = 70;
+        for y in content_top..height {
+            for x in 0..width {
+                let idx = ((y * width + x) * 4) as usize;
+                frame[idx..idx + 4].copy_from_slice(&[15, 20, 35, 255]);
+            }
+        }
+
+        if self.current_url.is_some() {
+            let y = content_top + 20;
+            for x in 20..(width - 20) {
+                let idx = ((y * width + x) * 4) as usize;
+                frame[idx..idx + 4].copy_from_slice(&[60, 90, 160, 255]);
+            }
+        }
+    }
+}
 
 /// Submodule defining the render graph structure and logic.
 pub mod graph;
