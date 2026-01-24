@@ -1,5 +1,5 @@
 /* ================================================================================================
-   SYNTRA BROWSER - AXIOM ZERO
+   SYNTRA BROWSER — AXIOM FIVE
    ------------------------------------------------------------------------------------------------
    SIGIL:
          .\s/.
@@ -7,28 +7,24 @@
          '/s\'
 
    File:        src/agi_core/mod.rs
-   Module:      AGI Core - Root
+   Module:      AGI Core — Unified Cognition
    Author:      Alexandr Roussinov (gd2bk1ng)
-   Description: Root module for Syntra's AGI Core. Aggregates foundational cognitive primitives
-                including intent semantics, early-stage reasoning engines, and ecosystem models.
+   Description: Unified AGI Core for Syntra. Merges Axiom Three’s simple reasoning interface with
+                Axiom Five’s semantic intent engine. Provides a dual-interface Reasoner trait for
+                maximum compatibility and flexibility.
 
    Overview:
-     • Intent            - Lightweight representation of a cognitive intent.
-     • Reasoner          - Shared interface for all reasoning engines.
-     • NullReasoner      - No-op baseline reasoner for bootstrapping.
-     • HeuristicReasoner - Simple refinement engine for early experimentation.
-     • EcosystemLobe     - Describes a structural lobe in Syntra's filesystem.
-     • EcosystemModel    - High-level view of Syntra's ecosystem health.
-
-   Notes:
-     - This module anchors the AGI Core and should remain stable as cognition evolves.
-     - Ecosystem modeling is observational only in Axiom One (no self-modification).
+     • intent.rs   — Intent, IntentPlan, classifier, planner, JSON escaping.
+     • reasoner.rs — Reasoner trait + NullReasoner implementation.
    ================================================================================================ */
 
 #![allow(dead_code)]
 
 pub mod intent;
+pub mod reasoner;
 
+pub use intent::{classify_domain, escape_json, plan_for_domain, Intent, IntentPlan};
+pub use reasoner::{NullReasoner, Reasoner};
 
 /// Represents a high-level cognitive intent extracted from user input or system state.
 ///
