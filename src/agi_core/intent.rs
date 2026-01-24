@@ -11,23 +11,18 @@
    Author:      Alexandr Roussinov (gd2bk1ng)
    Description: Unified semantic intent engine for Syntra’s emerging AGI Core. This module
                 classifies freeform text into structured intent classes, generates high-level
-                plans, and provides safe ASCII output for the intent bridge. It merges Axiom Zero’s
-                deterministic classifier with Axiom Three/Four/Five’s expanded semantic domains.
+                plans, supports probabilistic reasoning hints, and provides safe ASCII output for
+                the intent bridge. It merges Axiom Zero’s deterministic classifier with Axiom
+                Three/Four/Five’s expanded semantic domains.
 
    Overview:
      • Intent           — Raw user intent with confidence metadata.
      • IntentPlan       — Classified intent with semantic class + high-level plan.
-     • Reasoner         — Trait for pluggable reasoning engines.
-     • NullReasoner     — Deterministic, dependency-free classifier (Axiom Zero → Five).
-     • classify_domain  — Maps text to semantic domains (maintenance, evaluation, evolution, etc.).
-     • plan_for_domain  — Produces high-level plans for each domain.
-     • escape_json      — Ensures safe ASCII output for terminals and bridges.
-
-   Notes:
-     - This module is intentionally deterministic and ASCII-safe.
-     - It forms the canonical semantic backbone for Syntra’s cognition.
-     - Axiom Five introduces self-evaluation and version comparison semantics.
-     - Future axioms may introduce probabilistic reasoning or multi-step planning.
+     • Reasoner         — Dual-interface trait for pluggable reasoning engines.
+     • NullReasoner     — Deterministic baseline classifier.
+     • ProbReasoner     — Probabilistic, multi-step planning wrapper.
+     • IntentLog        — Ring buffer for introspection.
+     • debug_plan       — One-line summary for overlays/terminals.
    ================================================================================================ */
 
 #![allow(dead_code)]
@@ -45,41 +40,92 @@ pub struct Intent {
     pub confidence: f32,
 }
 
+impl Intent {
+    pub fn new(label: impl Into<String>, confidence: f32) -> Self {
+        Self {
+            label: label.into(),
+            confidence,
+        }
+    }
+}
+
 /// Classified intent with semantic domain + high-level plan.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct IntentPlan {
     pub intent: String,
     pub class: String,
     pub plan: String,
+    /// Optional multi-step plan, when available.
+    pub steps: Vec<String>,
+    /// Optional probability estimate (0.0–1.0) for classification confidence.
+    pub probability: f32,
 }
 
 /* ------------------------------------------------------------------------------------------------
-   TRAIT: Reasoner
+   TRAIT: Reasoner (Dual Interface)
    ------------------------------------------------------------------------------------------------ */
 
-/// A pluggable reasoning engine. Future axioms may replace this with probabilistic or neural logic.
 pub trait Reasoner {
+    /// Full semantic reasoning (Axiom Five).
     fn process(&self, intent: Intent) -> IntentPlan;
+
+    /// Simple text reasoning (Axiom Three compatibility).
+    fn reason_text(&self, intent: &Intent) -> String {
+        self.process(intent.clone()).plan
+    }
 }
 
 /* ------------------------------------------------------------------------------------------------
-   NULL REASONER (Axiom Zero → Five)
+   NULL REASONER (Deterministic Baseline)
    ------------------------------------------------------------------------------------------------ */
 
-/// Deterministic, dependency-free semantic classifier.
-/// This is Syntra’s canonical intent engine until Axiom Six introduces adaptive reasoning.
 pub struct NullReasoner;
+
+impl NullReasoner {
+    pub fn new() -> Self {
+        Self
+    }
+}
 
 impl Reasoner for NullReasoner {
     fn process(&self, intent: Intent) -> IntentPlan {
         let class = classify_domain(&intent.label);
-        let plan  = plan_for_domain(&class, &intent.label);
+        let plan = plan_for_domain(&class, &intent.label);
+        let steps = multi_step_plan(&class, &intent.label);
+        let probability = baseline_probability(&class, intent.confidence);
 
         IntentPlan {
             intent: intent.label,
             class,
             plan,
+            steps,
+            probability,
         }
+    }
+}
+
+/* ------------------------------------------------------------------------------------------------
+   PROBABILISTIC / MULTI-STEP REASONER
+   ------------------------------------------------------------------------------------------------ */
+
+/// A thin wrapper that can, in the future, incorporate real probabilistic models.
+/// For now, it decorates NullReasoner with richer multi-step planning semantics.
+pub struct ProbReasoner {
+    inner: NullReasoner,
+}
+
+impl ProbReasoner {
+    pub fn new() -> Self {
+        Self {
+            inner: NullReasoner::new(),
+        }
+    }
+}
+
+impl Reasoner for ProbReasoner {
+    fn process(&self, intent: Intent) -> IntentPlan {
+        // For now, delegate to NullReasoner; future axioms can adjust probability/steps.
+        self.inner.process(intent)
     }
 }
 
@@ -87,22 +133,15 @@ impl Reasoner for NullReasoner {
    SEMANTIC CLASSIFICATION (Axiom Five)
    ------------------------------------------------------------------------------------------------ */
 
-/// Maps raw text into semantic domains.
-/// This is the heart of Syntra’s early cognition.
 pub fn classify_domain(intent: &str) -> String {
     let lower = intent.to_lowercase();
 
-    // --- Axiom Five: Evaluation -------------------------------------------------
     if lower.starts_with("evaluate ") || lower.starts_with("evaluation ") {
         return "evaluation".to_string();
     }
-
-    // --- Axiom Four: Maintenance ------------------------------------------------
     if lower.starts_with("maintenance ") {
         return "maintenance".to_string();
     }
-
-    // --- Axiom Three Domains ----------------------------------------------------
     if lower.starts_with("browse ") {
         return "browse".to_string();
     }
@@ -119,7 +158,6 @@ pub fn classify_domain(intent: &str) -> String {
         return "action".to_string();
     }
 
-    // --- Evolution / Planning / Reflection -------------------------------------
     if lower.contains("evolve") || lower.contains("improve") {
         return "evolution".to_string();
     }
@@ -130,22 +168,18 @@ pub fn classify_domain(intent: &str) -> String {
         return "self_reflection".to_string();
     }
 
-    // --- Diagnostics ------------------------------------------------------------
     if lower.contains("diagnose") || lower.contains("status") || lower.contains("health") {
         return "diagnostic".to_string();
     }
 
-    // --- Navigation -------------------------------------------------------------
     if lower.contains("portal") || lower.contains("open") || lower.contains("launch") {
         return "navigation".to_string();
     }
 
-    // --- Construction -----------------------------------------------------------
     if lower.contains("build") || lower.contains("create") || lower.contains("generate") {
         return "construction".to_string();
     }
 
-    // --- Default ----------------------------------------------------------------
     "freeform".to_string()
 }
 
@@ -153,25 +187,18 @@ pub fn classify_domain(intent: &str) -> String {
    HIGH-LEVEL PLANNING (Axiom Five)
    ------------------------------------------------------------------------------------------------ */
 
-/// Produces a high-level plan for the classified domain.
-/// These plans are descriptive, not executable — the Cortex handles execution.
 pub fn plan_for_domain(classification: &str, intent: &str) -> String {
     match classification {
-        // --- Axiom Five: Evaluation --------------------------------------------
         "evaluation" => {
             "Compare two versions of a module or text, highlight strengths, weaknesses, risks, \
              and provide a qualitative verdict."
                 .to_string()
         }
-
-        // --- Axiom Four: Maintenance -------------------------------------------
         "maintenance" => {
             "Provide system maintenance guidance: Rust toolchain, Cargo cache, Git recovery, \
              terminal integrity, or full reinstall procedures."
                 .to_string()
         }
-
-        // --- Axiom Three Domains ------------------------------------------------
         "browse" => {
             "Fetch the given URL, perceive its content, store it in the knowledge lobe, \
              and summarize the observed structure."
@@ -195,8 +222,6 @@ pub fn plan_for_domain(classification: &str, intent: &str) -> String {
             "Execute a simple system command via the action lobe and return its output."
                 .to_string()
         }
-
-        // --- Evolution / Planning / Reflection ---------------------------------
         "evolution" => {
             "Use the evolution and meta-evolution lobes to propose architectural improvements, \
              new lobes, and future axioms."
@@ -212,8 +237,6 @@ pub fn plan_for_domain(classification: &str, intent: &str) -> String {
              and describe current capabilities."
                 .to_string()
         }
-
-        // --- Diagnostics / Navigation / Construction ----------------------------
         "diagnostic" => {
             "Probe repository structure, check branches, scan for missing lobes, and report \
              system health without modifying code."
@@ -229,8 +252,6 @@ pub fn plan_for_domain(classification: &str, intent: &str) -> String {
              documentation, without writing files yet."
                 .to_string()
         }
-
-        // --- Default ------------------------------------------------------------
         _ => {
             format!(
                 "Capture this freeform intent for higher-order AGI interpretation. \
@@ -242,20 +263,115 @@ pub fn plan_for_domain(classification: &str, intent: &str) -> String {
 }
 
 /* ------------------------------------------------------------------------------------------------
+   MULTI-STEP PLANNING (Structured)
+   ------------------------------------------------------------------------------------------------ */
+
+pub fn multi_step_plan(classification: &str, intent: &str) -> Vec<String> {
+    match classification {
+        "evaluation" => vec![
+            "Identify the two artifacts or versions to compare.".into(),
+            "Extract key structural and behavioral differences.".into(),
+            "Assess risks, strengths, and weaknesses.".into(),
+            "Summarize a qualitative verdict with rationale.".into(),
+        ],
+        "planning" => vec![
+            "Clarify the target outcome and constraints.".into(),
+            "List required modules and integration points.".into(),
+            "Define test coverage and validation strategy.".into(),
+            "Outline documentation and onboarding updates.".into(),
+        ],
+        "evolution" => vec![
+            "Scan current architecture and lobes.".into(),
+            "Identify bottlenecks and missing capabilities.".into(),
+            "Propose new lobes or refactors.".into(),
+            "Prioritize changes by impact and risk.".into(),
+        ],
+        "self_reflection" => vec![
+            "Inspect current repository structure.".into(),
+            "Check diagnostics and recent changes.".into(),
+            "Summarize current capabilities and gaps.".into(),
+            "Propose next steps for growth.".into(),
+        ],
+        _ => vec![format!("Handle freeform intent: '{}'.", intent)],
+    }
+}
+
+/* ------------------------------------------------------------------------------------------------
+   PROBABILITY ESTIMATION (Simple Heuristic)
+   ------------------------------------------------------------------------------------------------ */
+
+fn baseline_probability(classification: &str, confidence: f32) -> f32 {
+    let base = match classification {
+        "evaluation" | "planning" | "evolution" | "self_reflection" => 0.85,
+        "maintenance" | "diagnostic" | "navigation" | "construction" => 0.8,
+        "browse" | "knowledge" | "task" | "perception" | "action" => 0.9,
+        _ => 0.6,
+    };
+    (base * confidence).clamp(0.0, 1.0)
+}
+
+/* ------------------------------------------------------------------------------------------------
+   DEBUG / INTROSPECTION HELPERS
+   ------------------------------------------------------------------------------------------------ */
+
+pub fn debug_plan(plan: &IntentPlan) -> String {
+    format!(
+        "[class={}] p={:.2} intent=\"{}\" plan=\"{}\"",
+        plan.class,
+        plan.probability,
+        escape_json(&plan.intent),
+        escape_json(&plan.plan)
+    )
+}
+
+/* ------------------------------------------------------------------------------------------------
+   INTENT LOG (Ring Buffer)
+   ------------------------------------------------------------------------------------------------ */
+
+#[derive(Debug)]
+pub struct IntentLog {
+    entries: Vec<IntentPlan>,
+    capacity: usize,
+}
+
+impl IntentLog {
+    pub fn new(capacity: usize) -> Self {
+        Self {
+            entries: Vec::with_capacity(capacity),
+            capacity,
+        }
+    }
+
+    pub fn push(&mut self, plan: IntentPlan) {
+        if self.entries.len() == self.capacity {
+            self.entries.remove(0);
+        }
+        self.entries.push(plan);
+    }
+
+    pub fn entries(&self) -> &[IntentPlan] {
+        &self.entries
+    }
+
+    pub fn latest(&self) -> Option<&IntentPlan> {
+        self.entries.last()
+    }
+}
+
+/* ------------------------------------------------------------------------------------------------
    JSON ESCAPING (ASCII-Safe)
    ------------------------------------------------------------------------------------------------ */
 
-/// Ensures safe ASCII output for terminals and bridges.
 pub fn escape_json(input: &str) -> String {
     let mut out = String::new();
     for c in input.chars() {
         match c {
             '\\' => out.push_str("\\\\"),
-            '"'  => out.push_str("\\\""),
+            '"' => out.push_str("\\\""),
             '\n' => out.push_str("\\n"),
             '\r' => out.push_str("\\r"),
             '\t' => out.push_str("\\t"),
-            _    => out.push(c),
+            _ => out.push(c),
         }
     }
     out
