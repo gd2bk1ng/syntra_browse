@@ -16,273 +16,333 @@
 ================================================================================
 -->
 
-# Syntra Kernel — Cortex & Lobe Architecture  
-*A Research‑Grade Exploration of Syntra’s Modular Cognitive Brain*
+# Syntra Kernel — Cortex Lobes  
+*A Research‑Grade Exploration of Syntra’s Modular Cognitive Architecture*
 
 ---
 
 ## 1. Introduction
 
-The **Cortex** is the central cognitive engine of Syntra Kernel.  
-It is composed of modular, isolated **lobes**, each responsible for a distinct cognitive function.
+The **Cortex** is the central cognitive engine of the Syntra Kernel.  
+It is composed of multiple **lobes**, each responsible for a distinct cognitive function:
 
-This design is inspired by biological brains but implemented with:
+- Perception  
+- Knowledge  
+- Reasoning  
+- Planning  
+- Action  
+- Evolution  
+- Safety  
 
-- strict modularity  
-- transparent cognition  
-- safe boundaries  
-- introspection hooks  
-- evolvable interfaces  
+These lobes form a **modular, introspective, and safety‑anchored cognitive system**, inspired by biological cortical specialization but engineered for deterministic, explainable machine cognition.
 
-The Cortex is not a monolithic block — it is a **distributed cognitive system** where each lobe is:
-
-- independently testable  
-- independently replaceable  
-- independently evolvable  
-- governed by safety constraints  
-
-This document provides a research‑grade overview of each lobe and its role in Syntra’s cognition.
+The Cortex is the operational heart of Syntra’s intelligence.
 
 ---
 
-## 2. High‑Level Diagram
+## 2. Purpose of the Cortex Lobes
+
+The Cortex Lobes exist to:
+
+- separate cognitive responsibilities  
+- enforce modularity and maintainability  
+- support safe evolution  
+- enable introspection and transparency  
+- allow independent testing and replacement  
+- maintain architectural clarity  
+- support deterministic cognitive flows  
+
+Each lobe is a **self‑contained cognitive module** with a well‑defined interface.
+
+---
+
+## 3. High‑Level Diagram
 
 ```
-                   SYNTRA KERNEL — CORTEX ARCHITECTURE
-                   ====================================
+                   SYNTRA KERNEL — CORTEX LOBES
+                   =============================
 
-        +--------------------------------------------------------------+
-        |                            CORTEX                            |
-        |--------------------------------------------------------------|
-        |  Perception Lobe   |   Knowledge Lobe   |   Planning Lobe    |
-        |--------------------------------------------------------------|
-        |                     Action Lobe                              |
-        |--------------------------------------------------------------|
-        |                 Evolution Lobe (Axiom Six)                   |
-        |--------------------------------------------------------------|
-        |             Safety & Governance Lobe (Axiom Seven)           |
-        +--------------------------------------------------------------+
+    +--------------------------------------------------------------+
+    |                           CORTEX                             |
+    |--------------------------------------------------------------|
+    |  Perception Lobe   |   Knowledge Lobe   |   Reasoning Layer  |
+    |--------------------------------------------------------------|
+    |  Planning Lobe     |   Action Lobe      |   Safety Lobe      |
+    |--------------------------------------------------------------|
+    |                     Evolution Lobe                           |
+    +--------------------------------------------------------------+
 ```
 
-Each lobe is a **first‑class cognitive module**.
+Each lobe communicates through structured interfaces and Syntra Language (SL).
 
 ---
 
-## 3. Lobe Overview
+## 4. Lobe Overview
 
-### **3.1 Perception Lobe**  
-*“What is this?”*
-
+### **4.1 Perception Lobe**
 Responsible for:
 
-- parsing input  
-- extracting meaning  
-- normalizing text  
-- interpreting browser content  
-- feeding structured data to the Knowledge Lobe  
+- input normalization  
+- semantic extraction  
+- URL parsing  
+- pattern detection  
+- perception summaries  
 
-This lobe is activated by:
+Feeds:
 
-- Axiom One (observation)  
-- Axiom Four (browser interface)  
+- Knowledge Lobe  
+- Reasoning Layer  
+- Cognitive Context  
 
 ---
 
-### **3.2 Knowledge Lobe**  
-*“What do I know about this?”*
-
+### **4.2 Knowledge Lobe**
 Responsible for:
 
-- storing structured knowledge  
-- retrieving relevant information  
-- semantic linking  
+- long‑term semantic memory  
+- knowledge graph maintenance  
 - contextual enrichment  
-- supporting reasoning and planning  
+- semantic retrieval  
 
-This lobe integrates with:
+Feeds:
 
-- Cognitive Context (Axiom Two)  
-- Reasoning Layer (Axiom Three)  
-
----
-
-### **3.3 Planning Lobe**  
-*“What should I do?”*
-
-Responsible for:
-
-- generating multi‑step plans  
-- decomposing tasks  
-- evaluating alternatives  
-- sequencing actions  
-- producing structured plan outputs  
-
-This lobe is the core of Axiom Five.
+- Reasoning Layer  
+- Planning Lobe  
 
 ---
 
-### **3.4 Action Lobe**  
-*“Execute the plan.”*
-
+### **4.3 Reasoning Layer**
 Responsible for:
 
-- performing actions  
-- running tasks  
-- interacting with external systems  
-- executing commands  
-- returning results  
+- contextual interpretation  
+- pattern recognition  
+- ambiguity resolution  
+- reasoning summaries  
+- safety‑aware inference  
 
-This lobe is tightly integrated with:
+Feeds:
 
-- Terminal Shell  
 - Intent Bridge  
+- Planning Lobe  
+
+---
+
+### **4.4 Planning Lobe**
+Responsible for:
+
+- multi‑step plan generation  
+- task decomposition  
+- strategy evaluation  
+- safety‑aware planning  
+
+Feeds:
+
+- Action Lobe  
+
+---
+
+### **4.5 Action Lobe**
+Responsible for:
+
+- executing plan steps  
+- interacting with external systems  
+- runtime safety enforcement  
+- returning operational results  
+
+Feeds:
+
+- ThoughtStream  
+- Cognitive Context  
+
+---
+
+### **4.6 Safety Lobe**
+Responsible for:
+
+- safety evaluation  
+- risk assessment  
+- protected lobe enforcement  
+- approval requirements  
+- runtime safety checks  
+
+Feeds:
+
+- Planning Lobe  
+- Action Lobe  
+- Evolution Lobe  
+
+---
+
+### **4.7 Evolution Lobe**
+Responsible for:
+
+- ecosystem analysis  
+- evolution proposal generation  
+- patch plan construction  
+- integration with Safety Gate  
+- long‑term architectural improvement  
+
+Feeds:
+
+- Evolution Scheduler  
 - ThoughtStream  
 
 ---
 
-### **3.5 Evolution Lobe**  
-*“How can I improve myself?”*
+## 5. Cortex Interfaces
 
-Responsible for:
+Each lobe exposes a trait‑based interface.  
+Examples:
 
-- scanning the ecosystem  
-- identifying inefficiencies  
-- generating evolution proposals  
-- producing patch plans  
-- preparing changes for safety review  
-
-This lobe is the core of Axiom Six.
-
----
-
-### **3.6 Safety & Governance Lobe**  
-*“Is this safe?”*
-
-Responsible for:
-
-- evaluating evolution proposals  
-- enforcing safety rules  
-- protecting critical systems  
-- requiring human approval  
-- preventing unauthorized changes  
-
-This lobe is the core of Axiom Seven.
-
----
-
-## 4. Lobe Interaction Diagram
-
-```
-                 +------------------------+
-                 |   Perception Lobe      |
-                 +-----------+------------+
-                             |
-                             v
-                 +------------------------+
-                 |   Knowledge Lobe       |
-                 +-----------+------------+
-                             |
-                             v
-                 +------------------------+
-                 |   Planning Lobe        |
-                 +-----------+------------+
-                             |
-                             v
-                 +------------------------+
-                 |     Action Lobe        |
-                 +-----------+------------+
-                             |
-                             v
-                 +------------------------+
-                 |   ThoughtStream        |
-                 +------------------------+
-
-                 +------------------------+
-                 |   Evolution Lobe       |
-                 +-----------+------------+
-                             |
-                             v
-                 +------------------------+
-                 | Safety & Governance    |
-                 +------------------------+
-```
-
-The Cortex is a **flow‑based cognitive system**.
-
----
-
-## 5. Technical Specification
-
-### **5.1 Lobe Trait**
-
-All lobes implement:
+### **5.1 Perception Interface**
 
 ```rust
-pub trait Lobe {
-    fn process(&mut self, input: &LobeInput) -> LobeOutput;
+pub trait PerceptionLobe {
+    fn perceive(&mut self, input: &str) -> PerceptionOutput;
 }
 ```
 
-### **5.2 Lobe Isolation**
+---
 
-Lobes:
+### **5.2 Knowledge Interface**
 
-- cannot modify each other directly  
-- communicate only through structured interfaces  
-- are protected by safety rules  
-- can be replaced independently  
-
-### **5.3 Lobe Lifecycle**
-
-Each lobe follows:
-
+```rust
+pub trait KnowledgeLobe {
+    fn store(&mut self, entry: KnowledgeEntry);
+    fn query(&self, request: KnowledgeQuery) -> KnowledgeResult;
+}
 ```
-initialize → process → output → log → idle
-```
-
-### **5.4 Lobe Evolution**
-
-Only the Evolution Lobe may propose changes to other lobes —  
-and only with Safety Lobe approval.
 
 ---
 
-## 6. Simple Explanation (Non‑Technical)
+### **5.3 Planning Interface**
 
-The Cortex is Syntra’s **brain**, and each lobe is a **specialized region**:
-
-- Perception → sees  
-- Knowledge → remembers  
-- Planning → decides  
-- Action → does  
-- Evolution → improves  
-- Safety → protects  
-
-Together, they form a complete cognitive system.
+```rust
+pub trait PlanningLobe {
+    fn generate_plan(&self, intent: &Intent) -> Plan;
+}
+```
 
 ---
 
-## 7. Why the Cortex Matters
+### **5.4 Action Interface**
 
-The Cortex ensures:
+```rust
+pub trait ActionLobe {
+    fn execute_step(&mut self, step: &PlanStep) -> ActionResult;
+}
+```
+
+---
+
+### **5.5 Safety Interface**
+
+```rust
+pub trait SafetyGate {
+    fn evaluate(&self, proposal: &EvolutionProposal) -> SafetyReport;
+}
+```
+
+---
+
+### **5.6 Evolution Interface**
+
+```rust
+pub trait EvolutionEngine {
+    fn generate_proposals(&self, report: &EcosystemReport) -> Vec<EvolutionProposal>;
+}
+```
+
+---
+
+## 6. Cortex Lobe Communication
+
+Lobes communicate through:
+
+- structured data types  
+- SL blocks  
+- ThoughtStream logs  
+- Cognitive Context  
+- Cortex routing logic  
+
+Example flow:
+
+```
+Perception → Reasoning → Intent → Planning → Action → ThoughtStream
+```
+
+---
+
+## 7. Cortex and Safety
+
+The Cortex is tightly integrated with the Safety Lobe:
+
+- all plans are safety‑checked  
+- all actions are runtime‑validated  
+- evolution proposals require approval  
+- protected lobes cannot be modified  
+- ThoughtStream logs all cognitive steps  
+
+Safety is not a wrapper — it is a **structural constraint**.
+
+---
+
+## 8. Cortex and Evolution
+
+The Cortex supports safe evolution through:
+
+- modular lobe boundaries  
+- introspective architecture  
+- ecosystem modeling  
+- evolution proposals  
+- long‑term scheduling  
+
+The Cortex is designed to **grow safely over time**.
+
+---
+
+## 9. Simple Explanation (Non‑Technical)
+
+The Cortex is Syntra’s **brain**, divided into specialized parts:
+
+- Perception → understands input  
+- Knowledge → remembers information  
+- Reasoning → interprets meaning  
+- Planning → decides what to do  
+- Action → performs tasks  
+- Safety → keeps everything safe  
+- Evolution → helps Syntra improve  
+
+Each lobe has a job, and they work together like a well‑designed cognitive machine.
+
+---
+
+## 10. Why the Cortex Lobes Matter
+
+The Cortex Lobes ensure:
 
 - modular cognition  
+- safe execution  
 - transparent reasoning  
-- safe evolution  
-- explainable behavior  
 - maintainable architecture  
-- human‑guided growth  
+- evolvability  
+- explainability  
+- deterministic behavior  
 
-It is the **core of Syntra’s intelligence**.
+They are the foundation of Syntra’s intelligence.
 
 ---
 
-## 8. Cross‑References
+## 11. Cross‑References
 
-- [cognitive_loop.md](cognitive_loop.md)  
-- [evolution_engine.md](evolution_engine.md)  
+- [perception_lobe.md](perception_lobe.md)  
+- [knowledge_lobe.md](knowledge_lobe.md)  
+- [reasoning_layer.md](reasoning_layer.md)  
+- [planning_lobe.md](planning_lobe.md)  
+- [action_lobe.md](action_lobe.md)  
 - [safety_governance.md](safety_governance.md)  
-- [axiom_five.md](axiom_five.md)  
+- [evolution_engine.md](evolution_engine.md)  
+- [architecture.md](architecture.md)  
 
 ---
 
