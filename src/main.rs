@@ -1,5 +1,5 @@
 /* ================================================================================================
-   SYNTRA BROWSER — AXIOM THREE (Combined Advanced Version)
+   SYNTRA BROWSER — AXIOM THREE
    ------------------------------------------------------------------------------------------------
    SIGIL:
          .\s/.
@@ -29,17 +29,24 @@
    Repository:  https://github.com/gd2bk1ng/syntra_browse
    ================================================================================================ */
 
-use syntra_browse::genesis;
-use std::env;
-
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
 /// Entry point for the Syntra Browser executable.
 ///
 /// Supported invocations:
 ///   syntra            — normal browser bootstrap
 ///   syntra --demo     — reserved for future in-process demos
-fn main() {
-    // Initialize logging (configured via Cargo.toml/env_logger)
-    env_logger::init();
+
+use syntra_browse::genesis;
+use std::env;
+use syntra::browser::ui::BrowserUI;
+use tokio::signal;
+use tracing::{error, info};
+use tracing_subscriber;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Initialize structured logging
+    tracing_subscriber::fmt::init();
 
     let args: Vec<String> = env::args().collect();
     if args.len() > 1 && args[1] == "--demo" {
@@ -48,19 +55,41 @@ fn main() {
         println!("This flag is reserved for future in-process demos.");
         println!("For now, run the standalone demo binary:\n");
         println!("    cargo run --bin syntra_compiler_demo\n");
-        return;
+        return Ok(());
     }
 
-    println!("🔮 Syntra Browser - Axiom Three");
-    println!("🚀 Launching Genesis Sequence...\n");
+    info!("🔮 Syntra Browser - Axiom Three");
+    info!("🚀 Launching Genesis Sequence...");
 
-    // Begin system bootstrap
-    genesis::main();
+    // Run genesis bootstrap asynchronously if needed
+    // If genesis::main() is sync, consider wrapping in spawn_blocking
+    tokio::task::spawn_blocking(|| genesis::main()).await??;
+
+    info!("🚀 Launching UI...");
+
+    // Run UI in async context if BrowserUI supports async
+    // If BrowserUI::run() is sync, run in blocking task
+    let ui_handle = tokio::task::spawn_blocking(|| BrowserUI::run());
+
+    // Listen for Ctrl+C signal for graceful shutdown
+    tokio::select! {
+        res = ui_handle => {
+            if let Err(e) = res? {
+                error!("Browser crashed: {:?}", e);
+                return Err(Box::new(e));
+            }
+        }
+        _ = signal::ctrl_c() => {
+            info!("Received Ctrl+C, shutting down gracefully...");
+            // Insert cleanup code here if needed
+        }
+    }
 
     // Placeholder for future runtime orchestration
-    // syntra_browse::renderer::start();
-    // syntra_browse::agi_core::boot();
-    // syntra_browse::cortex::run();
+    // syntra_browse::renderer::start().await?;
+    // syntra_browse::agi_core::boot().await?;
+    // syntra_browse::cortex::run().await?;
 
-    // (Future) Enter main event loop here
+    info!("Shutdown complete.");
+    Ok(())
 }
