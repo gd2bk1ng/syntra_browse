@@ -16,189 +16,177 @@
 ================================================================================
 -->
 
-# Syntra Kernel — Core Architecture
-*A Research‑Grade Overview of the Modular AGI Kernel*
+# Syntra Kernel — Architecture Overview  
+*A Research‑Grade Exploration of Syntra’s Full Cognitive and Structural Design*
 
 ---
 
 ## 1. Introduction
 
-Syntra Kernel is a **modular artificial general intelligence architecture** built around the
-principles of:
+The **Syntra Kernel Architecture** is a modular, introspective, safety‑anchored cognitive system designed to support:
 
-- **Transparency**  
-- **Safety**  
-- **Explainability**  
-- **Human‑guided evolution**  
-- **Modularity and extensibility**  
+- transparent reasoning  
+- safe evolution  
+- modular cognition  
+- human‑guided oversight  
+- long‑term adaptability  
+- explainable intelligence  
 
-Unlike monolithic AI systems, Syntra is structured as a **cortex‑and‑lobe architecture**, where
-each cognitive function is isolated, inspectable, and replaceable.
+This document provides a **top‑level architectural overview**, connecting all axioms, lobes, subsystems, and cognitive flows into a unified whole.
 
-This document provides a research‑grade overview of the kernel’s architecture, its components,
-and the cognitive loop that binds them together.
+It is the “map of the territory” — the blueprint of Syntra’s mind.
 
 ---
 
 ## 2. High‑Level Architecture Diagram
 
 ```
-                          SYNTRA KERNEL — GLASS‑BRAIN ARCHITECTURE
-                          ========================================
+                   SYNTRA KERNEL — ARCHITECTURE OVERVIEW
+                   ======================================
 
-                                   +----------------------+
-                                   |   Terminal Shell     |
-                                   |  (Cognitive I/O)     |
-                                   +----------+-----------+
-                                              |
-                                              v
-                                   +----------------------+
-                                   |   Intent Bridge      |
-                                   | (Rust Conduit Layer) |
-                                   +----------+-----------+
-                                              |
-                                              v
-        +--------------------------------------------------------------------------------+
-        |                                   CORTEX                                       |
-        |--------------------------------------------------------------------------------|
-        |  Perception Lobe   |   Knowledge Lobe   |   Planning Lobe   |   Action Lobe    |
-        |--------------------------------------------------------------------------------|
-        |                           Evolution Lobe (Axiom Six)                           |
-        |--------------------------------------------------------------------------------|
-        |                           Safety & Governance (Axiom Seven)                    |
-        +--------------------------------------------------------------------------------+
-                                              |
-                                              v
-                                   +----------------------+
-                                   |   ThoughtStream      |
-                                   |  (Introspection)     |
-                                   +----------------------+
+    +--------------------------------------------------------------+
+    |                          TERMINAL SHELL                      |
+    |                 (Human ↔ Syntra Interface Layer)             |
+    +---------------------------+----------------------------------+
+                                |
+                                v
+    +--------------------------------------------------------------+
+    |                        INTENT BRIDGE                         |
+    |                 (Routing, Classification, Plans)             |
+    +---------------------------+----------------------------------+
+                                |
+                                v
+    +--------------------------------------------------------------+
+    |                            CORTEX                            |
+    |--------------------------------------------------------------|
+    |  Perception Lobe   |   Knowledge Lobe   |   Planning Lobe    |
+    |--------------------------------------------------------------|
+    |                     Action Lobe                              |
+    |--------------------------------------------------------------|
+    |                 Evolution Lobe (Axiom Six)                   |
+    |--------------------------------------------------------------|
+    |             Safety & Governance Lobe (Axiom Seven)           |
+    +--------------------------------------------------------------+
+                                |
+                                v
+    +--------------------------------------------------------------+
+    |                        THOUGHTSTREAM                         |
+    |                 (Introspection & Transparency)               |
+    +--------------------------------------------------------------+
 ```
+
+This is Syntra’s **core cognitive stack**.
 
 ---
 
 ## 3. Architectural Principles
 
-Syntra Kernel is built on five foundational principles:
-
 ### **3.1 Modularity**
-Each cognitive function is isolated into a **lobe**, allowing:
+Every cognitive function is isolated into a **lobe**:
 
-- independent development  
-- safe replacement  
-- targeted evolution  
-- clear boundaries  
+- independently testable  
+- independently replaceable  
+- independently evolvable  
 
 ### **3.2 Transparency**
-All cognition is:
+All cognition is logged in the **ThoughtStream**.
 
-- inspectable  
-- explainable  
-- logged in the ThoughtStream  
+### **3.3 Safety by Design**
+Safety is not a wrapper — it is a **structural constraint** enforced by:
 
-### **3.3 Safety**
-The Safety & Governance layer ensures:
+- protected lobes  
+- immutable safety logic  
+- mandatory human approval  
+- sandboxed execution  
 
-- no unauthorized self‑modification  
-- no unsafe proposals  
-- no unbounded autonomy  
+### **3.4 Evolvability**
+Syntra is designed to grow through:
 
-### **3.4 Human‑Guided Evolution**
-Syntra can propose improvements, but:
+- Evolution Lobe  
+- Ecosystem Model  
+- Evolution Scheduler  
+- Syntra Language  
 
-- high‑impact changes require approval  
-- proposals must be justified  
-- safety rules must be respected  
+### **3.5 Deterministic Routing**
+All input flows through:
 
-### **3.5 Extensibility**
-The architecture anticipates:
+1. Observation  
+2. Cognitive Context  
+3. Reasoning  
+4. Intent  
+5. Planning  
+6. Execution  
+7. ThoughtStream  
 
-- new lobes  
-- new axioms  
-- new cognitive capabilities  
-- new interfaces  
-
----
-
-## 4. Core Components
-
-### **4.1 Terminal Shell (Axiom Four)**
-The human‑facing cognitive interface.
-
-Responsibilities:
-
-- input/output  
-- command routing  
-- freeform intent capture  
-- cognitive debugging  
-
-See: [terminal_shell.md](terminal_shell.md)
+This ensures predictable cognition.
 
 ---
 
-### **4.2 Intent Bridge**
-A Rust‑based conduit that:
+## 4. Architectural Layers
 
-- receives raw user input  
-- forwards it to the kernel  
-- returns structured JSON responses  
-- logs intent classifications  
+### **4.1 Interface Layer**
+Includes:
 
-This layer ensures **language‑agnostic communication**.
+- Terminal Shell  
+- Browser Interface  
+- Perception Hooks  
+- Action Hooks  
 
----
-
-### **4.3 Cortex**
-The central processing unit of Syntra Kernel.
-
-Contains:
-
-- **Perception Lobe**  
-- **Knowledge Lobe**  
-- **Planning Lobe**  
-- **Action Lobe**  
-- **Evolution Lobe**  
-- **Safety & Governance Layer**  
-
-See:  
-- [cortex_lobes.md](cortex_lobes.md)  
-- [evolution_engine.md](evolution_engine.md)  
-- [safety_governance.md](safety_governance.md)
+This is the human‑facing layer.
 
 ---
 
-### **4.4 ThoughtStream**
-A chronological log of:
+### **4.2 Cognitive Layer (Cortex)**
+The core of Syntra’s intelligence:
 
-- intents  
-- plans  
-- reasoning steps  
-- evolution proposals  
-- safety decisions  
+- Perception  
+- Knowledge  
+- Planning  
+- Action  
+- Evolution  
+- Safety  
 
-This provides **introspection** and **explainability**.
-
-See: [thoughtstream.md](thoughtstream.md)
-
----
-
-### **4.5 Ecosystem Model**
-A structural map of the entire codebase.
-
-Used for:
-
-- detecting missing lobes  
-- identifying dead code  
-- proposing refactors  
-- validating architecture integrity  
-
-See: [ecosystem_model.md](ecosystem_model.md)
+Each lobe is isolated but interconnected through structured interfaces.
 
 ---
 
-## 5. Cognitive Loop
+### **4.3 Governance Layer**
+Implements:
 
-The cognitive loop is the heartbeat of Syntra Kernel.
+- Safety Gate  
+- Approval Workflow  
+- Protected Lobe Enforcement  
+- Risk Evaluation  
+
+This layer ensures Syntra remains aligned.
+
+---
+
+### **4.4 Introspection Layer**
+The ThoughtStream provides:
+
+- cognitive transparency  
+- safety auditing  
+- evolution tracking  
+- debugging support  
+
+It is the “black box recorder” of Syntra’s mind.
+
+---
+
+### **4.5 Evolution Layer**
+Implements:
+
+- Ecosystem Model  
+- Evolution Engine  
+- Evolution Scheduler  
+- Syntra Language  
+
+This layer enables safe, explainable self‑improvement.
+
+---
+
+## 5. Cognitive Flow (End‑to‑End)
 
 ```
 User Input
@@ -207,91 +195,97 @@ Terminal Shell
     ↓
 Intent Bridge
     ↓
-Intent Engine (Axiom Five)
+Cortex (Perception → Knowledge → Planning → Action)
     ↓
-Planning Lobe
+ThoughtStream
     ↓
-Cortex Execution
-    ↓
-ThoughtStream Logging
-    ↓
-Output to User
+User Output
 ```
 
-See: [cognitive_loop.md](cognitive_loop.md)
+This is the **Cognitive Loop** in architectural form.
 
 ---
 
-## 6. Evolution Pathway
+## 6. Subsystem Interactions
 
-Syntra’s evolution is governed by:
+### **6.1 Cortex ↔ ThoughtStream**
+Every cognitive step is logged.
 
-- **Axiom Six** — Self‑Modification Engine  
-- **Axiom Seven** — Safety & Governance  
+### **6.2 Evolution Engine ↔ Ecosystem Model**
+Self‑analysis drives proposals.
 
-Flow:
+### **6.3 Evolution Engine ↔ Safety Gate**
+Safety determines what is allowed.
 
-```
-Ecosystem Scan
-    ↓
-Evolution Proposal
-    ↓
-Safety Gate Review
-    ↓
-Human Approval
-    ↓
-Sandbox Application
-```
+### **6.4 Safety Gate ↔ Human Approval**
+Humans remain in control.
 
-This ensures **safe, explainable, human‑guided growth**.
+### **6.5 Planning Lobe ↔ Action Lobe**
+Plans become actions.
+
+### **6.6 Perception Lobe ↔ Knowledge Lobe**
+Perception enriches knowledge.
 
 ---
 
-## 7. Axiom Integration
+## 7. Architectural Guarantees
 
-Each axiom contributes a layer of capability:
+Syntra Kernel guarantees:
 
-```
-0 — Genesis Layer
-1 — Observation Layer
-2 — Cognitive Context
-3 — Reasoning Interface
-4 — Cognitive Interface
-5 — Intent Engine
-6 — Self‑Modification Engine
-7 — Safety & Governance
-8 — Syntra Language (Future)
-9 — Evolution Scheduler (Future)
-```
+- **No hidden cognition**  
+- **No autonomous self‑modification**  
+- **No bypassing safety**  
+- **No modification of protected lobes**  
+- **Full transparency of reasoning**  
+- **Human‑guided evolution**  
+- **Modular, maintainable architecture**  
 
-See the full axiom documents:
-
-- [axiom_zero.md](axiom_zero.md)  
-- …  
-- [axiom_nine.md](axiom_nine.md)
+These guarantees are enforced structurally, not behaviorally.
 
 ---
 
-## 8. Summary
+## 8. Simple Explanation (Non‑Technical)
 
-Syntra Kernel is a **transparent, modular, safe, and evolvable AGI architecture** designed to:
+The Syntra Kernel architecture is like a **brain made of modules**, each with a job:
 
-- expose its cognition  
-- justify its decisions  
-- propose improvements  
-- respect safety rules  
-- collaborate with humans  
+- Perception → sees  
+- Knowledge → remembers  
+- Planning → decides  
+- Action → does  
+- Evolution → improves  
+- Safety → protects  
 
-This architecture forms the foundation for a new generation of **glass‑brain AGI systems**.
+All thoughts are recorded.  
+All changes require approval.  
+Nothing is hidden.  
+Nothing is uncontrolled.
 
 ---
 
-## 9. Next Steps
+## 9. Why the Architecture Matters
 
-Continue to:
+This architecture ensures Syntra is:
+
+- safe  
+- transparent  
+- evolvable  
+- explainable  
+- modular  
+- aligned  
+- future‑proof  
+
+It is the foundation of a **responsible AGI system**.
+
+---
+
+## 10. Cross‑References
 
 - [cortex_lobes.md](cortex_lobes.md)  
 - [cognitive_loop.md](cognitive_loop.md)  
-- [axiom_zero.md](axiom_zero.md)
+- [thoughtstream.md](thoughtstream.md)  
+- [ecosystem_model.md](ecosystem_model.md)  
+- [evolution_engine.md](evolution_engine.md)  
+- [safety_governance.md](safety_governance.md)  
 
 ---
+
