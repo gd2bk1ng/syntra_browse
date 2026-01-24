@@ -103,9 +103,9 @@ jobs:
           path: target/debug/
           if-no-files-found: ignore
 
-  # Frontend: Node.js (Astra Browser)
+  # Frontend: Node.js (Syntra Browser)
   frontend:
-    name: Frontend (Astra Browser)
+    name: Frontend (Syntra Browser)
     runs-on: ubuntu-latest
 
     defaults:
@@ -168,7 +168,7 @@ jobs:
       - name: Build WASM modules
         run: |
           # Adjust crate name(s) as needed
-          cargo build -p astra_wasm --target wasm32-unknown-unknown --release
+          cargo build -p syntra_wasm --target wasm32-unknown-unknown --release
         continue-on-error: true
 
       - name: Upload WASM artifacts
