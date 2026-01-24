@@ -16,7 +16,7 @@
    Overview:
      • intent.rs        — Intent, IntentPlan, classifier, planner, JSON escaping, IntentLog.
      • reasoner.rs      — Reasoner trait + NullReasoner / ProbReasoner implementations.
-     • ecosystem.rs     — EcosystemLobe + EcosystemModel (structural health model).
+     • ecosystem.rs     — EcosystemLobe + EcosystemModel (structural health model + scan).
      • self_mod.rs      — SelfModEngine + change proposals, refactors, patch hints.
      • ThoughtStream    — Cortex-level thought stream built on IntentLog.
    ================================================================================================ */
@@ -30,6 +30,7 @@ pub mod self_mod;
 
 pub use intent::{
     classify_domain, escape_json, multi_step_plan, plan_for_domain, Intent, IntentLog, IntentPlan,
+    debug_plan,
 };
 pub use reasoner::{NullReasoner, ProbReasoner, Reasoner};
 pub use ecosystem::{EcosystemLobe, EcosystemModel};
