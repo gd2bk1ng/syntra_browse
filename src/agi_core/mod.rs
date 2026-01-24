@@ -1,5 +1,5 @@
 /* ================================================================================================
-   SYNTRA BROWSER — AXIOM FIVE
+   SYNTRA BROWSER — AXIOM FIVE + SIX + SEVEN
    ------------------------------------------------------------------------------------------------
    SIGIL:
          .\s/.
@@ -9,8 +9,11 @@
    File:        src/agi_core/mod.rs
    Module:      AGI Core — Unified Cognition
    Author:      Alexandr Roussinov (gd2bk1ng)
-   Description: Unified AGI Core for Syntra. Merges Axiom Three’s simple reasoning interface with
-                Axiom Five’s semantic intent engine and Axiom Six’s self-modification engine.
+   Description: Unified AGI Core for Syntra. Merges:
+                  • Axiom Three  — simple reasoning interface
+                  • Axiom Five   — semantic intent engine
+                  • Axiom Six    — self‑modification proposal engine
+                  • Axiom Seven  — safety & governance layer
                 Provides a dual-interface Reasoner trait and a Cortex-level ThoughtStream.
 
    Overview:
@@ -18,6 +21,7 @@
      • reasoner.rs      — Reasoner trait + NullReasoner / ProbReasoner implementations.
      • ecosystem.rs     — EcosystemLobe + EcosystemModel (structural health model + scan).
      • self_mod.rs      — SelfModEngine + change proposals, refactors, patch hints.
+     • safety.rs        — SafetyPolicy, SafetyRule, SafetyGate, SafetyVerdict.
      • ThoughtStream    — Cortex-level thought stream built on IntentLog.
    ================================================================================================ */
 
@@ -27,16 +31,28 @@ pub mod intent;
 pub mod reasoner;
 pub mod ecosystem;
 pub mod self_mod;
+pub mod safety;
+
+/* ------------------------------------------------------------------------------------------------
+   PUBLIC EXPORTS
+   ------------------------------------------------------------------------------------------------ */
 
 pub use intent::{
     classify_domain, escape_json, multi_step_plan, plan_for_domain, Intent, IntentLog, IntentPlan,
     debug_plan,
 };
+
 pub use reasoner::{NullReasoner, ProbReasoner, Reasoner};
+
 pub use ecosystem::{EcosystemLobe, EcosystemModel};
+
 pub use self_mod::{
     ChangeKind, ChangeProposal, CircularDependency, DeadCodeReport, EvolutionPlan,
     RefactorSuggestion, SelfModEngine,
+};
+
+pub use safety::{
+    SafetyLevel, SafetyPolicy, SafetyRule, SafetyVerdict, SafetyGate,
 };
 
 /* ------------------------------------------------------------------------------------------------
