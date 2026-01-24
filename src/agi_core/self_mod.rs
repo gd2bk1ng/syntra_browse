@@ -1,12 +1,22 @@
 /* ================================================================================================
    SYNTRA BROWSER — AXIOM SIX
    ------------------------------------------------------------------------------------------------
+   SIGIL:
+         .\s/.
+        :: S ::
+         '/s\'
+
    File:        src/agi_core/self_mod.rs
-   Module:      AGI Core — Self-Modification Engine
+   Module:      AGI Core — Self-Modification Engine (Advisory)
    Author:      Alexandr Roussinov (gd2bk1ng)
    Description: Analyzes Syntra's ecosystem and proposes code changes, patches, refactors, and new
                 lobes. Detection is heuristic and non-destructive: it generates structured
-                proposals, not direct mutations.
+                proposals, not direct mutations. All changes require explicit human approval.
+
+   Safety Notes:
+     - This engine NEVER writes to disk.
+     - It only emits proposals and patch hints.
+     - Any actual mutation must be performed by the host user or an explicitly authorized layer.
    ================================================================================================ */
 
 #![allow(dead_code)]
@@ -26,6 +36,7 @@ pub enum ChangeKind {
     DeadCodeCleanup,
     DependencyFix,
     Upgrade,
+    Evolution,
 }
 
 #[derive(Debug, Clone)]
@@ -57,6 +68,13 @@ pub struct CircularDependency {
     pub modules: Vec<String>,
 }
 
+/// High-level evolution plan: a grouped set of proposals with a narrative.
+#[derive(Debug, Clone)]
+pub struct EvolutionPlan {
+    pub summary: String,
+    pub proposals: Vec<ChangeProposal>,
+}
+
 /* ------------------------------------------------------------------------------------------------
    SELF-MOD ENGINE
    ------------------------------------------------------------------------------------------------ */
@@ -70,11 +88,13 @@ impl SelfModEngine {
     }
 
     /// High-level entry point: analyze the ecosystem and produce change proposals.
+    ///
+    /// This function is advisory only. It never mutates the filesystem.
     pub fn analyze_ecosystem(
         &self,
         root: impl AsRef<Path>,
         ecosystem: &EcosystemModel,
-    ) -> Vec<ChangeProposal> {
+    ) -> EvolutionPlan {
         let root = root.as_ref();
 
         let mut proposals = Vec::new();
@@ -90,7 +110,10 @@ impl SelfModEngine {
                     missing
                 ),
                 target: None,
-                patch_hint: None,
+                patch_hint: Some(format!(
+                    "Scaffold suggestion: create module for '{}' with lib.rs, tests, and docs.",
+                    missing
+                )),
             });
         }
 
@@ -108,7 +131,7 @@ impl SelfModEngine {
             });
         }
 
-        // 2. Heuristic dead code / unused module detection (placeholder hooks).
+        // 2. Heuristic dead code / unused module detection (hook).
         let dead_code_reports = self.detect_dead_code(root);
         for report in &dead_code_reports {
             proposals.push(ChangeProposal {
@@ -124,7 +147,7 @@ impl SelfModEngine {
             });
         }
 
-        // 3. Circular dependency detection (placeholder hooks).
+        // 3. Circular dependency detection (hook).
         let cycles = self.detect_circular_dependencies(root);
         for cycle in &cycles {
             proposals.push(ChangeProposal {
@@ -140,7 +163,7 @@ impl SelfModEngine {
             });
         }
 
-        // 4. High-level refactor suggestions.
+        // 4. High-level refactor suggestions (hook).
         let refactors = self.propose_refactors(root);
         for r in &refactors {
             proposals.push(ChangeProposal {
@@ -155,24 +178,63 @@ impl SelfModEngine {
             });
         }
 
-        proposals
+        // 5. Evolution narrative.
+        let summary = self.build_evolution_summary(&proposals);
+
+        EvolutionPlan { summary, proposals }
     }
 
     /// Placeholder: scan for dead code (hook for future static analysis).
+    ///
+    /// Future: integrate with `cargo check` output, rust-analyzer, or custom static analysis.
     fn detect_dead_code(&self, _root: &Path) -> Vec<DeadCodeReport> {
-        // Future: integrate with `cargo check` output, rust-analyzer, or custom static analysis.
         Vec::new()
     }
 
     /// Placeholder: scan for circular dependencies (hook for future graph analysis).
+    ///
+    /// Future: parse `mod` graph and `use` graph, detect cycles.
     fn detect_circular_dependencies(&self, _root: &Path) -> Vec<CircularDependency> {
-        // Future: parse `mod` graph and `use` graph, detect cycles.
         Vec::new()
     }
 
     /// Placeholder: propose refactors based on simple heuristics.
+    ///
+    /// Future: look for large files, long functions, duplicated patterns, etc.
     fn propose_refactors(&self, _root: &Path) -> Vec<RefactorSuggestion> {
-        // Future: look for large files, long functions, duplicated patterns, etc.
         Vec::new()
+    }
+
+    /// Build a human-readable evolution summary from proposals.
+    fn build_evolution_summary(&self, proposals: &[ChangeProposal]) -> String {
+        let mut out = String::new();
+
+        out.push_str("=== Syntra Evolution Plan (Axiom Six) ===\n");
+        out.push_str("This plan is advisory. All changes require explicit human approval.\n\n");
+
+        let mut new_lobes = 0;
+        let mut upgrades = 0;
+        let mut refactors = 0;
+        let mut cleanups = 0;
+        let mut dep_fixes = 0;
+
+        for p in proposals {
+            match p.kind {
+                ChangeKind::NewLobe => new_lobes += 1,
+                ChangeKind::Upgrade => upgrades += 1,
+                ChangeKind::Refactor => refactors += 1,
+                ChangeKind::DeadCodeCleanup => cleanups += 1,
+                ChangeKind::DependencyFix => dep_fixes += 1,
+                ChangeKind::Evolution => {}
+            }
+        }
+
+        out.push_str(&format!("New lobes proposed: {}\n", new_lobes));
+        out.push_str(&format!("Upgrades proposed: {}\n", upgrades));
+        out.push_str(&format!("Refactors proposed: {}\n", refactors));
+        out.push_str(&format!("Dead code cleanups proposed: {}\n", cleanups));
+        out.push_str(&format!("Dependency fixes proposed: {}\n", dep_fixes));
+
+        out
     }
 }
