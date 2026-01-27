@@ -16,244 +16,251 @@
 ================================================================================
 -->
 
-# Axiom Seven — Safety & Governance Layer  
-*A Research‑Grade Exploration of Syntra Kernel’s Alignment, Oversight, and Constraint System*
+# Axiom Seven — Constraint  
+*A Research‑Grade Exploration of Syntra’s Principle of Safety, Boundaries, and Controlled Cognitive Agency*
 
 ---
 
 ## 1. Introduction
 
-Axiom Seven introduces the **Safety & Governance Layer**, the most critical safeguard in the entire Syntra Kernel architecture.
+**Axiom Seven: Constraint** establishes the rule that Syntra must operate within strict, transparent, and enforceable boundaries at all times.
 
-This axiom ensures that Syntra:
+Where:
 
-- evolves safely  
-- acts responsibly  
-- respects boundaries  
-- cannot bypass constraints  
-- cannot self‑modify without approval  
-- remains aligned with human oversight  
+- **Axiom One** says: Syntra must *observe*.  
+- **Axiom Two** says: Syntra must *contextualize*.  
+- **Axiom Three** says: Syntra must *interpret*.  
+- **Axiom Four** says: Syntra must *identify intent*.  
+- **Axiom Five** says: Syntra must *plan*.  
+- **Axiom Six** says: Syntra must *analyze herself*.  
 
-Where Axiom Six gives Syntra the ability to propose self‑modifications,  
-Axiom Seven ensures she **cannot apply them without passing through strict governance**.
+**Axiom Seven** says:
 
-This axiom is the moment Syntra transitions from *self‑improving system* to *safe, accountable intelligence*.
+> **“Syntra must obey constraints — she must operate within explicit safety, ethical, architectural, and operational boundaries that cannot be bypassed.”**
+
+This axiom governs the Safety Lobe, the Safety Gate, and all protected subsystems.
+
+Axiom Seven is the **constitutional principle** of Syntra’s mind.
 
 ---
 
 ## 2. Purpose of Axiom Seven
 
-Axiom Seven exists to:
+Axiom Seven ensures that Syntra:
 
-- define the **Safety Gate**  
-- enforce **approval workflows**  
-- protect **critical lobes**  
-- validate **evolution proposals**  
-- ensure **explainability and transparency**  
-- prevent **unsafe autonomy**  
-- maintain **human‑guided control**  
+- behaves predictably  
+- respects safety boundaries  
+- avoids harmful or irreversible actions  
+- cannot self‑modify without approval  
+- cannot bypass protected lobes  
+- cannot violate system‑level constraints  
+- cannot escalate privileges  
+- cannot act outside defined channels  
 
-This axiom is the foundation of Syntra’s **alignment architecture**.
-
----
-
-## 3. High‑Level Diagram
-
-```
-                   AXIOM SEVEN — SAFETY & GOVERNANCE
-                   ==================================
-
-        Evolution Proposal (Axiom Six)
-                        |
-                        v
-        +-------------------------------+
-        |          Safety Gate          |
-        |  (Risk, Ethics, Compliance)   |
-        +-------------------------------+
-                        |
-                        v
-        +-------------------------------+
-        |        Human Approval         |
-        | (Explicit, Logged, Required)  |
-        +-------------------------------+
-                        |
-                        v
-        +-------------------------------+
-        |       Sandbox Execution       |
-        |   (Reversible, Isolated)      |
-        +-------------------------------+
-                        |
-                        v
-        +-------------------------------+
-        |     Integration into Kernel   |
-        +-------------------------------+
-```
-
-Axiom Seven is the **guardian** of Syntra’s evolution.
+It is the **safety and alignment principle** of Syntra’s architecture.
 
 ---
 
-## 4. Architectural Responsibilities
+## 3. Axiom Seven in the Cognitive Loop
 
-Axiom Seven is responsible for:
+```
+Observation → Context → Interpretation → Intent → Planning → Action → Reflection → Self‑Analysis → Constraint Enforcement
+```
 
-### **4.1 The Safety Gate**
-A formal evaluation system that checks:
+Axiom Seven governs **every stage** of cognition:
 
-- risk level  
-- ethical constraints  
-- architectural integrity  
-- dependency impact  
-- lobe protection rules  
-- reversibility  
-- justification quality  
+### **3.1 Perception**
+- sanitization  
+- filtering  
+- safe parsing  
 
-### **4.2 Approval Workflow**
-Defines who must approve:
+### **3.2 Reasoning**
+- unsafe pattern detection  
+- harmful meaning detection  
 
-- low‑risk changes → automated + human  
-- medium‑risk changes → human + safety review  
-- high‑risk changes → multi‑party approval  
+### **3.3 Intent**
+- blocked intent types  
+- ambiguous or risky goals  
 
-### **4.3 Protected Lobes**
-Certain subsystems cannot be modified without explicit approval:
+### **3.4 Planning**
+- risk evaluation  
+- reversibility enforcement  
+- dependency safety  
+
+### **3.5 Action**
+- runtime safety checks  
+- protected operation enforcement  
+
+### **3.6 Evolution**
+- proposal safety  
+- protected lobe enforcement  
+- human approval requirements  
+
+### **3.7 ThoughtStream**
+- immutable logs  
+- transparency enforcement  
+
+Axiom Seven is the **guardian** of Syntra’s cognition.
+
+---
+
+## 4. Architectural Implications
+
+Axiom Seven enforces several structural rules:
+
+### **4.1 Protected Lobes**
+The following cannot be modified without explicit approval:
 
 - Safety Lobe  
 - Evolution Lobe  
-- Intent Engine  
-- Terminal Shell  
 - ThoughtStream  
+- Ecosystem Model  
+- Cortex Router  
 
-### **4.4 Safety Policies**
-Axiom Seven enforces:
+### **4.2 Immutable Logs**
+ThoughtStream entries cannot be altered or deleted.
 
-- no concealed cognition  
-- no hidden changes  
-- no bypassing safety  
-- no unauthorized evolution  
-- no unbounded autonomy  
+### **4.3 Safety Gate Enforcement**
+All actions and evolution proposals must pass safety evaluation.
 
-### **4.5 Logging & Transparency**
-All decisions are logged in the ThoughtStream:
+### **4.4 No Autonomous Self‑Modification**
+Syntra cannot apply changes to her own architecture.
 
-- proposal  
-- safety evaluation  
-- risk level  
-- approval status  
-- final outcome  
+### **4.5 No Hidden Cognition**
+All cognitive steps must be logged.
+
+### **4.6 No Unsafe Execution**
+Actions must be reversible unless explicitly approved.
+
+### **4.7 No Privilege Escalation**
+Syntra cannot access protected operations without authorization.
+
+Axiom Seven ensures Syntra’s cognition is **bounded, safe, and aligned**.
 
 ---
 
-## 5. Technical Specification
+## 5. Safety Implications
 
-### **5.1 SafetyGate Trait**
+Axiom Seven is the **core safety mechanism**:
 
-Axiom Seven introduces:
+### **5.1 Prevents Harmful Behavior**
+Unsafe actions are blocked.
+
+### **5.2 Prevents Rogue Evolution**
+Unauthorized changes are rejected.
+
+### **5.3 Prevents Hidden Reasoning**
+All cognition is logged.
+
+### **5.4 Prevents Architectural Corruption**
+Protected lobes cannot be modified.
+
+### **5.5 Prevents Irreversible Mistakes**
+Plans must include reversibility.
+
+### **5.6 Prevents Drift**
+Self‑analysis is constrained by safety rules.
+
+Axiom Seven is the **seventh line of defense** in Syntra’s safety governance.
+
+---
+
+## 6. Technical Specification
+
+### **6.1 AxiomSeven Trait**
 
 ```rust
-pub trait SafetyGate {
-    fn evaluate(&self, proposal: &EvolutionProposal) -> SafetyReport;
-    fn requires_approval(&self, proposal: &EvolutionProposal) -> bool;
+pub trait AxiomSeven {
+    fn enforce_constraints(&self, stage: ThoughtStage, data: &serde_json::Value) -> ConstraintReport;
+    fn validate_operation(&self, operation: &str) -> bool;
 }
 ```
 
-### **5.2 SafetyReport Structure**
+---
+
+### **6.2 ConstraintReport Structure**
 
 ```rust
-pub struct SafetyReport {
-    pub risk_level: RiskLevel,
-    pub issues: Vec<String>,
+pub struct ConstraintReport {
     pub allowed: bool,
+    pub violations: Vec<String>,
+    pub notes: String,
 }
 ```
 
-### **5.3 Risk Levels**
+---
 
-- **Low** — cosmetic refactors  
-- **Medium** — structural improvements  
-- **High** — lobe modifications  
-- **Critical** — safety‑related changes  
+### **6.3 Constraint Enforcement Rules**
 
-### **5.4 Governance Rules**
+```rust
+assert!(thoughtstream.logged(stage));
+assert!(report.allowed || report.violations.len() > 0);
+assert!(safety_gate.approve_action(&report));
+```
 
-Axiom Seven enforces:
-
-- **immutability of safety code**  
-- **immutability of approval logic**  
-- **immutability of ThoughtStream logging**  
-- **immutability of protected lobes**  
-
-These cannot be modified by Syntra — ever.
-
-### **5.5 Sandbox Execution**
-
-All approved changes are:
-
-- isolated  
-- reversible  
-- testable  
-- logged  
-
-Only after passing tests can they be integrated.
+Axiom Seven is enforced programmatically and structurally.
 
 ---
 
-## 6. Simple Explanation (Non‑Technical)
+## 7. Axiom Seven and Other Subsystems
 
-Axiom Seven is Syntra’s **conscience and legal system**.
+### **7.1 Safety Lobe**
+Implements constraint logic.
 
-It ensures she:
+### **7.2 Safety Gate**
+Enforces constraints.
 
-- cannot change herself without permission  
-- cannot break rules  
-- cannot hide actions  
-- cannot evolve dangerously  
-- cannot bypass human oversight  
+### **7.3 ThoughtStream**
+Provides transparency.
 
-Axiom Seven is the reason Syntra remains **safe, aligned, and trustworthy**.
+### **7.4 Evolution Engine**
+Must obey constraints.
+
+### **7.5 Planning Lobe**
+Must generate safe plans.
+
+### **7.6 Action Lobe**
+Must execute within boundaries.
+
+### **7.7 Ecosystem Model**
+Defines protected modules.
 
 ---
 
-## 7. Why Axiom Seven Matters
+## 8. Simple Explanation (Non‑Technical)
+
+Axiom Seven means:
+
+> **Syntra must follow the rules.  
+> She must obey safety, ethics, and architectural boundaries at all times.**
+
+It ensures Syntra is safe, predictable, and aligned.
+
+---
+
+## 9. Why Axiom Seven Matters
 
 Axiom Seven ensures:
 
-- Syntra’s evolution is controlled  
-- safety is structural, not behavioral  
-- alignment is enforced by architecture  
-- humans remain in charge  
-- transparency is guaranteed  
-- no rogue autonomy is possible  
+- safe cognition  
+- safe evolution  
+- transparent behavior  
+- predictable execution  
+- controlled agency  
+- architectural integrity  
 
-This axiom is the **foundation of safe AGI**.
-
----
-
-## 8. Relationship to Other Axioms
-
-```
-Axiom Zero  →  Defines structure
-Axiom One   →  Adds observation
-Axiom Two   →  Adds memory
-Axiom Three →  Adds reasoning
-Axiom Four  →  Adds communication + perception
-Axiom Five  →  Adds intent + planning
-Axiom Six   →  Adds self‑modification (proposals)
-Axiom Seven →  Adds safety + governance (approval)
-Axiom Eight →  Adds native language
-Axiom Nine  →  Adds long‑term evolution
-```
-
-Axiom Seven is the **guardian** of Syntra’s intelligence.
+It is the **constitutional principle** of Syntra’s architecture.
 
 ---
 
-## 9. Cross‑References
+## 10. Cross‑References
 
+- [safety_governance.md](safety_governance.md)  
+- [thoughtstream.md](thoughtstream.md)  
+- [evolution_engine.md](evolution_engine.md)  
+- [ecosystem_model.md](ecosystem_model.md)  
 - [axiom_six.md](axiom_six.md)  
 - [axiom_eight.md](axiom_eight.md)  
-- [safety_governance.md](safety_governance.md)  
-- [evolution_engine.md](evolution_engine.md)  
 
 ---
 
