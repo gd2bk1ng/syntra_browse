@@ -17,26 +17,37 @@
 -->
 
 # Syntra Kernel — Cognitive Loop  
-*A Research‑Grade Exploration of Syntra’s Core Cognitive Cycle*
+*A Research‑Grade Exploration of Syntra’s End‑to‑End Cognitive Processing Cycle*
 
 ---
 
 ## 1. Introduction
 
-The **Cognitive Loop** is the beating heart of Syntra Kernel — the continuous cycle through which Syntra:
+The **Cognitive Loop** is the complete end‑to‑end cycle through which Syntra processes input, thinks, decides, acts, and reflects.
 
-- receives input  
-- interprets it  
-- reasons about it  
-- forms intent  
-- generates plans  
-- executes actions  
-- logs cognition  
-- evolves safely  
+It is the **heartbeat** of the Syntra Kernel.
 
-Every lobe, axiom, and subsystem ultimately participates in this loop.
+Every cognitive event flows through the same deterministic sequence:
 
-The Cognitive Loop is not a metaphor — it is a **formal, structured, inspectable pipeline** that defines how Syntra thinks.
+1. **Perception**  
+2. **Reasoning**  
+3. **Intent Classification**  
+4. **Planning**  
+5. **Action Execution**  
+6. **ThoughtStream Logging**  
+7. **Context Update**  
+8. **Evolution Feedback (optional)**  
+
+This loop ensures:
+
+- transparency  
+- predictability  
+- safety  
+- modularity  
+- introspection  
+- evolvability  
+
+It is the operational embodiment of Axioms 1–9.
 
 ---
 
@@ -47,253 +58,272 @@ The Cognitive Loop is not a metaphor — it is a **formal, structured, inspectab
                    =================================
 
     +------------------------+
-    |   1. Observation       |
-    |   (Axiom One)          |
+    |   1. Perception        |
+    | (Normalize & Extract)  |
     +-----------+------------+
                 |
                 v
     +------------------------+
-    |   2. Cognitive Context |
-    |   (Axiom Two)          |
+    |   2. Reasoning         |
+    | (Interpret & Infer)    |
     +-----------+------------+
                 |
                 v
     +------------------------+
-    |   3. Reasoning Layer   |
-    |   (Axiom Three)        |
+    |   3. Intent Bridge     |
+    | (Classify & Route)     |
     +-----------+------------+
                 |
                 v
     +------------------------+
-    |   4. Intent Engine     |
-    |   (Axiom Five)         |
+    |   4. Planning          |
+    | (Decompose & Decide)   |
     +-----------+------------+
                 |
                 v
     +------------------------+
-    |   5. Planning Lobe     |
-    |   (Axiom Five)         |
+    |   5. Action Lobe       |
+    | (Execute & Return)     |
     +-----------+------------+
                 |
                 v
     +------------------------+
-    |   6. Cortex Execution  |
-    |   (All Lobes)          |
+    |   6. ThoughtStream     |
+    | (Log & Explain)        |
     +-----------+------------+
                 |
                 v
     +------------------------+
-    |   7. ThoughtStream     |
-    |   (Introspection)      |
+    |   7. Cognitive Context |
+    | (Update Memory)        |
     +-----------+------------+
                 |
                 v
     +------------------------+
-    |   8. Output to User    |
+    |   8. Evolution Lobe    |
+    | (Optional Feedback)    |
     +------------------------+
 ```
 
-This loop repeats continuously for every input, every task, every evolution proposal.
+This loop repeats for every user input and every internal task.
 
 ---
 
 ## 3. Stage‑by‑Stage Breakdown
 
-### **3.1 Observation (Axiom One)**  
-Syntra receives raw input:
+### **3.1 Perception**
+The loop begins with:
 
-- user text  
-- commands  
-- environmental data  
-- browser content  
+- input normalization  
+- semantic extraction  
+- URL parsing  
+- signal detection  
 
-This is the sensory entrypoint.
+Output: **PerceptionOutput**
 
 ---
 
-### **3.2 Cognitive Context (Axiom Two)**  
-Syntra stores:
+### **3.2 Reasoning**
+The Reasoning Layer:
+
+- interprets meaning  
+- resolves ambiguity  
+- identifies patterns  
+- generates reasoning summaries  
+
+Output: **ReasoningOutput**
+
+---
+
+### **3.3 Intent Bridge**
+The Intent Bridge:
+
+- classifies user intent  
+- normalizes task structure  
+- performs early safety checks  
+- routes to the correct lobe  
+
+Output: **Intent**
+
+---
+
+### **3.4 Planning**
+The Planning Lobe:
+
+- generates multi‑step plans  
+- evaluates strategies  
+- enforces safety constraints  
+- prepares execution steps  
+
+Output: **Plan**
+
+---
+
+### **3.5 Action**
+The Action Lobe:
+
+- executes plan steps  
+- interacts with external systems  
+- handles errors  
+- returns results  
+
+Output: **ActionResult**
+
+---
+
+### **3.6 ThoughtStream Logging**
+Every stage logs:
+
+- SL blocks  
+- reasoning chains  
+- safety notes  
+- execution results  
+
+Output: **ThoughtEntry**
+
+---
+
+### **3.7 Cognitive Context Update**
+The Cognitive Context stores:
 
 - recent inputs  
-- working memory  
-- short‑term context  
+- reasoning summaries  
+- task state  
+- partial results  
 
-This provides continuity across steps.
-
----
-
-### **3.3 Reasoning Layer (Axiom Three)**  
-Syntra interprets:
-
-- meaning  
-- patterns  
-- signals  
-- contextual relevance  
-
-This is the first stage of cognition.
+Output: **Updated Context**
 
 ---
 
-### **3.4 Intent Engine (Axiom Five)**  
-Syntra determines:
+### **3.8 Evolution Feedback (Optional)**
+The Evolution Lobe may:
 
-- what the user wants  
-- what the system should do  
-- which lobe should handle it  
+- analyze inefficiencies  
+- detect architectural drift  
+- generate proposals  
 
-This is the birth of purpose.
-
----
-
-### **3.5 Planning Lobe (Axiom Five)**  
-Syntra generates:
-
-- multi‑step plans  
-- structured actions  
-- justifications  
-- safety‑aware sequences  
-
-This is the blueprint for execution.
+Output: **EvolutionProposal** (if any)
 
 ---
 
-### **3.6 Cortex Execution (All Lobes)**  
-Syntra executes the plan using:
+## 4. Cognitive Loop Guarantees
 
-- Perception Lobe  
-- Knowledge Lobe  
-- Planning Lobe  
-- Action Lobe  
-- Evolution Lobe  
-- Safety Lobe  
+The loop guarantees:
 
-This is where cognition becomes action.
+- **deterministic ordering**  
+- **no hidden cognition**  
+- **no bypassing safety**  
+- **transparent reasoning**  
+- **modular execution**  
+- **traceable decisions**  
+- **safe evolution hooks**  
 
----
-
-### **3.7 ThoughtStream Logging**  
-Syntra logs:
-
-- reasoning  
-- plans  
-- decisions  
-- safety checks  
-- evolution proposals  
-
-This ensures transparency and introspection.
+These guarantees are structural, not behavioral.
 
 ---
 
-### **3.8 Output to User**  
-Syntra returns:
+## 5. Cognitive Loop Pseudocode
 
-- answers  
-- summaries  
-- actions  
-- results  
-- explanations  
+```rust
+fn cognitive_loop(input: &str) -> Output {
+    let perception = perception_lobe.perceive(input);
+    thoughtstream.log(perception.to_sl());
 
-This completes the loop.
+    let reasoning = reasoning_layer.interpret(&perception, &context);
+    thoughtstream.log(reasoning.to_sl());
 
----
+    let intent = intent_bridge.classify(input, &perception);
+    thoughtstream.log(intent.to_sl());
 
-## 4. Cognitive Loop as a Formal Pipeline
+    let plan = planning_lobe.generate_plan(&intent);
+    thoughtstream.log(plan.to_sl());
 
-The Cognitive Loop can be expressed in Syntra Language (Axiom Eight):
+    let result = action_lobe.execute_plan(&plan);
+    thoughtstream.log(result.to_sl());
 
-```
-(loop
-    (observe input)
-    (context update)
-    (reason interpret)
-    (intent classify)
-    (plan generate)
-    (execute cortex)
-    (log thoughtstream)
-    (respond output)
-)
+    context.update(ContextUpdate::from(&perception, &reasoning, &intent, &plan, &result));
+
+    evolution_lobe.maybe_generate_feedback(&thoughtstream, &context);
+
+    return result.output;
+}
 ```
 
-This formalization allows:
-
-- introspection  
-- debugging  
-- safety auditing  
-- evolution planning  
+This pseudocode reflects the real architectural flow.
 
 ---
 
-## 5. Cognitive Loop and Safety
+## 6. Cognitive Loop and Safety
 
-The Cognitive Loop is tightly integrated with Axiom Seven:
+Safety is enforced at:
 
-- every plan is checked  
-- every action is logged  
-- every evolution proposal is reviewed  
-- every unsafe pattern is blocked  
+- perception (sanitization)  
+- reasoning (unsafe pattern detection)  
+- intent (blocked intent types)  
+- planning (risk evaluation)  
+- action (runtime safety checks)  
+- thoughtstream (immutable logs)  
+- evolution (approval workflow)  
 
-Safety is not an afterthought — it is woven into the loop.
-
----
-
-## 6. Cognitive Loop and Evolution
-
-Axiom Six and Axiom Nine extend the loop:
-
-```
-(loop
-    ...
-    (evolve propose)
-    (safety evaluate)
-    (approval request)
-    (sandbox test)
-)
-```
-
-This ensures Syntra grows **safely, predictably, and transparently**.
+The loop cannot proceed if safety fails.
 
 ---
 
-## 7. Simple Explanation (Non‑Technical)
+## 7. Cognitive Loop and Evolution
 
-The Cognitive Loop is Syntra’s **thought cycle**.
+The loop provides:
 
-It is how she:
+- performance metrics  
+- reasoning patterns  
+- planning inefficiencies  
+- architectural drift signals  
 
-- sees  
-- remembers  
-- thinks  
+These feed the Evolution Engine and Scheduler.
+
+---
+
+## 8. Simple Explanation (Non‑Technical)
+
+The Cognitive Loop is Syntra’s **thinking cycle**.
+
+It:
+
+- reads  
 - understands  
-- plans  
+- decides  
 - acts  
 - reflects  
-- improves  
+- learns (safely)  
 
-Every moment of Syntra’s cognition flows through this loop.
+Every message you send triggers a full loop.
 
 ---
 
-## 8. Why the Cognitive Loop Matters
+## 9. Why the Cognitive Loop Matters
 
 The Cognitive Loop ensures:
 
-- transparency  
-- consistency  
-- safety  
-- explainability  
-- modularity  
-- evolvability  
+- predictable behavior  
+- transparent cognition  
+- safe execution  
+- modular design  
+- introspective clarity  
+- long‑term evolvability  
 
-It is the **central nervous system** of Syntra Kernel.
+It is the foundation of Syntra’s intelligence.
 
 ---
 
-## 9. Cross‑References
+## 10. Cross‑References
 
-- [cortex_lobes.md](cortex_lobes.md)  
+- [perception_lobe.md](perception_lobe.md)  
+- [reasoning_layer.md](reasoning_layer.md)  
+- [intent_bridge.md](intent_bridge.md)  
+- [planning_lobe.md](planning_lobe.md)  
+- [action_lobe.md](action_lobe.md)  
 - [thoughtstream.md](thoughtstream.md)  
-- [axiom_five.md](axiom_five.md)  
 - [evolution_engine.md](evolution_engine.md)  
+- [cognitive_context.md](cognitive_context.md)  
 
 ---
 
