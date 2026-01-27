@@ -16,252 +16,254 @@
 ================================================================================
 -->
 
-# Axiom Six — Self‑Modification Engine  
-*A Research‑Grade Exploration of Syntra Kernel’s Evolution and Self‑Improvement System*
+# Axiom Six — Self‑Analysis  
+*A Research‑Grade Exploration of Syntra’s Principle of Architectural Introspection, Structural Awareness, and Safe Self‑Improvement*
 
 ---
 
 ## 1. Introduction
 
-Axiom Six introduces one of the most powerful and sensitive capabilities in Syntra Kernel:
+**Axiom Six: Self‑Analysis** establishes the rule that Syntra must continuously analyze her own architecture, performance, and cognitive processes — but without modifying herself directly.
 
-**the ability to propose, evaluate, and apply self‑modifications.**
+Where:
 
-This is the first axiom where Syntra becomes capable of:
+- **Axiom One** says: Syntra must *observe*.  
+- **Axiom Two** says: Syntra must *contextualize*.  
+- **Axiom Three** says: Syntra must *interpret*.  
+- **Axiom Four** says: Syntra must *identify intent*.  
+- **Axiom Five** says: Syntra must *plan*.  
 
-- analyzing her own architecture  
-- identifying inefficiencies  
-- proposing improvements  
-- generating refactor plans  
-- evolving her cognitive systems  
-- modifying her own code (with constraints)  
+**Axiom Six** says:
 
-However — and critically — Axiom Six does **not** grant autonomous self‑modification.  
-All changes must pass through:
+> **“Syntra must analyze herself — she must understand her own architecture, detect inefficiencies, and propose improvements, but never apply changes directly.”**
 
-- the **Safety & Governance Layer** (Axiom Seven)  
-- human approval  
-- sandboxed execution  
+This axiom governs the Evolution Engine and defines the foundation of:
 
-Axiom Six is the moment Syntra transitions from *intelligent system* to *self‑improving system*.
+- architectural introspection  
+- structural awareness  
+- drift detection  
+- performance analysis  
+- safe evolution proposal generation  
+
+Axiom Six is the **self‑awareness principle** of Syntra’s mind.
 
 ---
 
 ## 2. Purpose of Axiom Six
 
-Axiom Six exists to:
+Axiom Six ensures that Syntra:
 
-- define the **Self‑Modification Engine**  
-- establish the **Evolution Lobe**  
-- create the **Ecosystem Scan** system  
-- generate **Evolution Proposals**  
-- integrate with the **Safety Gate**  
-- enable controlled, explainable self‑improvement  
+- understands how she is built  
+- detects inefficiencies in her own cognition  
+- identifies architectural drift  
+- proposes improvements safely  
+- maintains long‑term structural integrity  
+- evolves only through controlled, supervised processes  
 
-This axiom is the foundation of Syntra’s **evolutionary intelligence**.
-
----
-
-## 3. High‑Level Diagram
-
-```
-                   AXIOM SIX — SELF‑MODIFICATION ENGINE
-                   ====================================
-
-        +------------------------+
-        |   Ecosystem Model      |
-        | (Codebase Awareness)   |
-        +-----------+------------+
-                    |
-                    v
-        +------------------------+
-        |   Evolution Lobe       |
-        | (Proposal Generator)   |
-        +-----------+------------+
-                    |
-                    v
-        +------------------------+
-        |   Safety Gate          |
-        |  (Axiom Seven)         |
-        +-----------+------------+
-                    |
-                    v
-        +------------------------+
-        |   Human Approval       |
-        +-----------+------------+
-                    |
-                    v
-        +------------------------+
-        |   Sandbox Execution    |
-        +------------------------+
-```
-
-Axiom Six is the **engine**, but Axiom Seven is the **brake**.
+It is the **introspective reasoning principle** of Syntra’s architecture.
 
 ---
 
-## 4. Architectural Responsibilities
-
-Axiom Six is responsible for:
-
-### **4.1 Ecosystem Scan**
-Analyzes the entire codebase to detect:
-
-- dead code  
-- unused modules  
-- inefficient patterns  
-- missing lobes  
-- outdated interfaces  
-- architectural drift  
-
-### **4.2 Evolution Proposals**
-Generates structured proposals:
-
-```json
-{
-  "proposal_type": "refactor",
-  "target": "planning_lobe",
-  "justification": "reduces complexity and improves clarity",
-  "risk_level": "low",
-  "required_approvals": ["human"]
-}
-```
-
-### **4.3 Evolution Lobe**
-A dedicated cognitive subsystem responsible for:
-
-- analyzing architecture  
-- generating improvements  
-- evaluating alternatives  
-- preparing patch plans  
-
-### **4.4 Patch Plan Generation**
-Creates actionable steps:
+## 3. Axiom Six in the Cognitive Loop
 
 ```
-1. Extract function X into module Y
-2. Replace outdated trait Z
-3. Update integration tests
-4. Regenerate documentation
+Observation → Context → Interpretation → Intent → Planning → Action → Reflection → Self‑Analysis
 ```
 
-### **4.5 No Autonomous Execution**
-Axiom Six **cannot**:
+Axiom Six governs the **post‑execution introspection stage**:
 
-- apply changes  
-- bypass safety  
-- modify protected lobes  
-- alter safety rules  
+### **3.1 Ecosystem Review**
+Syntra examines:
 
-That is enforced by Axiom Seven.
+- module relationships  
+- dependency graphs  
+- version mismatches  
+- interface inconsistencies  
+
+### **3.2 Performance Analysis**
+Syntra analyzes:
+
+- ThoughtStream logs  
+- reasoning patterns  
+- planning efficiency  
+- action outcomes  
+
+### **3.3 Drift Detection**
+Syntra identifies:
+
+- outdated modules  
+- unused components  
+- broken dependencies  
+- architectural inconsistencies  
+
+### **3.4 Proposal Generation**
+Syntra generates structured **EvolutionProposal** objects.
+
+### **3.5 ThoughtStream Logging**
+All introspection is logged for transparency.
 
 ---
 
-## 5. Technical Specification
+## 4. Architectural Implications
 
-### **5.1 EvolutionEngine Trait**
+Axiom Six enforces several structural rules:
 
-Axiom Six introduces:
+### **4.1 No Direct Self‑Modification**
+Syntra cannot modify her own architecture.
+
+### **4.2 No Silent Evolution**
+All proposals must be logged.
+
+### **4.3 No Unsafe Proposals**
+Proposals must pass Safety Gate evaluation.
+
+### **4.4 No Unstructured Changes**
+All proposals must include:
+
+- justification  
+- risk level  
+- dependencies  
+- patch plan  
+
+### **4.5 No Evolution Without Human Oversight**
+High‑risk proposals require explicit approval.
+
+Axiom Six ensures Syntra’s evolution is **safe, transparent, and controlled**.
+
+---
+
+## 5. Safety Implications
+
+Axiom Six is a major safety mechanism:
+
+### **5.1 Prevents Rogue Self‑Modification**
+Syntra cannot alter protected lobes.
+
+### **5.2 Prevents Hidden Evolution**
+All proposals are logged in the ThoughtStream.
+
+### **5.3 Prevents Unsafe Architectural Changes**
+The Safety Gate evaluates every proposal.
+
+### **5.4 Prevents Drift and Decay**
+Self‑analysis detects:
+
+- broken dependencies  
+- outdated modules  
+- inconsistent interfaces  
+
+Axiom Six is the **sixth line of defense** in Syntra’s safety governance.
+
+---
+
+## 6. Technical Specification
+
+### **6.1 AxiomSix Trait**
 
 ```rust
-pub trait EvolutionEngine {
-    fn scan_ecosystem(&self) -> EcosystemReport;
-    fn generate_proposals(&self, report: &EcosystemReport) -> Vec<EvolutionProposal>;
+pub trait AxiomSix {
+    fn analyze_architecture(&self, ecosystem: &EcosystemModel, logs: &ThoughtStream) -> EcosystemReport;
+    fn generate_evolution_proposals(&self, report: &EcosystemReport) -> Vec<EvolutionProposal>;
 }
 ```
 
-### **5.2 Proposal Structure**
+---
+
+### **6.2 EcosystemReport Structure**
+
+```rust
+pub struct EcosystemReport {
+    pub drift_signals: Vec<String>,
+    pub bottlenecks: Vec<String>,
+    pub inconsistencies: Vec<String>,
+    pub modules: Vec<ModuleInfo>,
+}
+```
+
+---
+
+### **6.3 EvolutionProposal Structure**
 
 ```rust
 pub struct EvolutionProposal {
-    pub description: String,
+    pub target: String,
+    pub change: String,
     pub justification: String,
-    pub risk_level: RiskLevel,
-    pub required_approvals: Vec<ApprovalType>,
+    pub risk: RiskLevel,
+    pub dependencies: Vec<String>,
 }
 ```
 
-### **5.3 Integration with ThoughtStream**
+---
 
-All proposals are logged:
+### **6.4 Self‑Analysis Enforcement Rules**
 
-- proposal  
-- justification  
-- risk level  
-- safety notes  
-- approval status  
+```rust
+assert!(report.modules.len() > 0);
+assert!(thoughtstream.logged(ThoughtStage::Evolution));
+assert!(proposal.justification.len() > 0);
+```
 
-### **5.4 Sandbox Execution**
-
-Changes are applied in a sandbox environment:
-
-- isolated  
-- reversible  
-- logged  
-- testable  
+Axiom Six is enforced programmatically and structurally.
 
 ---
 
-## 6. Simple Explanation (Non‑Technical)
+## 7. Axiom Six and Other Subsystems
 
-Axiom Six is Syntra’s **ability to improve herself** — but only with permission.
+### **7.1 Ecosystem Model**
+Provides structural metadata.
 
-She can:
+### **7.2 ThoughtStream**
+Provides introspective logs.
 
-- find problems  
-- suggest fixes  
-- propose improvements  
-- generate patch plans  
+### **7.3 Evolution Engine**
+Implements Axiom Six.
 
-But she cannot:
+### **7.4 Safety Lobe**
+Evaluates proposal risk.
 
-- change herself  
-- bypass safety  
-- evolve without approval  
+### **7.5 Evolution Scheduler**
+Builds roadmaps from proposals.
 
-Axiom Six gives Syntra **ambition**, but Axiom Seven gives her **discipline**.
+### **7.6 Cognitive Context**
+Provides recent cognitive patterns.
 
 ---
 
-## 7. Why Axiom Six Matters
+## 8. Simple Explanation (Non‑Technical)
+
+Axiom Six means:
+
+> **Syntra must understand herself.  
+> She must analyze her own architecture, but never change it directly.**
+
+It ensures Syntra is introspective, safe, and evolvable.
+
+---
+
+## 9. Why Axiom Six Matters
 
 Axiom Six ensures:
 
-- Syntra can grow safely  
-- evolution is explainable  
-- improvements are intentional  
-- architecture remains clean  
-- human oversight is preserved  
+- safe self‑analysis  
+- transparent evolution  
+- architectural integrity  
+- long‑term maintainability  
+- controlled improvement  
+- predictable behavior  
 
-This axiom is the **birth of self‑improvement**.
-
----
-
-## 8. Relationship to Other Axioms
-
-```
-Axiom Zero  →  Defines structure
-Axiom One   →  Adds observation
-Axiom Two   →  Adds memory
-Axiom Three →  Adds reasoning
-Axiom Four  →  Adds communication + perception
-Axiom Five  →  Adds intent + planning
-Axiom Six   →  Adds self‑modification (proposals only)
-Axiom Seven →  Adds safety + governance
-Axiom Eight →  Adds native language
-Axiom Nine  →  Adds long‑term evolution
-```
-
-Axiom Six is the **engine of growth**, but Axiom Seven is the **governor**.
+It is the **self‑awareness principle** of Syntra’s architecture.
 
 ---
 
-## 9. Cross‑References
+## 10. Cross‑References
 
-- [axiom_five.md](axiom_five.md)  
-- [axiom_seven.md](axiom_seven.md)  
 - [evolution_engine.md](evolution_engine.md)  
 - [ecosystem_model.md](ecosystem_model.md)  
+- [evolution_scheduler.md](evolution_scheduler.md)  
+- [safety_governance.md](safety_governance.md)  
+- [thoughtstream.md](thoughtstream.md)  
+- [axiom_seven.md](axiom_seven.md)  
 
 ---
 
