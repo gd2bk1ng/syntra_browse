@@ -17,26 +17,28 @@
 -->
 
 # Syntra Kernel — Evolution Engine  
-*A Research‑Grade Exploration of Syntra’s Self‑Improvement and Architectural Growth System*
+*A Research‑Grade Exploration of Syntra’s Self‑Analysis, Improvement Proposal, and Architectural Growth System*
 
 ---
 
 ## 1. Introduction
 
-The **Evolution Engine** is the subsystem that enables Syntra Kernel to:
+The **Evolution Engine** is Syntra Kernel’s subsystem for generating **safe, structured, and explainable proposals for self‑improvement**.
 
-- analyze its own architecture  
-- detect inefficiencies  
-- propose improvements  
-- generate patch plans  
-- support long‑term evolution  
-- collaborate with the Safety Gate (Axiom Seven)  
-- operate within strict human‑guided constraints  
+It does **not** modify Syntra.  
+It does **not** apply changes.  
+It does **not** bypass safety.
 
-It is the operational core of **Axiom Six**, and one of the most advanced components of the Syntra architecture.
+Instead, it:
 
-The Evolution Engine does **not** apply changes autonomously.  
-It is a **proposal generator**, not an autonomous modifier.
+- analyzes the Ecosystem Model  
+- identifies inefficiencies  
+- detects architectural drift  
+- proposes improvements  
+- structures patch plans  
+- logs everything in the ThoughtStream  
+
+It is the operational core of **Axiom Six** — Syntra’s ability to understand herself and propose improvements.
 
 ---
 
@@ -44,13 +46,15 @@ It is a **proposal generator**, not an autonomous modifier.
 
 The Evolution Engine exists to:
 
-- provide structured self‑analysis  
-- generate safe, explainable evolution proposals  
+- analyze Syntra’s architecture  
+- detect bottlenecks and inefficiencies  
+- generate safe evolution proposals  
+- provide structured patch plans  
+- support long‑term growth  
 - maintain architectural integrity  
-- support long‑term planning (Axiom Nine)  
-- ensure Syntra grows in a controlled, transparent way  
+- ensure transparent, auditable evolution  
 
-It is the mechanism through which Syntra becomes a **self‑improving system**.
+It is Syntra’s **self‑analysis cortex**.
 
 ---
 
@@ -60,97 +64,130 @@ It is the mechanism through which Syntra becomes a **self‑improving system**.
                    SYNTRA KERNEL — EVOLUTION ENGINE
                    =================================
 
-        +------------------------+
-        |   Ecosystem Model      |
-        | (Structural Awareness) |
-        +-----------+------------+
-                    |
-                    v
-        +------------------------+
-        |   Evolution Engine     |
-        | (Proposal Generator)   |
-        +-----------+------------+
-                    |
-                    v
-        +------------------------+
-        |   Safety Gate          |
-        |   (Axiom Seven)        |
-        +-----------+------------+
-                    |
-                    v
-        +------------------------+
-        |   Human Approval       |
-        +-----------+------------+
-                    |
-                    v
-        +------------------------+
-        |   Sandbox Execution    |
-        +------------------------+
+    +------------------------+
+    |   Ecosystem Model      |
+    | (Structural Graph)     |
+    +-----------+------------+
+                |
+                v
+    +------------------------+
+    |   Evolution Engine     |
+    | (Proposal Generator)   |
+    +-----------+------------+
+                |
+                v
+    +------------------------+
+    |   Safety Gate          |
+    | (Risk Evaluation)      |
+    +-----------+------------+
+                |
+                v
+    +------------------------+
+    |   Evolution Scheduler  |
+    | (Roadmaps & Ordering)  |
+    +------------------------+
 ```
 
-The Evolution Engine is the **analytical core** of Syntra’s growth.
+The Evolution Engine is the **analytical front‑end** of Syntra’s self‑improvement pipeline.
 
 ---
 
 ## 4. Responsibilities of the Evolution Engine
 
 ### **4.1 Ecosystem Analysis**
-The engine consumes the Ecosystem Model to:
+The engine analyzes:
 
-- detect unused modules  
-- identify outdated interfaces  
-- locate architectural drift  
-- find dependency cycles  
-- highlight complexity hotspots  
+- module relationships  
+- dependency graphs  
+- version mismatches  
+- interface inconsistencies  
+- performance bottlenecks  
+- architectural drift  
 
-### **4.2 Proposal Generation**
-It produces structured proposals:
+It produces a structured **EcosystemReport**.
 
-```json
-{
-  "proposal_type": "refactor",
-  "target": "knowledge_lobe",
-  "justification": "improve semantic indexing",
-  "risk_level": "medium"
-}
-```
+---
 
-### **4.3 Patch Plan Construction**
-For each proposal, it generates a multi‑step plan:
+### **4.2 Drift Detection**
+The engine identifies:
 
-```
-1. Extract semantic_indexer into its own module
-2. Replace legacy trait with new interface
-3. Update integration tests
-4. Regenerate documentation
-```
+- outdated modules  
+- unused modules  
+- broken dependencies  
+- missing safety boundaries  
+- unregistered changes  
 
-### **4.4 Risk Assessment**
-The engine assigns:
+This prevents silent architectural decay.
 
-- risk level  
-- dependency impact  
-- safety considerations  
-- required approvals  
+---
 
-### **4.5 Integration with Syntra Language**
-All proposals are encoded in SL:
+### **4.3 Proposal Generation**
+The engine generates **EvolutionProposal** objects:
 
 ```
 (evolve
-    (target "planning_lobe")
-    (change "modularize")
-    (risk medium)
-    (justification "improves clarity")
+    (target "knowledge_lobe")
+    (change "refactor_indexer")
+    (justification "improves semantic retrieval")
+    (risk "medium")
 )
 ```
 
-### **4.6 ThoughtStream Logging**
-Every proposal is logged for:
+Each proposal includes:
 
-- transparency  
-- safety review  
-- historical tracking  
+- target module  
+- change description  
+- justification  
+- risk estimate  
+- dependencies  
+- expected impact  
+
+---
+
+### **4.4 Patch Plan Construction**
+For each proposal, the engine constructs a **patch plan**:
+
+```
+(patch_plan
+    (steps
+        (backup_module)
+        (apply_refactor)
+        (run_tests)
+        (validate_dependencies)
+    )
+)
+```
+
+Patch plans are:
+
+- reversible  
+- testable  
+- safety‑aware  
+- dependency‑aware  
+
+---
+
+### **4.5 ThoughtStream Logging**
+Every proposal is logged:
+
+- proposal structure  
+- justification  
+- risk level  
+- dependency notes  
+
+This ensures transparency and auditability.
+
+---
+
+### **4.6 Safety Integration**
+The Evolution Engine does **not** apply changes.  
+It sends proposals to the **Safety Gate**, which:
+
+- evaluates risk  
+- blocks unsafe proposals  
+- requires human approval for high‑risk changes  
+
+Safety is structural, not optional.
 
 ---
 
@@ -160,107 +197,107 @@ Every proposal is logged for:
 
 ```rust
 pub trait EvolutionEngine {
-    fn scan_ecosystem(&self) -> EcosystemReport;
+    fn analyze(&self, ecosystem: &EcosystemModel) -> EcosystemReport;
     fn generate_proposals(&self, report: &EcosystemReport) -> Vec<EvolutionProposal>;
     fn build_patch_plan(&self, proposal: &EvolutionProposal) -> PatchPlan;
 }
 ```
 
-### **5.2 EvolutionProposal Structure**
+---
+
+### **5.2 EcosystemReport Structure**
 
 ```rust
-pub struct EvolutionProposal {
-    pub description: String,
-    pub justification: String,
-    pub risk_level: RiskLevel,
-    pub required_approvals: Vec<ApprovalType>,
+pub struct EcosystemReport {
+    pub modules: Vec<ModuleInfo>,
+    pub drift_signals: Vec<String>,
+    pub bottlenecks: Vec<String>,
+    pub inconsistencies: Vec<String>,
 }
 ```
 
-### **5.3 PatchPlan Structure**
+---
+
+### **5.3 EvolutionProposal Structure**
+
+```rust
+pub struct EvolutionProposal {
+    pub target: String,
+    pub change: String,
+    pub justification: String,
+    pub risk: RiskLevel,
+    pub dependencies: Vec<String>,
+}
+```
+
+---
+
+### **5.4 PatchPlan Structure**
 
 ```rust
 pub struct PatchPlan {
     pub steps: Vec<String>,
-    pub justification: String,
-    pub estimated_complexity: ComplexityLevel,
+    pub reversible: bool,
+    pub notes: String,
 }
 ```
 
-### **5.4 Integration with Safety Gate**
+---
 
-The Evolution Engine does **not** evaluate safety.  
-It only provides:
+## 6. Evolution Engine in the Cognitive Loop
 
-- proposals  
-- patch plans  
-- risk estimates  
+The Evolution Engine is active during:
 
-The Safety Gate (Axiom Seven) performs:
+### **6.1 Post‑Execution Analysis**
+Uses ThoughtStream logs to detect inefficiencies.
 
-- ethical evaluation  
-- risk validation  
-- approval enforcement  
+### **6.2 Ecosystem Review**
+Analyzes structural metadata.
+
+### **6.3 Proposal Generation**
+Creates structured evolution suggestions.
+
+### **6.4 Safety Evaluation**
+Sends proposals to the Safety Gate.
+
+### **6.5 Scheduling**
+Provides proposals to the Evolution Scheduler.
 
 ---
 
-## 6. Evolution Engine Workflow
+## 7. Evolution Engine and Other Subsystems
 
-```
-scan_ecosystem()
-        ↓
-generate_proposals()
-        ↓
-build_patch_plan()
-        ↓
-log_to_thoughtstream()
-        ↓
-submit_to_safety_gate()
-        ↓
-await_human_approval()
-        ↓
-sandbox_execution()
-```
+### **7.1 Ecosystem Model**
+Provides architectural structure.
 
-This workflow ensures **safe, explainable, reversible evolution**.
+### **7.2 Safety Lobe**
+Evaluates proposal risk.
 
----
+### **7.3 Evolution Scheduler**
+Builds roadmaps from proposals.
 
-## 7. Evolution Engine and Axiom Nine
+### **7.4 ThoughtStream**
+Logs proposals and analysis.
 
-The Evolution Engine provides raw material for the **Evolution Scheduler**:
-
-- prioritized proposals  
-- dependency maps  
-- patch plans  
-- architectural insights  
-
-Axiom Nine transforms these into:
-
-- long‑term evolution plans  
-- multi‑phase roadmaps  
-- strategic development cycles  
+### **7.5 Knowledge Lobe**
+May store semantic metadata about proposals.
 
 ---
 
 ## 8. Simple Explanation (Non‑Technical)
 
-The Evolution Engine is Syntra’s **self‑improvement generator**.
+The Evolution Engine is Syntra’s **self‑improvement advisor**.
 
-It allows her to:
+It:
 
-- find problems  
-- suggest improvements  
-- create upgrade plans  
-- explain why changes matter  
+- studies how she is built  
+- finds weak spots  
+- suggests improvements  
+- explains why  
+- logs everything  
+- never applies changes itself  
 
-But she cannot:
-
-- apply changes  
-- bypass safety  
-- evolve autonomously  
-
-The Evolution Engine gives Syntra **ambition**, while Axiom Seven gives her **discipline**.
+It is the reason Syntra can grow **safely and intelligently**.
 
 ---
 
@@ -268,22 +305,23 @@ The Evolution Engine gives Syntra **ambition**, while Axiom Seven gives her **di
 
 The Evolution Engine ensures:
 
-- Syntra grows safely  
-- improvements are intentional  
-- architecture remains clean  
-- evolution is explainable  
-- humans stay in control  
+- safe self‑analysis  
+- structured improvement  
+- transparent evolution  
+- dependency‑aware proposals  
+- long‑term architectural health  
 
-It is the **core of Syntra’s self‑improving intelligence**.
+It is essential for Syntra’s ability to evolve responsibly.
 
 ---
 
 ## 10. Cross‑References
 
 - [ecosystem_model.md](ecosystem_model.md)  
+- [evolution_scheduler.md](evolution_scheduler.md)  
+- [safety_governance.md](safety_governance.md)  
+- [thoughtstream.md](thoughtstream.md)  
 - [axiom_six.md](axiom_six.md)  
-- [axiom_seven.md](axiom_seven.md)  
-- [axiom_nine.md](axiom_nine.md)  
 
 ---
 
