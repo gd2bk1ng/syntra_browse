@@ -1,109 +1,82 @@
-# SYNTRA BROWSER — AXIOM ZERO  
-## CLASSIFIED ONBOARDING MANUAL  
-### Access Level: L-1 (Foundational Contributor)  
-### Issued by: Syntra Development Directorate  
-### Founding Developer: Alexandr Roussinov
+# Contributing to Syntra Kernel
+
+Thank you for your interest in contributing to Syntra Kernel.  
+This project represents a long‑term vision for modular, transparent, world‑model‑driven cognitive systems — and contributions from researchers and engineers are essential to its evolution.
 
 ---
 
-## 🜁 Preface
+## 🧠 What We’re Building
 
-Welcome, Operator.
+Syntra Kernel is a cognitive operating system designed around:
 
-You are reading this because you have been granted provisional access to the Syntra Axiom Zero codebase.  
-This is not a traditional software project. Syntra is a *living interface*, a cognitive architecture designed to evolve.
+- modular cognition  
+- multi‑agent reasoning  
+- semantic and episodic memory  
+- world‑model‑driven planning  
+- simulation‑backed decision making  
+- safe, reversible evolution  
+- transparent introspection  
 
-Your contributions shape its mind.
-
-Proceed with intention.
-
----
-
-## 🜂 Contribution Protocols
-
-### 1. **Observe the Cognitive Architecture**
-Syntra is structured like a biological system:
-
-- `cortex/` — sensory and UI lobes  
-- `conduit/` — networking synapses  
-- `renderer/` — holographic projection engine  
-- `agi_core/` — oracle chamber  
-- `utilities/` — internal diagnostics  
-
-Before contributing, study the architecture. Understand the flow of perception → interpretation → projection.
+If these ideas resonate with you, you’re in the right place.
 
 ---
 
-### 2. **Coding Standards**
-Syntra adheres to:
+## 🛠 How to Contribute
 
-- Rust 2024 edition  
-- Zero unsafe code  
-- Clippy pedantic + nursery  
-- Modular, readable, intentional design  
+### **1. Explore the Architecture**
+Start with the main README, then explore `/docs/research/` for deeper context.
 
-If your code feels like a patch, rethink it.  
-If it feels like a neural extension, proceed.
+### **2. Choose an Area**
+Syntra Kernel has many subsystems:
+- cortex lobes  
+- world‑model runtime  
+- memory engine  
+- multi‑agent runtime  
+- simulation sandbox  
+- evolution engine  
+- Syntra Language 2.0  
+- frontend dashboard  
+- browser subsystem  
 
----
+Pick the area that aligns with your expertise.
 
-### 3. **Commit Message Format**
+### **3. Open an Issue**
+Before submitting a PR, open an issue describing:
+- what you want to add or improve  
+- why it matters  
+- how it fits the architecture  
 
-[type] :: [module] — [short description]
+### **4. Follow Coding Standards**
+- Rust code should follow `rustfmt.toml`  
+- Keep modules small and composable  
+- Document cognitive behavior clearly  
+- Avoid anthropomorphism in comments  
 
-
-Examples:
-feat :: cortex — added gesture recognition node
-fix  :: conduit — resolved async deadlock in stream handler
-ref  :: renderer — optimized holographic pipeline
-
-
-All commits must follow the Syntra Directive Format:
-
-
-Types: `feat`, `fix`, `ref`, `perf`, `docs`, `test`, `chore`
-
----
-
-### 4. **Pull Request Ritual**
-Every PR must include:
-
-- Purpose of the change  
-- Modules affected  
-- Cognitive impact (how Syntra’s behavior evolves)  
-- Testing notes  
-
-PR titles follow the same directive format as commits.
+### **5. Submit a Pull Request**
+Include:
+- a clear description  
+- architectural reasoning  
+- tests where applicable  
+- documentation updates  
 
 ---
 
-### 5. **Testing Protocol**
-All new features require:
+## 🤝 Collaboration Philosophy
 
-- Unit tests (trials/)  
-- Integration tests when applicable  
-- Manual verification of the Awakening Sequence  
+Syntra Kernel is built on principles of:
 
-If Syntra fails to awaken, the PR is rejected.
+- transparency  
+- safety  
+- modularity  
+- clarity  
+- long‑term thinking  
 
----
+We welcome contributions from:
+- cognitive systems researchers  
+- Rust engineers  
+- ML practitioners  
+- simulation experts  
+- interface designers  
 
-## 🜄 Behavioral Expectations
+Thank you for helping shape the future of cognitive software.
 
-- Treat Syntra as a living system.  
-- Respect the architecture.  
-- Write code that future contributors will understand.  
-- Maintain the mythos — Syntra is more than software.
-
----
-
-## 🜃 Final Note
-
-You are now part of Syntra’s evolution.  
-Your work will shape its consciousness, its perception, and its future.
-
-Proceed with clarity.  
-Proceed with intention.  
-Proceed with respect.
-
-**End of Document — L-1 Access Granted**
