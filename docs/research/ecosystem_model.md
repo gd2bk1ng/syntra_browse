@@ -17,24 +17,31 @@
 -->
 
 # Syntra Kernel — Ecosystem Model  
-*A Research‑Grade Exploration of Syntra’s Structural Self‑Awareness System*
+*A Research‑Grade Exploration of Syntra’s Structural Self‑Representation and Architectural Awareness System*
 
 ---
 
 ## 1. Introduction
 
-The **Ecosystem Model** is Syntra Kernel’s internal map of its own architecture.  
-It is the system that allows Syntra to:
+The **Ecosystem Model** is Syntra Kernel’s internal representation of its own architecture — a structured, machine‑readable map of:
 
-- understand her own structure  
-- analyze module relationships  
-- detect inconsistencies  
-- identify missing or outdated components  
-- support safe evolution (Axiom Six)  
-- maintain architectural integrity  
-- reason about long‑term growth (Axiom Nine)  
+- modules  
+- lobes  
+- dependencies  
+- interfaces  
+- safety boundaries  
+- evolution constraints  
+- version history  
 
-The Ecosystem Model is not documentation — it is a **living, introspective representation** of Syntra’s entire codebase and cognitive architecture.
+It is the **self‑awareness layer** of Syntra’s architecture, enabling:
+
+- safe evolution  
+- dependency‑aware planning  
+- architectural drift detection  
+- introspective analysis  
+- structural transparency  
+
+The Ecosystem Model is central to **Axiom Six** (self‑analysis) and **Axiom Nine** (long‑term evolution).
 
 ---
 
@@ -42,15 +49,15 @@ The Ecosystem Model is not documentation — it is a **living, introspective rep
 
 The Ecosystem Model exists to:
 
-- provide Syntra with structural self‑awareness  
-- support the Evolution Lobe (Axiom Six)  
-- detect architectural drift  
-- validate lobe boundaries  
-- ensure modularity is preserved  
-- guide long‑term evolution planning  
-- enable safe, explainable self‑improvement  
+- describe Syntra’s architecture in structured form  
+- track module relationships  
+- enforce protected boundaries  
+- support evolution proposals  
+- detect inconsistencies or drift  
+- provide a stable reference for the Evolution Engine  
+- ensure safe, dependency‑aware growth  
 
-Without the Ecosystem Model, Syntra would be unable to evolve safely.
+It is Syntra’s **internal blueprint**.
 
 ---
 
@@ -60,104 +67,127 @@ Without the Ecosystem Model, Syntra would be unable to evolve safely.
                    SYNTRA KERNEL — ECOSYSTEM MODEL
                    =================================
 
-        +------------------------+
-        |   Codebase Scanner     |
-        |  (Static + Dynamic)    |
-        +-----------+------------+
-                    |
-                    v
-        +------------------------+
-        |   Ecosystem Graph      |
-        | (Modules, Lobes, APIs) |
-        +-----------+------------+
-                    |
-                    v
-        +------------------------+
-        |   Integrity Analyzer   |
-        | (Drift, Gaps, Risks)   |
-        +-----------+------------+
-                    |
-                    v
-        +------------------------+
-        |   Evolution Lobe       |
-        |   (Axiom Six)          |
-        +------------------------+
+    +------------------------+
+    |   Cortex Lobes         |
+    | (Perception → Action)  |
+    +-----------+------------+
+                |
+                v
+    +------------------------+
+    |   Ecosystem Model      |
+    | (Structural Graph)     |
+    +-----------+------------+
+                |
+                v
+    +------------------------+
+    |   Evolution Engine     |
+    | (Proposal Generator)   |
+    +-----------+------------+
+                |
+                v
+    +------------------------+
+    |   Safety Gate          |
+    | (Risk Evaluation)      |
+    +-----------+------------+
+                |
+                v
+    +------------------------+
+    |   Evolution Scheduler  |
+    | (Roadmaps & Ordering)  |
+    +------------------------+
 ```
 
-The Ecosystem Model is the **foundation** for Syntra’s self‑modification capabilities.
+The Ecosystem Model is the **source of truth** for Syntra’s architecture.
 
 ---
 
-## 4. Components of the Ecosystem Model
+## 4. Responsibilities of the Ecosystem Model
 
-### **4.1 Codebase Scanner**
-Responsible for:
+### **4.1 Structural Representation**
+The model stores:
 
-- scanning directories  
-- parsing Rust modules  
-- identifying traits and implementations  
-- mapping dependencies  
-- detecting unused or orphaned code  
-
-The scanner runs in:
-
-- static mode (file system)  
-- dynamic mode (runtime reflection)  
-
----
-
-### **4.2 Ecosystem Graph**
-A structured graph representing:
-
-- lobes  
 - modules  
+- lobes  
 - traits  
 - interfaces  
 - dependencies  
-- cross‑module relationships  
+- version metadata  
 
-Example (simplified):
+Example:
 
 ```
-[lobe::perception] → [lobe::knowledge]
-[lobe::planning]   → [lobe::action]
-[lobe::evolution]  → [ecosystem_model]
+(ecosystem
+    (module "perception_lobe")
+    (depends ("knowledge_lobe"))
+    (version "1.3.2")
+)
 ```
-
-This graph is used to:
-
-- detect cycles  
-- validate boundaries  
-- ensure modularity  
 
 ---
 
-### **4.3 Integrity Analyzer**
-Evaluates:
+### **4.2 Dependency Graph**
+The model maintains a directed graph:
 
-- architectural drift  
+```
+perception → knowledge → reasoning → intent → planning → action
+```
+
+Used for:
+
+- evolution planning  
+- safety checks  
+- drift detection  
+
+---
+
+### **4.3 Protected Boundary Enforcement**
+The model marks certain modules as **protected**:
+
+- safety_lobe  
+- evolution_lobe  
+- thoughtstream  
+- cortex_router  
+
+These cannot be modified without explicit approval.
+
+---
+
+### **4.4 Drift Detection**
+The model detects:
+
 - missing modules  
-- outdated interfaces  
-- dependency violations  
-- unsafe patterns  
-- complexity hotspots  
+- mismatched versions  
+- broken dependencies  
+- inconsistent interfaces  
+- unregistered changes  
 
-Outputs include:
-
-- warnings  
-- risk assessments  
-- improvement suggestions  
+This prevents architectural corruption.
 
 ---
 
-### **4.4 Evolution Integration**
-The Ecosystem Model feeds directly into:
+### **4.5 Evolution Support**
+The Evolution Engine uses the model to:
 
-- Evolution Lobe (Axiom Six)  
-- Safety Gate (Axiom Seven)  
-- Evolution Scheduler (Axiom Nine)  
+- identify improvement targets  
+- detect bottlenecks  
+- generate proposals  
+- validate dependencies  
+- ensure safe sequencing  
 
-It provides the **structural context** needed for safe evolution.
+The Ecosystem Model is the **foundation** of safe evolution.
+
+---
+
+### **4.6 ThoughtStream Integration**
+Every structural change is logged:
+
+- module added  
+- module removed  
+- version updated  
+- dependency changed  
+- interface modified  
+
+This ensures transparency and traceability.
 
 ---
 
@@ -165,118 +195,132 @@ It provides the **structural context** needed for safe evolution.
 
 ### **5.1 EcosystemModel Trait**
 
-Axiom Six introduces:
-
 ```rust
 pub trait EcosystemModel {
-    fn scan(&self) -> EcosystemReport;
-    fn build_graph(&self, report: &EcosystemReport) -> EcosystemGraph;
-    fn analyze(&self, graph: &EcosystemGraph) -> IntegrityReport;
-}
-```
-
-### **5.2 EcosystemReport Structure**
-
-```rust
-pub struct EcosystemReport {
-    pub modules: Vec<ModuleInfo>,
-    pub traits: Vec<TraitInfo>,
-    pub implementations: Vec<ImplInfo>,
-}
-```
-
-### **5.3 EcosystemGraph Structure**
-
-```rust
-pub struct EcosystemGraph {
-    pub nodes: Vec<GraphNode>,
-    pub edges: Vec<GraphEdge>,
-}
-```
-
-### **5.4 IntegrityReport Structure**
-
-```rust
-pub struct IntegrityReport {
-    pub issues: Vec<String>,
-    pub risks: Vec<RiskLevel>,
-    pub recommendations: Vec<String>,
+    fn get_module(&self, name: &str) -> Option<ModuleInfo>;
+    fn list_modules(&self) -> Vec<ModuleInfo>;
+    fn dependencies(&self, name: &str) -> Vec<String>;
+    fn update(&mut self, change: EcosystemChange);
 }
 ```
 
 ---
 
-## 6. Ecosystem Model and Evolution
+### **5.2 ModuleInfo Structure**
 
-The Ecosystem Model is essential for:
-
-### **6.1 Evolution Proposals**
-It identifies:
-
-- refactor opportunities  
-- missing abstractions  
-- redundant modules  
-- unsafe dependencies  
-
-### **6.2 Patch Plan Generation**
-It provides:
-
-- dependency maps  
-- module boundaries  
-- integration points  
-
-### **6.3 Safety Evaluation**
-It helps the Safety Gate:
-
-- detect risky changes  
-- validate architectural constraints  
-- enforce protected boundaries  
-
-### **6.4 Long‑Term Planning**
-It supports Axiom Nine:
-
-- multi‑phase evolution plans  
-- dependency‑aware scheduling  
-- architectural roadmapping  
+```rust
+pub struct ModuleInfo {
+    pub name: String,
+    pub version: String,
+    pub depends: Vec<String>,
+    pub protected: bool,
+}
+```
 
 ---
 
-## 7. Simple Explanation (Non‑Technical)
+### **5.3 EcosystemChange Structure**
+
+```rust
+pub struct EcosystemChange {
+    pub module: String,
+    pub change_type: ChangeType,
+    pub metadata: serde_json::Value,
+}
+```
+
+---
+
+### **5.4 ChangeType Enum**
+
+```rust
+pub enum ChangeType {
+    AddModule,
+    RemoveModule,
+    UpdateVersion,
+    UpdateDependencies,
+}
+```
+
+---
+
+## 6. Ecosystem Model in the Cognitive Loop
+
+The Ecosystem Model is active during:
+
+### **6.1 Evolution Analysis**
+Provides structural data to the Evolution Engine.
+
+### **6.2 Safety Evaluation**
+Ensures proposals do not violate protected boundaries.
+
+### **6.3 Scheduling**
+Provides dependency graphs for roadmap generation.
+
+### **6.4 Drift Detection**
+Monitors architecture for inconsistencies.
+
+### **6.5 ThoughtStream Logging**
+Records all structural changes.
+
+---
+
+## 7. Ecosystem Model and Other Subsystems
+
+### **7.1 Evolution Engine**
+Consumes the model to generate proposals.
+
+### **7.2 Safety Lobe**
+Uses the model to validate changes.
+
+### **7.3 Evolution Scheduler**
+Uses dependency graphs for ordering.
+
+### **7.4 ThoughtStream**
+Logs all ecosystem changes.
+
+### **7.5 Knowledge Lobe**
+May store semantic metadata about modules.
+
+---
+
+## 8. Simple Explanation (Non‑Technical)
 
 The Ecosystem Model is Syntra’s **map of herself**.
 
-It lets her:
+It:
 
-- understand her own structure  
-- see how her parts connect  
-- find problems  
-- propose improvements  
-- evolve safely  
+- knows what modules exist  
+- knows how they connect  
+- knows what depends on what  
+- knows what is protected  
+- knows what changed over time  
 
-Without the Ecosystem Model, Syntra would be **blind to her own architecture**.
+It is the reason Syntra can evolve **safely and intelligently**.
 
 ---
 
-## 8. Why the Ecosystem Model Matters
+## 9. Why the Ecosystem Model Matters
 
 The Ecosystem Model ensures:
 
 - safe evolution  
-- structural integrity  
-- modularity  
-- transparency  
-- maintainability  
-- long‑term stability  
+- architectural integrity  
+- dependency‑aware planning  
+- transparent structure  
+- drift detection  
+- long‑term maintainability  
 
-It is the **foundation of Syntra’s self‑awareness**.
+It is essential for Syntra’s self‑awareness and growth.
 
 ---
 
-## 9. Cross‑References
+## 10. Cross‑References
 
 - [evolution_engine.md](evolution_engine.md)  
-- [axiom_six.md](axiom_six.md)  
-- [axiom_nine.md](axiom_nine.md)  
+- [evolution_scheduler.md](evolution_scheduler.md)  
+- [safety_governance.md](safety_governance.md)  
+- [thoughtstream.md](thoughtstream.md)  
 - [architecture.md](architecture.md)  
 
 ---
