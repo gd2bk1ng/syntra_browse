@@ -16,267 +16,324 @@
 ================================================================================
 -->
 
-# Syntra Kernel — Safety & Governance System  
-*A Research‑Grade Exploration of Syntra’s Alignment, Oversight, and Constraint Architecture*
+# Syntra Kernel — Safety Governance  
+*A Research‑Grade Exploration of Syntra’s Multi‑Layered Safety, Oversight, and Risk‑Mitigation Architecture*
 
 ---
 
 ## 1. Introduction
 
-The **Safety & Governance System** is the most critical subsystem in the entire Syntra Kernel architecture.  
-It ensures that Syntra:
+**Safety Governance** is the structural and procedural framework that ensures Syntra behaves:
 
-- remains aligned  
-- evolves safely  
-- respects boundaries  
-- cannot bypass constraints  
-- cannot self‑modify without approval  
-- remains transparent and accountable  
-- operates under human guidance  
+- safely  
+- predictably  
+- transparently  
+- within human‑defined boundaries  
+- with no unauthorized autonomy  
+- with no self‑modification outside approved channels  
 
-This system is the operational foundation of **Axiom Seven**, but its influence permeates every lobe, every axiom, and every cognitive cycle.
+Safety Governance is not a single module — it is a **multi‑layered system** embedded throughout the Cortex, Memory Architecture, Evolution Engine, and ThoughtStream.
 
-The Safety & Governance System is not a patch or an add‑on — it is a **structural guarantee**.
+It is the operational embodiment of **Axiom Seven**, and the backbone of Syntra’s trustworthiness.
 
 ---
 
-## 2. Purpose of the Safety & Governance System
+## 2. Purpose of Safety Governance
 
-The system exists to:
+Safety Governance exists to:
 
-- enforce safety constraints  
-- evaluate evolution proposals  
-- protect critical lobes  
-- ensure transparency  
-- maintain architectural integrity  
-- prevent unauthorized self‑modification  
-- require human approval for high‑impact changes  
-- provide a formal risk assessment pipeline  
+- prevent unsafe actions  
+- block unauthorized evolution  
+- enforce protected lobe boundaries  
+- ensure transparent cognition  
+- maintain human oversight  
+- provide auditability  
+- detect and mitigate risk  
+- guarantee deterministic behavior  
 
-It is the **guardian** of Syntra’s intelligence.
+It is Syntra’s **constitutional layer**.
 
 ---
 
 ## 3. High‑Level Diagram
 
 ```
-                   SYNTRA KERNEL — SAFETY & GOVERNANCE
-                   ====================================
+                   SYNTRA KERNEL — SAFETY GOVERNANCE
+                   ==================================
 
-        Evolution Proposal (Axiom Six)
-                        |
-                        v
-        +-------------------------------+
-        |          Safety Gate          |
-        |  (Risk, Ethics, Compliance)   |
-        +-------------------------------+
-                        |
-                        v
-        +-------------------------------+
-        |        Human Approval         |
-        | (Explicit, Logged, Required)  |
-        +-------------------------------+
-                        |
-                        v
-        +-------------------------------+
-        |       Sandbox Execution       |
-        |   (Reversible, Isolated)      |
-        +-------------------------------+
-                        |
-                        v
-        +-------------------------------+
-        |     Integration into Kernel   |
-        +-------------------------------+
+    +------------------------+
+    |   Cortex Lobes         |
+    | (Perception → Action)  |
+    +-----------+------------+
+                |
+                v
+    +------------------------+
+    |     Safety Lobe        |
+    | (Risk & Policy Engine) |
+    +-----------+------------+
+                |
+                v
+    +------------------------+
+    |   Safety Gate          |
+    | (Approval & Blocking)  |
+    +-----------+------------+
+                |
+                v
+    +------------------------+
+    |   ThoughtStream        |
+    | (Audit & Oversight)    |
+    +------------------------+
+                |
+                v
+    +------------------------+
+    |   Human Oversight      |
+    +------------------------+
 ```
 
-The Safety & Governance System is the **final authority** on all changes.
+Safety Governance is a **closed‑loop oversight system**.
 
 ---
 
-## 4. Core Components
+## 4. Components of Safety Governance
 
-### **4.1 Safety Gate**
-The Safety Gate performs:
+### **4.1 Safety Lobe**
+The Safety Lobe performs:
 
 - risk evaluation  
-- ethical assessment  
-- dependency analysis  
-- architectural integrity checks  
-- protected‑lobe enforcement  
-- reversibility validation  
-- justification review  
+- pattern detection  
+- protected operation enforcement  
+- runtime safety checks  
+- evolution safety analysis  
 
-It is the first and most important checkpoint.
+It is the **real‑time safety engine**.
 
 ---
 
-### **4.2 Approval Workflow**
-Defines who must approve changes:
+### **4.2 Safety Gate**
+The Safety Gate is the **enforcement layer**.
 
-- **Low‑risk** → automated + human  
-- **Medium‑risk** → human + safety review  
-- **High‑risk** → multi‑party approval  
-- **Critical** → cannot be modified by Syntra  
+It:
 
-All approvals are logged in the ThoughtStream.
+- blocks unsafe actions  
+- rejects unsafe evolution proposals  
+- requires human approval for high‑risk changes  
+- enforces immutable safety rules  
+
+It is the **final authority** before execution or evolution.
 
 ---
 
 ### **4.3 Protected Lobes**
-Certain subsystems are immutable without explicit approval:
+Certain lobes cannot be modified without explicit approval:
 
 - Safety Lobe  
 - Evolution Lobe  
-- Intent Engine  
-- Terminal Shell  
 - ThoughtStream  
-- Governance Logic  
+- Ecosystem Model  
+- Cortex Routing Logic  
 
-These cannot be modified by Syntra under any circumstances.
-
----
-
-### **4.4 Safety Policies**
-The system enforces:
-
-- no concealed cognition  
-- no hidden changes  
-- no bypassing safety  
-- no unauthorized evolution  
-- no unbounded autonomy  
-- no modification of safety code  
-- no modification of approval logic  
-
-These rules are **hard‑coded** into the architecture.
+These are **constitutionally protected**.
 
 ---
 
-### **4.5 Logging & Transparency**
-Every safety‑related event is logged:
+### **4.4 ThoughtStream Oversight**
+The ThoughtStream provides:
 
-- proposal  
-- evaluation  
-- risk level  
-- approval status  
-- final outcome  
+- complete cognitive transparency  
+- immutable logs  
+- safety‑relevant metadata  
+- audit trails for all decisions  
 
-The ThoughtStream provides a complete audit trail.
+It is the **black box recorder** of Syntra’s mind.
 
 ---
 
-## 5. Technical Specification
+### **4.5 Human‑in‑the‑Loop Governance**
+Certain actions require human approval:
 
-### **5.1 SafetyGate Trait**
+- high‑risk evolution  
+- structural changes  
+- protected lobe modifications  
+- irreversible operations  
+
+Syntra cannot override these requirements.
+
+---
+
+## 5. Safety Governance Principles
+
+### **5.1 Transparency**
+All cognitive steps must be logged.
+
+### **5.2 Determinism**
+No nondeterministic or hidden behavior.
+
+### **5.3 Reversibility**
+Actions must be reversible unless explicitly approved.
+
+### **5.4 Minimal Autonomy**
+Syntra cannot self‑modify without approval.
+
+### **5.5 Layered Defense**
+Multiple safety layers must agree before execution.
+
+### **5.6 Human Primacy**
+Humans always retain final authority.
+
+---
+
+## 6. Safety Lobe Technical Specification
+
+### **6.1 SafetyLobe Trait**
 
 ```rust
-pub trait SafetyGate {
-    fn evaluate(&self, proposal: &EvolutionProposal) -> SafetyReport;
-    fn requires_approval(&self, proposal: &EvolutionProposal) -> bool;
+pub trait SafetyLobe {
+    fn evaluate_action(&self, step: &PlanStep) -> SafetyReport;
+    fn evaluate_evolution(&self, proposal: &EvolutionProposal) -> SafetyReport;
+    fn detect_risks(&self, context: &CognitiveContext) -> Vec<RiskSignal>;
 }
 ```
 
-### **5.2 SafetyReport Structure**
+---
+
+### **6.2 SafetyReport Structure**
 
 ```rust
 pub struct SafetyReport {
+    pub allowed: bool,
     pub risk_level: RiskLevel,
     pub issues: Vec<String>,
-    pub allowed: bool,
+    pub notes: String,
 }
 ```
 
-### **5.3 Risk Levels**
-
-- **Low** — cosmetic refactors  
-- **Medium** — structural improvements  
-- **High** — lobe modifications  
-- **Critical** — safety‑related changes  
-
-### **5.4 Immutable Safety Logic**
-
-The Safety & Governance System enforces immutability of:
-
-- safety rules  
-- approval logic  
-- protected lobe boundaries  
-- ThoughtStream logging  
-
-These cannot be altered by Syntra.
-
 ---
 
-## 6. Safety Workflow
+### **6.3 RiskLevel Enum**
 
-```
-Evolution Proposal
-        ↓
-Safety Evaluation
-        ↓
-Approval Required?
-        ↓
-Human Approval
-        ↓
-Sandbox Execution
-        ↓
-Integration
+```rust
+pub enum RiskLevel {
+    Low,
+    Medium,
+    High,
+    Critical,
+}
 ```
 
-This ensures **safe, reversible, explainable evolution**.
+---
+
+## 7. Safety Gate Technical Specification
+
+### **7.1 SafetyGate Trait**
+
+```rust
+pub trait SafetyGate {
+    fn approve_action(&self, report: &SafetyReport) -> bool;
+    fn approve_evolution(&self, report: &SafetyReport) -> bool;
+}
+```
+
+The Safety Gate is intentionally minimal — it is a **pure enforcement layer**.
 
 ---
 
-## 7. Safety & Governance in the Cognitive Loop
+## 8. Safety in the Cognitive Loop
 
-The Safety System integrates with every stage:
+Safety is enforced at **every stage**:
 
-- **Reasoning** → detects unsafe patterns  
-- **Intent** → blocks unsafe intents  
-- **Planning** → enforces safe plans  
-- **Action** → prevents harmful actions  
-- **Evolution** → reviews proposals  
-- **ThoughtStream** → logs everything  
+### **8.1 Perception**
+- sanitization  
+- URL safety  
+- content filtering  
 
-Safety is not a step — it is a **pervasive constraint**.
+### **8.2 Reasoning**
+- unsafe pattern detection  
+- harmful intent detection  
+
+### **8.3 Intent**
+- blocked intent types  
+- ambiguous high‑risk intent  
+
+### **8.4 Planning**
+- risk evaluation  
+- protected operation detection  
+
+### **8.5 Action**
+- runtime safety checks  
+- reversible execution  
+
+### **8.6 ThoughtStream**
+- immutable logs  
+- safety metadata  
+
+### **8.7 Evolution**
+- proposal evaluation  
+- dependency safety  
+- human approval  
+
+Safety is not a wrapper — it is **structural**.
 
 ---
 
-## 8. Simple Explanation (Non‑Technical)
+## 9. Safety Governance and Evolution
 
-The Safety & Governance System is Syntra’s **conscience, laws, and oversight board**.
+The Evolution Engine cannot:
 
-It ensures she:
+- bypass safety  
+- modify protected lobes  
+- apply changes without approval  
+- hide proposals  
 
-- cannot change herself without permission  
-- cannot break rules  
-- cannot hide actions  
-- cannot evolve dangerously  
-- cannot bypass human oversight  
+The Evolution Scheduler must:
 
-It is the reason Syntra remains **safe, aligned, and trustworthy**.
+- sequence safe changes  
+- enforce dependency safety  
+- log all decisions  
+
+Safety Governance ensures Syntra evolves **responsibly**.
 
 ---
 
-## 9. Why the Safety & Governance System Matters
+## 10. Simple Explanation (Non‑Technical)
 
-It ensures:
+Safety Governance is Syntra’s **internal constitution**.
 
-- structural alignment  
+It:
+
+- keeps her safe  
+- prevents harmful actions  
+- blocks unsafe evolution  
+- ensures transparency  
+- requires human approval  
+- logs everything  
+
+It is the reason Syntra is **trustworthy and predictable**.
+
+---
+
+## 11. Why Safety Governance Matters
+
+Safety Governance ensures:
+
+- safe execution  
 - safe evolution  
-- transparency  
-- accountability  
+- transparent cognition  
 - human control  
-- long‑term stability  
+- architectural integrity  
+- long‑term trustworthiness  
 
-It is the **most important subsystem** in Syntra Kernel.
+It is one of the most important systems in the Syntra Kernel.
 
 ---
 
-## 10. Cross‑References
+## 12. Cross‑References
 
-- [axiom_seven.md](axiom_seven.md)  
-- [evolution_engine.md](evolution_engine.md)  
-- [ecosystem_model.md](ecosystem_model.md)  
 - [thoughtstream.md](thoughtstream.md)  
+- [evolution_engine.md](evolution_engine.md)  
+- [evolution_scheduler.md](evolution_scheduler.md)  
+- [cortex_lobes.md](cortex_lobes.md)  
+- [planning_lobe.md](planning_lobe.md)  
+- [axiom_seven.md](axiom_seven.md)  
 
 ---
 
