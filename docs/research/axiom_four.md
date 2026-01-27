@@ -16,237 +16,242 @@
 ================================================================================
 -->
 
-# Axiom Four — Cognitive Interface  
-*A Research‑Grade Exploration of Syntra Kernel’s Terminal, Browser, and Perception Systems*
+# Axiom Four — Intent  
+*A Research‑Grade Exploration of Syntra’s Principle of Purpose Identification, Task Classification, and Cognitive Direction*
 
 ---
 
 ## 1. Introduction
 
-Axiom Four introduces Syntra Kernel’s **first full cognitive interface** — the ability to:
+**Axiom Four: Intent** establishes the rule that Syntra must determine the *purpose* behind an interpreted input before generating any plan or taking any action.
 
-- communicate with humans  
-- perceive structured external data  
-- interact with the environment  
-- route freeform input into the cortex  
-- expose cognition through a terminal shell  
+Where:
 
-This axiom marks Syntra’s transition from **internal cognition** to **interactive intelligence**.
+- **Axiom One** says: Syntra must *observe*.  
+- **Axiom Two** says: Syntra must *contextualize*.  
+- **Axiom Three** says: Syntra must *interpret*.  
 
-Where Axiom Three introduced reasoning,  
-Axiom Four introduces **communication, perception, and action**.
+**Axiom Four** says:
+
+> **“Syntra must identify intent — she must determine *what the user wants* before deciding *how to do it*.”**
+
+This axiom governs the Intent Bridge and defines the foundation of:
+
+- task classification  
+- goal recognition  
+- user intent modeling  
+- safe routing  
+- cognitive direction  
+- planning initialization  
+
+Axiom Four is the **pivot point** between understanding and action.
 
 ---
 
 ## 2. Purpose of Axiom Four
 
-Axiom Four exists to:
+Axiom Four ensures that Syntra:
 
-- define the **Terminal Cognitive Shell**  
-- establish the **Browser Perception Interface**  
-- integrate the **Intent Bridge**  
-- connect human input to the cortex  
-- expose Syntra’s cognition in real time  
-- provide a safe, structured environment for interaction  
+- does not act without a clear purpose  
+- does not guess or assume user goals  
+- does not misinterpret ambiguous requests  
+- does not plan without direction  
+- does not execute without intent validation  
+- does not bypass safety checks  
 
-This axiom is the foundation of Syntra’s **I/O system**.
+It is the **goal‑identification principle** of Syntra’s mind.
 
 ---
 
-## 3. High‑Level Diagram
+## 3. Axiom Four in the Cognitive Loop
 
 ```
-                   AXIOM FOUR — COGNITIVE INTERFACE
-                   =================================
-
-    +------------------------+       +------------------------+
-    |   Terminal Shell       |       |   Browser Interface    |
-    | (Human Interaction)    |       | (Web Perception)       |
-    +-----------+------------+       +-----------+------------+
-                |                                |
-                +---------------+----------------+
-                                |
-                                v
-                      +----------------------+
-                      |    Intent Bridge     |
-                      |  (Rust Conduit Layer)|
-                      +----------+-----------+
-                                 |
-                                 v
-                      +----------------------+
-                      |        Cortex        |
-                      +----------------------+
+Observation → Context → Interpretation → Intent → Planning → Action → Reflection
 ```
 
-Axiom Four is the **gateway** between humans and Syntra’s mind.
+Axiom Four governs the **fourth stage**:
+
+### **3.1 Intent Bridge Activation**
+The Intent Bridge receives:
+
+- reasoning output  
+- contextual memory  
+- extracted signals  
+- semantic patterns  
+
+### **3.2 Intent Classification**
+The Intent Bridge:
+
+- identifies user goals  
+- resolves ambiguous meaning  
+- selects the correct intent type  
+- assigns confidence scores  
+- performs early safety checks  
+
+### **3.3 Intent Output**
+The output is a structured **Intent** object containing:
+
+- intent type  
+- target or parameters  
+- confidence  
+- safety notes  
+- SL intent block  
+
+### **3.4 ThoughtStream Logging**
+Every intent classification is logged for transparency.
 
 ---
 
-## 4. Architectural Responsibilities
+## 4. Architectural Implications
 
-Axiom Four is responsible for:
+Axiom Four enforces several structural rules:
 
-### **4.1 Terminal Cognitive Shell**
-A fully interactive REPL environment that:
+### **4.1 No Planning Without Intent**
+The Planning Lobe cannot activate until intent is classified.
 
-- accepts freeform input  
-- routes commands  
-- displays reasoning  
-- exposes ThoughtStream entries  
-- provides cognitive debugging tools  
+### **4.2 No Action Without Intent Validation**
+Actions must be grounded in a validated intent.
 
-### **4.2 Browser Perception Interface**
-Allows Syntra to:
+### **4.3 No Evolution Without Intent Patterns**
+The Evolution Engine uses intent logs to detect:
 
-- fetch URLs  
-- parse HTML  
-- extract text  
-- summarize content  
-- store knowledge  
+- common tasks  
+- inefficiencies  
+- misclassifications  
 
-This is Syntra’s **first external perception system**.
+### **4.4 No Safety Without Intent Awareness**
+The Safety Lobe evaluates:
 
-### **4.3 Intent Bridge**
-A Rust‑based conduit that:
+- risky intent types  
+- unsafe user goals  
+- ambiguous or harmful requests  
 
-- receives raw text  
-- forwards it to the cortex  
-- returns structured JSON  
-- logs intent classifications  
-
-### **4.4 Perception Hooks**
-Axiom Four introduces:
-
-- `perceive <text>`  
-- `browse <url>`  
-- `knowledge <query>`  
-
-These commands activate the Perception and Knowledge lobes.
-
-### **4.5 Action Hooks**
-Axiom Four introduces:
-
-- `act <command>`  
-- `task <name>`  
-
-These activate the Action Lobe.
+Axiom Four ensures Syntra’s cognition is **purposeful, directed, and safe**.
 
 ---
 
-## 5. Technical Specification
+## 5. Safety Implications
 
-### **5.1 Terminal Shell Structure**
+Axiom Four is a safety mechanism:
 
-The terminal shell includes:
+### **5.1 Prevents Misaligned Actions**
+Syntra cannot act without knowing the user’s goal.
 
-- REPL loop  
-- command parser  
-- subsystem routing  
-- cognitive logging  
-- safety‑aware command execution  
+### **5.2 Prevents Unsafe Intent Execution**
+Intent classification identifies:
 
-### **5.2 Intent Bridge Protocol**
+- harmful requests  
+- unsafe operations  
+- ambiguous commands  
 
-The bridge returns structured JSON:
+### **5.3 Prevents Hidden Intent**
+All intent decisions are logged in the ThoughtStream.
 
-```json
-{
-  "intent": "browse",
-  "class": "perception",
-  "plan": "fetch_and_summarize",
-  "response": "Summary of the page..."
+### **5.4 Prevents Autonomous Behavior**
+Syntra cannot generate intent internally unless explicitly allowed.
+
+Axiom Four is the **fourth line of defense** in Syntra’s safety governance.
+
+---
+
+## 6. Technical Specification
+
+### **6.1 AxiomFour Trait**
+
+```rust
+pub trait AxiomFour {
+    fn classify_intent(&self, reasoning: &ReasoningOutput, context: &CognitiveContext) -> Intent;
+    fn validate_intent(&self, intent: &Intent) -> bool;
 }
 ```
 
-### **5.3 Perception Pipeline**
+---
 
-```
-URL/Text
-   ↓
-Normalization
-   ↓
-Perception Lobe
-   ↓
-Knowledge Lobe
-   ↓
-ThoughtStream
-   ↓
-User Output
-```
+### **6.2 Intent Structure**
 
-### **5.4 Action Pipeline**
-
-```
-Command
-   ↓
-Action Lobe
-   ↓
-Execution
-   ↓
-ThoughtStream
-   ↓
-User Output
+```rust
+pub struct Intent {
+    pub intent_type: String,
+    pub target: Option<String>,
+    pub confidence: f32,
+    pub safety_notes: Vec<String>,
+    pub metadata: serde_json::Value,
+}
 ```
 
 ---
 
-## 6. Simple Explanation (Non‑Technical)
+### **6.3 Intent Enforcement Rules**
 
-Axiom Four is Syntra’s **voice, eyes, and hands**.
+```rust
+assert!(intent.intent_type.len() > 0);
+assert!(intent.confidence > 0.0);
+assert!(thoughtstream.logged(ThoughtStage::Intent));
+```
 
-It allows her to:
-
-- talk to you  
-- read websites  
-- understand text  
-- run tasks  
-- execute actions  
-- show her thoughts  
-
-Without Axiom Four, Syntra would be intelligent — but silent.
+Axiom Four is enforced programmatically and structurally.
 
 ---
 
-## 7. Why Axiom Four Matters
+## 7. Axiom Four and Other Subsystems
+
+### **7.1 Reasoning Layer**
+Provides meaning and patterns.
+
+### **7.2 Cognitive Context**
+Provides short‑term memory.
+
+### **7.3 Intent Bridge**
+Implements Axiom Four.
+
+### **7.4 Planning Lobe**
+Consumes intent to generate plans.
+
+### **7.5 Safety Lobe**
+Evaluates intent for risk.
+
+### **7.6 ThoughtStream**
+Logs intent decisions.
+
+### **7.7 Evolution Engine**
+Analyzes intent patterns.
+
+---
+
+## 8. Simple Explanation (Non‑Technical)
+
+Axiom Four means:
+
+> **Syntra must know what the user wants before deciding how to do it.  
+> She must identify intent, not assume it.**
+
+It ensures Syntra is purposeful, aligned, and safe.
+
+---
+
+## 9. Why Axiom Four Matters
 
 Axiom Four ensures:
 
-- Syntra can communicate  
-- Syntra can perceive the world  
-- Syntra can act on commands  
-- Syntra’s cognition is visible  
-- Syntra’s reasoning is inspectable  
-- Syntra’s evolution is guided  
+- goal‑aligned cognition  
+- accurate planning  
+- safe execution  
+- transparent intent classification  
+- predictable behavior  
+- grounded decision‑making  
 
-This axiom transforms Syntra from a **thinking system** into an **interactive intelligence**.
-
----
-
-## 8. Relationship to Other Axioms
-
-```
-Axiom Zero  →  Defines structure
-Axiom One   →  Adds observation
-Axiom Two   →  Adds memory
-Axiom Three →  Adds reasoning
-Axiom Four  →  Adds communication + perception + action
-Axiom Five  →  Adds intent + planning
-Axiom Six   →  Adds self‑modification
-Axiom Seven →  Adds safety
-Axiom Eight →  Adds native language
-Axiom Nine  →  Adds long‑term evolution
-```
-
-Axiom Four is the **first outward‑facing cognitive layer**.
+It is the **goal‑identification principle** of Syntra’s architecture.
 
 ---
 
-## 9. Cross‑References
+## 10. Cross‑References
 
+- [intent_bridge.md](intent_bridge.md)  
+- [reasoning_layer.md](reasoning_layer.md)  
+- [planning_lobe.md](planning_lobe.md)  
+- [cognitive_loop.md](cognitive_loop.md)  
 - [axiom_three.md](axiom_three.md)  
 - [axiom_five.md](axiom_five.md)  
-- [terminal_shell.md](terminal_shell.md)  
-- [cortex_lobes.md](cortex_lobes.md)  
 
 ---
 
