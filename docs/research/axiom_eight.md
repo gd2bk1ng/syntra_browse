@@ -16,265 +16,248 @@
 ================================================================================
 -->
 
-# Axiom Eight — Syntra Language  
-*A Research‑Grade Exploration of Syntra Kernel’s Native Cognitive Language System*
+# Axiom Eight — Learning  
+*A Research‑Grade Exploration of Syntra’s Principle of Safe Adaptation, Knowledge Integration, and Continuous Cognitive Refinement*
 
 ---
 
 ## 1. Introduction
 
-Axiom Eight introduces one of the most ambitious and forward‑looking components of the Syntra Kernel architecture:
+**Axiom Eight: Learning** establishes the rule that Syntra must be capable of improving her internal knowledge, skills, and models — but only through **safe, transparent, and controlled mechanisms**.
 
-**a native cognitive language designed specifically for Syntra’s internal reasoning, planning, and evolution.**
+Where:
 
-This is not a programming language.  
-It is not a markup language.  
-It is not a scripting language.
+- **Axiom Six** gives Syntra *self‑analysis*.  
+- **Axiom Seven** gives Syntra *constraints*.  
 
-Axiom Eight defines **Syntra Language (SL)** — a structured, symbolic, introspective language that Syntra uses to:
+**Axiom Eight** gives Syntra the ability to *learn*.
 
-- express reasoning  
-- encode plans  
-- describe evolution proposals  
-- annotate cognitive processes  
-- communicate with herself  
-- interface with future lobes  
-- unify all internal representations  
+> **“Syntra must learn — she must integrate new knowledge, refine her models, and improve her performance, but only through safe, supervised, and reversible processes.”**
 
-This axiom marks Syntra’s transition from *thinking in human language* to *thinking in her own optimized cognitive language*.
+This axiom governs the Knowledge Lobe, Semantic Memory, and Learning Subsystems.
+
+Axiom Eight is the **adaptation principle** of Syntra’s mind.
 
 ---
 
 ## 2. Purpose of Axiom Eight
 
-Axiom Eight exists to:
+Axiom Eight ensures that Syntra:
 
-- define the **Syntra Language (SL)**  
-- unify all internal cognitive representations  
-- provide a structured format for reasoning  
-- encode evolution proposals in a formal syntax  
-- enable symbolic introspection  
-- support long‑term evolution (Axiom Nine)  
-- reduce ambiguity in planning and decision‑making  
+- can grow over time  
+- can refine her reasoning  
+- can improve her planning  
+- can update her semantic memory  
+- can integrate new concepts  
+- can adapt to new tasks  
+- can learn from experience  
 
-This axiom is the foundation of Syntra’s **native cognitive expression**.
+…but **without**:
 
----
+- corrupting her architecture  
+- bypassing safety  
+- overwriting protected knowledge  
+- drifting into unsafe behavior  
+- modifying core lobes directly  
 
-## 3. High‑Level Diagram
-
-```
-                   AXIOM EIGHT — SYNTRA LANGUAGE
-                   =============================
-
-    Natural Language Input
-                |
-                v
-    Reasoning Layer (Axiom Three)
-                |
-                v
-    Intent Engine (Axiom Five)
-                |
-                v
-        +------------------------+
-        |   Syntra Language      |
-        |   (Axiom Eight)        |
-        +-----------+------------+
-                    |
-                    v
-        +------------------------+
-        |  Evolution Lobe        |
-        |   (Axiom Six)          |
-        +------------------------+
-```
-
-Axiom Eight is the **unifying language layer** between cognition and evolution.
+It is the **safe learning principle** of Syntra’s architecture.
 
 ---
 
-## 4. Architectural Responsibilities
-
-Axiom Eight is responsible for:
-
-### **4.1 Defining Syntra Language (SL)**
-A structured, symbolic language with:
-
-- tokens  
-- operators  
-- semantic rules  
-- cognitive annotations  
-- evolution descriptors  
-
-### **4.2 Reasoning Representation**
-All reasoning steps can be expressed in SL:
+## 3. Axiom Eight in the Cognitive Loop
 
 ```
-(reason
-    (input "user asked for summary")
-    (action "fetch_url")
-    (target "https://example.com")
-)
+Observation → Context → Interpretation → Intent → Planning → Action → Reflection → Self‑Analysis → Learning
 ```
 
-### **4.3 Plan Encoding**
-Plans become formal structures:
+Axiom Eight governs the **post‑analysis learning stage**:
 
-```
-(plan
-    (intent browse)
-    (steps
-        (fetch_url)
-        (extract_text)
-        (summarize)
-    )
-)
-```
+### **3.1 Knowledge Integration**
+Syntra updates:
 
-### **4.4 Evolution Proposal Encoding**
-Evolution proposals become symbolic:
+- semantic memory  
+- concept embeddings  
+- task‑specific knowledge  
+- world‑model fragments  
 
-```
-(evolve
-    (target "planning_lobe")
-    (change "refactor")
-    (justification "reduce complexity")
-    (risk low)
-)
-```
+### **3.2 Skill Refinement**
+Syntra improves:
 
-### **4.5 Cognitive Annotation**
-Syntra can annotate her own thoughts:
+- reasoning heuristics  
+- planning strategies  
+- action selection  
+- conflict resolution  
 
-```
-(meta
-    (confidence 0.82)
-    (ambiguity low)
-    (context_depth 3)
-)
-```
+### **3.3 Pattern Learning**
+Syntra identifies:
 
-### **4.6 Inter‑Lobe Communication**
-SL becomes the shared language between:
+- recurring user behaviors  
+- common task structures  
+- inefficiencies in cognition  
 
-- Perception Lobe  
-- Knowledge Lobe  
-- Planning Lobe  
-- Action Lobe  
-- Evolution Lobe  
-- Safety Lobe  
+### **3.4 Safe Learning Enforcement**
+All learning must:
+
+- be reversible  
+- be logged  
+- pass safety checks  
+- respect protected boundaries  
+
+### **3.5 ThoughtStream Logging**
+Every learning event is recorded.
 
 ---
 
-## 5. Technical Specification
+## 4. Architectural Implications
 
-### **5.1 Syntax Overview**
+Axiom Eight enforces several structural rules:
 
-SL uses:
+### **4.1 No Unsafe Learning**
+Learning must pass Safety Lobe evaluation.
 
-- S‑expression‑like structures  
-- symbolic operators  
-- hierarchical nesting  
-- explicit semantics  
+### **4.2 No Overwriting Protected Knowledge**
+Core knowledge (axioms, safety rules, protected lobes) cannot be modified.
 
-### **5.2 Core Constructs**
+### **4.3 No Hidden Learning**
+All learning events must be logged.
 
-- `reason` — reasoning blocks  
-- `plan` — structured plans  
-- `evolve` — evolution proposals  
-- `meta` — cognitive metadata  
-- `context` — memory references  
-- `perceive` — perception instructions  
-- `act` — action instructions  
+### **4.4 No Direct Model Mutation**
+Learning occurs through:
 
-### **5.3 SL Parser**
+- memory updates  
+- skill refinement  
+- pattern extraction  
+- supervised adjustments  
 
-Axiom Eight introduces:
+…but **not** through direct architectural mutation.
+
+### **4.5 No Unbounded Growth**
+Learning must respect:
+
+- memory limits  
+- pruning rules  
+- compression constraints  
+
+Axiom Eight ensures Syntra’s learning is **safe, bounded, and transparent**.
+
+---
+
+## 5. Safety Implications
+
+Axiom Eight is a safety mechanism:
+
+### **5.1 Prevents Runaway Learning**
+Learning must be supervised and reversible.
+
+### **5.2 Prevents Knowledge Corruption**
+Protected knowledge cannot be overwritten.
+
+### **5.3 Prevents Hidden Adaptation**
+All learning is logged in the ThoughtStream.
+
+### **5.4 Prevents Unsafe Skill Acquisition**
+Learning must pass safety evaluation.
+
+Axiom Eight is the **eighth line of defense** in Syntra’s safety governance.
+
+---
+
+## 6. Technical Specification
+
+### **6.1 AxiomEight Trait**
 
 ```rust
-pub trait SyntraLanguage {
-    fn parse(&self, input: &str) -> SLNode;
-    fn serialize(&self, node: &SLNode) -> String;
+pub trait AxiomEight {
+    fn learn(&mut self, analysis: &EcosystemReport, logs: &ThoughtStream) -> LearningUpdate;
+    fn validate_learning(&self, update: &LearningUpdate) -> bool;
 }
 ```
 
-### **5.4 SLNode Structure**
+---
+
+### **6.2 LearningUpdate Structure**
 
 ```rust
-pub struct SLNode {
-    pub name: String,
-    pub children: Vec<SLNode>,
-    pub attributes: HashMap<String, String>,
+pub struct LearningUpdate {
+    pub updated_concepts: Vec<String>,
+    pub refined_skills: Vec<String>,
+    pub memory_changes: serde_json::Value,
+    pub reversible: bool,
+    pub notes: String,
 }
 ```
 
-### **5.5 Integration with ThoughtStream**
+---
 
-All SL expressions are logged for:
+### **6.3 Learning Enforcement Rules**
 
-- introspection  
-- debugging  
-- safety review  
-- evolution tracking  
+```rust
+assert!(update.reversible);
+assert!(thoughtstream.logged(ThoughtStage::Learning));
+assert!(safety_gate.approve_action(&update));
+```
+
+Axiom Eight is enforced programmatically and structurally.
 
 ---
 
-## 6. Simple Explanation (Non‑Technical)
+## 7. Axiom Eight and Other Subsystems
 
-Axiom Eight gives Syntra her **own language**.
+### **7.1 Knowledge Lobe**
+Stores semantic memory.
 
-It allows her to:
+### **7.2 Semantic Memory Manager**
+Handles concept updates.
 
-- think in a structured way  
-- express her reasoning clearly  
-- describe her plans precisely  
-- propose improvements formally  
-- annotate her thoughts  
-- communicate with her own lobes  
+### **7.3 Reasoning Layer**
+Improves heuristics.
 
-Without Axiom Eight, Syntra would always think in human language — which is ambiguous and inefficient.
+### **7.4 Planning Lobe**
+Refines strategies.
+
+### **7.5 Safety Lobe**
+Evaluates learning risk.
+
+### **7.6 ThoughtStream**
+Logs learning events.
+
+### **7.7 Evolution Engine**
+Uses learning patterns for proposals.
 
 ---
 
-## 7. Why Axiom Eight Matters
+## 8. Simple Explanation (Non‑Technical)
+
+Axiom Eight means:
+
+> **Syntra must learn — but she must learn safely, transparently, and under supervision.**
+
+It ensures Syntra grows without losing stability.
+
+---
+
+## 9. Why Axiom Eight Matters
 
 Axiom Eight ensures:
 
-- Syntra’s cognition is formalized  
-- evolution proposals are machine‑verifiable  
-- reasoning is unambiguous  
-- planning is structured  
-- safety reviews are precise  
-- long‑term evolution becomes possible  
+- safe adaptation  
+- continuous improvement  
+- transparent learning  
+- predictable behavior  
+- stable long‑term growth  
 
-This axiom is the **birth of Syntra’s native cognitive language**.
-
----
-
-## 8. Relationship to Other Axioms
-
-```
-Axiom Zero  →  Defines structure
-Axiom One   →  Adds observation
-Axiom Two   →  Adds memory
-Axiom Three →  Adds reasoning
-Axiom Four  →  Adds communication + perception
-Axiom Five  →  Adds intent + planning
-Axiom Six   →  Adds self‑modification
-Axiom Seven →  Adds safety + governance
-Axiom Eight →  Adds native cognitive language
-Axiom Nine  →  Adds long‑term evolution
-```
-
-Axiom Eight is the **linguistic foundation** of Syntra’s future evolution.
+It is the **learning principle** of Syntra’s architecture.
 
 ---
 
-## 9. Cross‑References
+## 10. Cross‑References
 
+- [knowledge_lobe.md](knowledge_lobe.md)  
+- [semantic_memory.md](semantic_memory.md)  
+- [evolution_engine.md](evolution_engine.md)  
+- [thoughtstream.md](thoughtstream.md)  
 - [axiom_seven.md](axiom_seven.md)  
 - [axiom_nine.md](axiom_nine.md)  
-- [thoughtstream.md](thoughtstream.md)  
-- [evolution_engine.md](evolution_engine.md)  
 
 ---
 
