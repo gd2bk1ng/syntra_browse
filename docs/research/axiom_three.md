@@ -16,216 +16,244 @@
 ================================================================================
 -->
 
-# Axiom Three — Reasoning Interface  
-*A Research‑Grade Exploration of Syntra Kernel’s First Logical Framework*
+# Axiom Three — Interpretation  
+*A Research‑Grade Exploration of Syntra’s Principle of Meaning‑Making, Pattern Recognition, and Cognitive Understanding*
 
 ---
 
 ## 1. Introduction
 
-Axiom Three introduces **reasoning** into Syntra Kernel — the ability to interpret observations,
-use memory, and begin forming structured cognitive responses.
+**Axiom Three: Interpretation** establishes the rule that Syntra must transform raw observation and contextual memory into structured meaning before any intent, planning, or action can occur.
 
-Where Axiom One provides *observation* and Axiom Two provides *memory*,  
-Axiom Three provides the first form of **thinking**.
+Where:
 
-This axiom establishes:
+- **Axiom One** says: *“Syntra must observe.”*  
+- **Axiom Two** says: *“Syntra must contextualize.”*  
 
-- the **Reasoner trait**  
-- the **logical interface** for future planning  
-- the **interpretation layer** between input and intent  
-- the **foundation for Axiom Five’s Intent Engine**  
+**Axiom Three** says:
 
-Axiom Three is the moment Syntra transitions from *continuity* to *cognition*.
+> **“Syntra must interpret — she must understand what the input *means* before deciding what to do.”**
+
+This axiom governs the Reasoning Layer and defines the foundation of:
+
+- semantic interpretation  
+- pattern recognition  
+- ambiguity resolution  
+- meaning extraction  
+- cognitive grounding  
+- safe decision‑making  
+
+Axiom Three is the **bridge between perception and intent**.
 
 ---
 
 ## 2. Purpose of Axiom Three
 
-Axiom Three exists to:
+Axiom Three ensures that Syntra:
 
-- define the **reasoning interface**  
-- establish the **first cognitive operations**  
-- interpret observations using memory  
-- prepare the kernel for intent classification  
-- enable structured internal thought  
-- provide a foundation for planning and decision‑making  
+- does not act on raw text  
+- does not guess intent  
+- does not hallucinate meaning  
+- does not skip reasoning  
+- does not misinterpret ambiguous input  
+- does not proceed without structured understanding  
 
-This axiom is the first step toward **understanding**.
-
----
-
-## 3. High‑Level Diagram
-
-```
-                   AXIOM THREE — REASONING INTERFACE
-                   ==================================
-
-    Observation (Axiom One)
-                |
-                v
-    Cognitive Context (Axiom Two)
-                |
-                v
-        +------------------------+
-        |     Reasoning Layer    |
-        |     (Axiom Three)      |
-        +-----------+------------+
-                    |
-                    v
-        +------------------------+
-        |     Intent Engine      |
-        |      (Axiom Five)      |
-        +------------------------+
-```
-
-Axiom Three is the **interpretation layer** between memory and intent.
+It is the **meaning‑making principle** of Syntra’s mind.
 
 ---
 
-## 4. Architectural Responsibilities
+## 3. Axiom Three in the Cognitive Loop
 
-Axiom Three is responsible for:
+```
+Observation → Context → Interpretation → Intent → Planning → Action → Reflection
+```
 
-### **4.1 The Reasoner Trait**
-Defines the earliest version of Syntra’s reasoning interface:
+Axiom Three governs the **third stage**:
+
+### **3.1 Reasoning Activation**
+The Reasoning Layer receives:
+
+- perception output  
+- contextual memory  
+- extracted signals  
+- entities  
+- metadata  
+
+### **3.2 Meaning Extraction**
+The Reasoning Layer:
+
+- identifies patterns  
+- resolves ambiguity  
+- interprets user intent candidates  
+- extracts semantic structure  
+- generates reasoning summaries  
+
+### **3.3 Interpretation Output**
+The output is a structured **ReasoningOutput**, containing:
+
+- detected patterns  
+- semantic meaning  
+- confidence scores  
+- safety notes  
+- SL reasoning block  
+
+### **3.4 ThoughtStream Logging**
+Every reasoning step is logged for transparency.
+
+---
+
+## 4. Architectural Implications
+
+Axiom Three enforces several structural rules:
+
+### **4.1 No Intent Without Interpretation**
+The Intent Bridge cannot classify intent until reasoning completes.
+
+### **4.2 No Planning Without Meaning**
+The Planning Lobe cannot generate a plan without a structured reasoning summary.
+
+### **4.3 No Action Without Semantic Grounding**
+Actions must be grounded in interpreted meaning, not raw text.
+
+### **4.4 No Evolution Without Reasoning Patterns**
+The Evolution Engine uses reasoning logs to detect inefficiencies.
+
+### **4.5 No Safety Without Interpretation**
+The Safety Lobe evaluates:
+
+- ambiguous meaning  
+- risky patterns  
+- unsafe interpretations  
+
+Axiom Three ensures Syntra’s cognition is **meaningful, grounded, and safe**.
+
+---
+
+## 5. Safety Implications
+
+Axiom Three is a safety mechanism:
+
+### **5.1 Prevents Misinterpretation**
+Syntra cannot skip reasoning and jump to intent.
+
+### **5.2 Prevents Unsafe Actions**
+Interpretation identifies:
+
+- harmful requests  
+- ambiguous commands  
+- unsafe patterns  
+
+### **5.3 Prevents Hallucinated Meaning**
+Syntra must justify meaning through structured reasoning.
+
+### **5.4 Prevents Hidden Cognition**
+All reasoning is logged in the ThoughtStream.
+
+Axiom Three is the **third line of defense** in Syntra’s safety governance.
+
+---
+
+## 6. Technical Specification
+
+### **6.1 AxiomThree Trait**
 
 ```rust
-pub trait Reasoner {
-    fn reason(&mut self, context: &CognitiveContext) -> ReasoningOutput;
+pub trait AxiomThree {
+    fn interpret(&self, perception: &PerceptionOutput, context: &CognitiveContext) -> ReasoningOutput;
+    fn validate_reasoning(&self, output: &ReasoningOutput) -> bool;
 }
 ```
 
-This trait becomes the backbone of:
+---
 
-- planning  
-- intent classification  
-- evolution proposals  
-- safety decisions  
-
-### **4.2 Logical Interpretation**
-Axiom Three introduces:
-
-- pattern recognition  
-- contextual interpretation  
-- primitive inference  
-- early semantic linking  
-
-### **4.3 Structured Reasoning Output**
-Defines a structured output type:
+### **6.2 ReasoningOutput Structure**
 
 ```rust
 pub struct ReasoningOutput {
-    pub summary: String,
-    pub signals: Vec<String>,
+    pub patterns: Vec<String>,
+    pub meaning: String,
+    pub confidence: f32,
+    pub safety_notes: Vec<String>,
+    pub metadata: serde_json::Value,
 }
 ```
 
-This output feeds directly into Axiom Five.
+---
 
-### **4.4 No Planning Yet**
-Axiom Three does **not** include:
+### **6.3 Interpretation Enforcement Rules**
 
-- multi‑step planning  
-- goal decomposition  
-- task execution  
+```rust
+assert!(reasoning_output.meaning.len() > 0);
+assert!(reasoning_output.confidence > 0.0);
+assert!(thoughtstream.logged(ThoughtStage::Reasoning));
+```
 
-Those emerge in Axiom Five.
+Axiom Three is enforced programmatically and structurally.
 
 ---
 
-## 5. Technical Specification
+## 7. Axiom Three and Other Subsystems
 
-### **5.1 Integration with Cognitive Context**
+### **7.1 Perception Lobe**
+Provides raw signals and entities.
 
-The Reasoner consumes:
+### **7.2 Cognitive Context**
+Provides short‑term memory.
 
-- recent inputs  
-- working memory  
-- contextual history  
+### **7.3 Reasoning Layer**
+Implements Axiom Three.
 
-This allows Syntra to:
+### **7.4 Intent Bridge**
+Consumes reasoning output.
 
-- detect patterns  
-- identify signals  
-- form early interpretations  
+### **7.5 Planning Lobe**
+Uses meaning to generate plans.
 
-### **5.2 Stateless Reasoning**
-Axiom Three reasoning is:
+### **7.6 Safety Lobe**
+Evaluates meaning for risk.
 
-- deterministic  
-- context‑driven  
-- non‑recursive  
-- non‑evolutionary  
+### **7.7 ThoughtStream**
+Logs reasoning steps.
 
-Stateful reasoning emerges in Axiom Five.
-
-### **5.3 Reasoning Hooks**
-
-Axiom Three introduces:
-
-- `interpret_input()`  
-- `extract_signals()`  
-- `summarize_context()`  
-
-These hooks evolve into full planning functions later.
+### **7.8 Evolution Engine**
+Analyzes reasoning patterns.
 
 ---
 
-## 6. Simple Explanation (Non‑Technical)
+## 8. Simple Explanation (Non‑Technical)
 
-Axiom Three is Syntra’s **first real thinking**.
+Axiom Three means:
 
-It allows her to:
+> **Syntra must understand what the input *means* before deciding what to do.  
+> She must interpret, not guess.**
 
-- make sense of what she sees  
-- use memory to interpret meaning  
-- detect patterns  
-- form early conclusions  
-- prepare for understanding your intent  
-
-Without Axiom Three, Syntra would observe and remember — but never *understand*.
+It ensures Syntra is thoughtful, grounded, and safe.
 
 ---
 
-## 7. Why Axiom Three Matters
+## 9. Why Axiom Three Matters
 
 Axiom Three ensures:
 
-- cognition becomes structured  
-- memory becomes meaningful  
-- perception becomes interpretable  
-- intent classification becomes possible  
-- planning has a foundation  
+- meaningful cognition  
+- accurate intent classification  
+- safe planning  
+- grounded action  
+- transparent reasoning  
+- predictable behavior  
 
-This axiom is the **birth of reasoning**.
-
----
-
-## 8. Relationship to Other Axioms
-
-```
-Axiom Zero  →  Defines structure
-Axiom One   →  Adds observation
-Axiom Two   →  Adds memory
-Axiom Three →  Adds reasoning
-Axiom Four  →  Adds communication + perception
-Axiom Five  →  Adds intent + planning
-Axiom Six   →  Adds self‑modification
-Axiom Seven →  Adds safety
-Axiom Eight →  Adds native language
-Axiom Nine  →  Adds long‑term evolution
-```
-
-Axiom Three is the **bridge** between memory and intent.
+It is the **meaning‑making principle** of Syntra’s architecture.
 
 ---
 
-## 9. Cross‑References
+## 10. Cross‑References
 
+- [reasoning_layer.md](reasoning_layer.md)  
+- [cognitive_context.md](cognitive_context.md)  
+- [cognitive_loop.md](cognitive_loop.md)  
+- [axiom_one.md](axiom_one.md)  
 - [axiom_two.md](axiom_two.md)  
 - [axiom_four.md](axiom_four.md)  
-- [cognitive_loop.md](cognitive_loop.md)  
 
 ---
 
