@@ -16,231 +16,256 @@
 ================================================================================
 -->
 
-# Axiom Five — Intent Engine  
-*A Research‑Grade Exploration of Syntra Kernel’s First Planning and Intent System*
+# Axiom Five — Planning  
+*A Research‑Grade Exploration of Syntra’s Principle of Structured Decision‑Making, Multi‑Step Strategy, and Safe Task Decomposition*
 
 ---
 
 ## 1. Introduction
 
-Axiom Five introduces one of the most important cognitive capabilities in Syntra Kernel:
+**Axiom Five: Planning** establishes the rule that Syntra must generate a structured, multi‑step plan before executing any action.
 
-**the ability to understand intent and generate structured plans.**
+Where:
 
-Where Axiom Three provides reasoning and Axiom Four provides communication,  
-Axiom Five provides **purpose**.
+- **Axiom One** says: Syntra must *observe*.  
+- **Axiom Two** says: Syntra must *contextualize*.  
+- **Axiom Three** says: Syntra must *interpret*.  
+- **Axiom Four** says: Syntra must *identify intent*.  
 
-This axiom establishes:
+**Axiom Five** says:
 
-- the **Intent Engine**  
-- the **Intent Classification System**  
-- the **Planning Lobe**  
-- the **first multi‑step cognitive plans**  
-- the **bridge between reasoning and action**  
+> **“Syntra must plan — she must determine *how* to achieve the intent before taking any action.”**
 
-Axiom Five is the moment Syntra transitions from *thinking* to *understanding what must be done*.
+This axiom governs the Planning Lobe and defines the foundation of:
+
+- task decomposition  
+- strategy generation  
+- safety‑aware planning  
+- reversible execution  
+- deterministic behavior  
+- transparent decision‑making  
+
+Axiom Five is the **architectural core of Syntra’s agency**.
 
 ---
 
 ## 2. Purpose of Axiom Five
 
-Axiom Five exists to:
+Axiom Five ensures that Syntra:
 
-- classify user intent  
-- generate structured plans  
-- route tasks to the correct lobes  
-- unify perception, reasoning, and action  
-- prepare the kernel for self‑modification (Axiom Six)  
-- enable safe, explainable decision‑making  
+- does not act impulsively  
+- does not execute without structure  
+- does not skip safety checks  
+- does not perform irreversible operations  
+- does not hallucinate steps  
+- does not take shortcuts around safety  
 
-This axiom is the foundation of Syntra’s **goal‑directed cognition**.
-
----
-
-## 3. High‑Level Diagram
-
-```
-                   AXIOM FIVE — INTENT ENGINE
-                   ==========================
-
-    Observation (Axiom One)
-                |
-                v
-    Cognitive Context (Axiom Two)
-                |
-                v
-    Reasoning Layer (Axiom Three)
-                |
-                v
-        +------------------------+
-        |     Intent Engine      |
-        |     (Axiom Five)       |
-        +-----------+------------+
-                    |
-        +-----------+------------+
-        |                        |
-        v                        v
-Planning Lobe            Action / Perception Lobes
-(Plan Generation)        (Execution)
-```
-
-Axiom Five is the **central routing system** of Syntra’s cognition.
+It is the **strategic reasoning principle** of Syntra’s mind.
 
 ---
 
-## 4. Architectural Responsibilities
+## 3. Axiom Five in the Cognitive Loop
 
-Axiom Five is responsible for:
-
-### **4.1 Intent Classification**
-Determines what the user wants:
-
-- ask a question  
-- browse a website  
-- run a task  
-- modify the system  
-- request a summary  
-- initiate a plan  
-- propose an evolution  
-
-### **4.2 Plan Generation**
-Creates structured, multi‑step plans:
-
-```json
-{
-  "intent": "browse",
-  "steps": [
-    "fetch_url",
-    "extract_text",
-    "summarize_content"
-  ]
-}
+```
+Observation → Context → Interpretation → Intent → Planning → Action → Reflection
 ```
 
-### **4.3 Lobe Routing**
-Sends tasks to:
+Axiom Five governs the **fifth stage**:
 
-- Perception Lobe  
-- Knowledge Lobe  
-- Planning Lobe  
-- Action Lobe  
-- Evolution Lobe  
+### **3.1 Planning Lobe Activation**
+The Planning Lobe receives:
 
-### **4.4 Safety‑Aware Planning**
-Plans must:
+- intent  
+- reasoning summary  
+- contextual memory  
+- safety notes  
 
-- be explainable  
-- be reversible  
-- respect safety rules  
-- avoid unsafe actions  
-- log all steps in the ThoughtStream  
+### **3.2 Plan Construction**
+The Planning Lobe:
 
-### **4.5 No Self‑Modification Yet**
-Axiom Five does **not** allow Syntra to modify herself.
+- decomposes the task  
+- identifies required steps  
+- evaluates strategies  
+- checks dependencies  
+- enforces safety constraints  
 
-That begins in Axiom Six.
+### **3.3 Plan Output**
+The output is a structured **Plan** containing:
+
+- ordered steps  
+- safety annotations  
+- dependencies  
+- expected outcomes  
+- SL plan block  
+
+### **3.4 ThoughtStream Logging**
+Every plan is logged for transparency.
 
 ---
 
-## 5. Technical Specification
+## 4. Architectural Implications
 
-### **5.1 IntentEngine Trait**
+Axiom Five enforces several structural rules:
 
-Axiom Five introduces:
+### **4.1 No Action Without a Plan**
+The Action Lobe cannot execute anything until a plan exists.
+
+### **4.2 No Unsafe Steps**
+Plans must be evaluated by the Safety Lobe.
+
+### **4.3 No Hidden Steps**
+All plan steps must be logged.
+
+### **4.4 No Irreversible Operations Without Approval**
+Plans must include:
+
+- reversibility notes  
+- fallback strategies  
+- safety constraints  
+
+### **4.5 No Evolution Without Planning Patterns**
+The Evolution Engine uses plan logs to detect:
+
+- inefficiencies  
+- redundant steps  
+- architectural bottlenecks  
+
+Axiom Five ensures Syntra’s cognition is **strategic, structured, and safe**.
+
+---
+
+## 5. Safety Implications
+
+Axiom Five is a safety mechanism:
+
+### **5.1 Prevents Impulsive Behavior**
+Syntra cannot act without a plan.
+
+### **5.2 Prevents Unsafe Execution**
+Plans must pass safety evaluation.
+
+### **5.3 Prevents Hidden Cognition**
+All plans are logged in the ThoughtStream.
+
+### **5.4 Prevents Irreversible Mistakes**
+Plans must include reversibility.
+
+Axiom Five is the **fifth line of defense** in Syntra’s safety governance.
+
+---
+
+## 6. Technical Specification
+
+### **6.1 AxiomFive Trait**
 
 ```rust
-pub trait IntentEngine {
-    fn classify_intent(&self, input: &str, context: &CognitiveContext) -> Intent;
-    fn generate_plan(&self, intent: &Intent) -> Plan;
+pub trait AxiomFive {
+    fn generate_plan(&self, intent: &Intent, context: &CognitiveContext) -> Plan;
+    fn validate_plan(&self, plan: &Plan) -> bool;
 }
 ```
 
-### **5.2 Intent Types**
+---
 
-Examples:
-
-- `QueryIntent`  
-- `BrowseIntent`  
-- `ActionIntent`  
-- `KnowledgeIntent`  
-- `EvolutionIntent`  
-- `DebugIntent`  
-
-### **5.3 Plan Structure**
+### **6.2 Plan Structure**
 
 ```rust
 pub struct Plan {
     pub steps: Vec<PlanStep>,
-    pub justification: String,
+    pub reversible: bool,
+    pub safety_notes: Vec<String>,
+    pub metadata: serde_json::Value,
 }
 ```
 
-### **5.4 Integration with ThoughtStream**
+---
 
-Every plan is logged:
+### **6.3 PlanStep Structure**
 
-- intent  
-- steps  
-- justification  
-- safety notes  
+```rust
+pub struct PlanStep {
+    pub name: String,
+    pub params: serde_json::Value,
+    pub reversible: bool,
+}
+```
 
 ---
 
-## 6. Simple Explanation (Non‑Technical)
+### **6.4 Planning Enforcement Rules**
 
-Axiom Five is Syntra’s **understanding of what you want**.
+```rust
+assert!(plan.steps.len() > 0);
+assert!(thoughtstream.logged(ThoughtStage::Planning));
+assert!(plan.reversible || plan.safety_notes.len() > 0);
+```
 
-It allows her to:
-
-- figure out your intent  
-- create a plan  
-- decide which part of her brain should handle it  
-- break tasks into steps  
-- explain her reasoning  
-
-Without Axiom Five, Syntra would think — but never *act with purpose*.
+Axiom Five is enforced programmatically and structurally.
 
 ---
 
-## 7. Why Axiom Five Matters
+## 7. Axiom Five and Other Subsystems
+
+### **7.1 Intent Bridge**
+Provides the goal.
+
+### **7.2 Reasoning Layer**
+Provides meaning and patterns.
+
+### **7.3 Cognitive Context**
+Provides short‑term memory.
+
+### **7.4 Planning Lobe**
+Implements Axiom Five.
+
+### **7.5 Safety Lobe**
+Evaluates plan risk.
+
+### **7.6 Action Lobe**
+Executes plan steps.
+
+### **7.7 ThoughtStream**
+Logs plan structure.
+
+### **7.8 Evolution Engine**
+Analyzes planning patterns.
+
+---
+
+## 8. Simple Explanation (Non‑Technical)
+
+Axiom Five means:
+
+> **Syntra must think before she acts.  
+> She must plan, not improvise.**
+
+It ensures Syntra is strategic, predictable, and safe.
+
+---
+
+## 9. Why Axiom Five Matters
 
 Axiom Five ensures:
 
-- Syntra understands user goals  
-- actions are structured and safe  
-- reasoning becomes purposeful  
-- perception and action are unified  
-- evolution proposals are grounded in intent  
+- structured decision‑making  
+- safe execution  
+- transparent planning  
+- predictable behavior  
+- reversible operations  
+- grounded agency  
 
-This axiom is the **birth of agency** — controlled, safe, and explainable.
-
----
-
-## 8. Relationship to Other Axioms
-
-```
-Axiom Zero  →  Defines structure
-Axiom One   →  Adds observation
-Axiom Two   →  Adds memory
-Axiom Three →  Adds reasoning
-Axiom Four  →  Adds communication + perception
-Axiom Five  →  Adds intent + planning
-Axiom Six   →  Adds self‑modification
-Axiom Seven →  Adds safety
-Axiom Eight →  Adds native language
-Axiom Nine  →  Adds long‑term evolution
-```
-
-Axiom Five is the **core of Syntra’s decision‑making**.
+It is the **strategic reasoning principle** of Syntra’s architecture.
 
 ---
 
-## 9. Cross‑References
+## 10. Cross‑References
 
+- [planning_lobe.md](planning_lobe.md)  
+- [action_lobe.md](action_lobe.md)  
+- [safety_governance.md](safety_governance.md)  
+- [cognitive_loop.md](cognitive_loop.md)  
 - [axiom_four.md](axiom_four.md)  
 - [axiom_six.md](axiom_six.md)  
-- [cortex_lobes.md](cortex_lobes.md)  
-- [cognitive_loop.md](cognitive_loop.md)  
 
 ---
 
