@@ -1,0 +1,21 @@
+# Matching Syntra Kernel Cargo.toml lints
+warn = [
+    "clippy::all",
+    "clippy::pedantic",
+    "clippy::nursery"
+]
+
+# Allow some pedantic lints that are too strict for real-world systems
+allow = [
+    "clippy::module_name_repetitions",
+    "clippy::missing_errors_doc",
+    "clippy::missing_panics_doc"
+]
+
+# Cognitive OS code that tends to use complex types
+allow = [
+    "clippy::type_complexity"
+]
+
+# Future-proofing
+msrv = "1.80"
