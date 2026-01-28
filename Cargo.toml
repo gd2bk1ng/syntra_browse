@@ -38,7 +38,7 @@ path = "src/bin/syntra_compiler_demo.rs"
 # Dependencies — core engine, rendering, AGI, networking, diagnostics
 # ================================================================================================
 [dependencies]
-winit = "0.29"
+winit = "0.30"
 pixels = "0.13"
 winit_input_helper = "0.14"
 
