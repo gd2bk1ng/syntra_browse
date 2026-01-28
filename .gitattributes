@@ -1,0 +1,25 @@
+# Normalize line endings across all platforms
+* text=auto eol=lf
+
+# Treat Rust files as UTF-8 text
+*.rs text
+
+# Binary files
+*.wasm binary
+*.dll binary
+*.so binary
+*.dylib binary
+
+# Prevent Git from messing with images or binaries
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+
+# Ensure consistent diffing for TOML and JSON
+*.toml text
+*.json text
+
+# Improve diff for Rust code
+*.rs diff=rust
