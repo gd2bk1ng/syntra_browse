@@ -1,29 +1,30 @@
-/* ================================================================================================
-   SYNTRA BROWSER — AXIOM FIVE + SIX + SEVEN
-   ------------------------------------------------------------------------------------------------
-   SIGIL:
-         .\s/.
-        :: S ::
-         '/s\'
-
-   File:        src/agi_core/mod.rs
-   Module:      AGI Core — Unified Cognition
-   Author:      Alexandr Roussinov (gd2bk1ng)
-   Description: Unified AGI Core for Syntra. Merges:
-                  • Axiom Three  — simple reasoning interface
-                  • Axiom Five   — semantic intent engine
-                  • Axiom Six    — self‑modification proposal engine
-                  • Axiom Seven  — safety & governance layer
-                Provides a dual-interface Reasoner trait and a Cortex-level ThoughtStream.
-
-   Overview:
-     • intent.rs        — Intent, IntentPlan, classifier, planner, JSON escaping, IntentLog.
-     • reasoner.rs      — Reasoner trait + NullReasoner / ProbReasoner implementations.
-     • ecosystem.rs     — EcosystemLobe + EcosystemModel (structural health model + scan).
-     • self_mod.rs      — SelfModEngine + change proposals, refactors, patch hints.
-     • safety.rs        — SafetyPolicy, SafetyRule, SafetyGate, SafetyVerdict.
-     • ThoughtStream    — Cortex-level thought stream built on IntentLog.
-   ================================================================================================ */
+// ================================================================================================
+//   SYNTRA KERNEL — AGI CORE (UNIFIED COGNITION)
+//   ------------------------------------------------------------------------------------------------
+//        .\s/.
+//       :: S ::
+//        '/s\'
+//
+//   File:        src/agi_core/mod.rs
+//   Module:      AGI Core — Unified Cognition
+//   Description: Central cognitive subsystem of the Syntra Kernel. Integrates:
+//                  • Axiom Three  — foundational reasoning interface
+//                  • Axiom Five   — semantic intent engine
+//                  • Axiom Six    — self‑modification & evolution engine
+//                  • Axiom Seven  — safety & governance layer
+//
+//                Provides:
+//                  • Intent engine (classification, planning, logging)
+//                  • Reasoner trait with multiple implementations
+//                  • Ecosystem health model & structural scanning
+//                  • Self‑modification proposal engine
+//                  • Safety policy enforcement
+//                  • Cortex-level ThoughtStream for introspection
+//
+//   Notes:
+//     - This subsystem is intentionally modular and future‑proof.
+//     - Designed for integration with predictive, continuity, and knowledge subsystems.
+// ================================================================================================
 
 #![allow(dead_code)]
 
@@ -33,13 +34,13 @@ pub mod ecosystem;
 pub mod self_mod;
 pub mod safety;
 
-/* ------------------------------------------------------------------------------------------------
-   PUBLIC EXPORTS
-   ------------------------------------------------------------------------------------------------ */
+// ================================================================================================
+// Public Exports
+// ================================================================================================
 
 pub use intent::{
-    classify_domain, escape_json, multi_step_plan, plan_for_domain, Intent, IntentLog, IntentPlan,
-    debug_plan,
+    classify_domain, debug_plan, escape_json, multi_step_plan, plan_for_domain, Intent, IntentLog,
+    IntentPlan,
 };
 
 pub use reasoner::{NullReasoner, ProbReasoner, Reasoner};
@@ -51,30 +52,32 @@ pub use self_mod::{
     RefactorSuggestion, SelfModEngine,
 };
 
-pub use safety::{
-    SafetyLevel, SafetyPolicy, SafetyRule, SafetyVerdict, SafetyGate,
-};
+pub use safety::{SafetyGate, SafetyLevel, SafetyPolicy, SafetyRule, SafetyVerdict};
 
-/* ------------------------------------------------------------------------------------------------
-   THOUGHT STREAM (Cortex-Level)
-   ------------------------------------------------------------------------------------------------ */
+// ================================================================================================
+// ThoughtStream (Cortex-Level Introspection)
+// ================================================================================================
 
 use intent::{IntentLog as CoreIntentLog, IntentPlan as CoreIntentPlan};
 
-/// Central thought stream for Syntra.
-/// Collects IntentPlan entries from the AGI Core and exposes them for introspection.
+/// The ThoughtStream is a Cortex-level introspection buffer that mirrors
+/// Syntra Kernel’s recent cognitive activity.
 ///
-/// Design:
-///   - Read-only from the outside (no mutation without explicit push).
-///   - Bounded capacity to avoid unbounded memory growth.
-///   - Intended as a mirror of Syntra's recent "thoughts".
+/// It stores a bounded sequence of `IntentPlan` entries, allowing the UI,
+/// diagnostics, or higher-level cognitive lobes to inspect the system’s
+/// reasoning history.
+///
+/// Design Principles:
+///   - Read-only from the outside (immutable access).
+///   - Bounded capacity to prevent unbounded memory growth.
+///   - Represents the “recent thoughts” of the AGI Core.
 #[derive(Debug)]
 pub struct ThoughtStream {
     log: CoreIntentLog,
 }
 
 impl ThoughtStream {
-    /// Create a new thought stream with a fixed maximum number of entries.
+    /// Create a new ThoughtStream with a fixed maximum number of entries.
     pub fn new(capacity: usize) -> Self {
         Self {
             log: CoreIntentLog::new(capacity),
