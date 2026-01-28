@@ -1,10 +1,9 @@
 /* ================================================================================================
-   SYNTRA BROWSER - AXIOM THREE
+   SYNTRA KERNEL — AXIOM THREE
    ------------------------------------------------------------------------------------------------
-   SIGIL:
-         .\s/.
-        :: S ::
-         '/s\'
+        .\s/.
+       :: S ::
+        '/s\'
 
    File:        trials/main.rs
    Module:      Syntra Trials Sandbox
@@ -16,26 +15,27 @@
      - Axiom Three introduces executable intent via static pipelines.
      - Observation, inspection, and failure-aware routing are enabled.
      - No learning, no adaptation, no autonomy.
+     - This file is a laboratory surface for cognitive experimentation.
    ================================================================================================ */
 
-use syntra::cli::inspect::inspect_context;
+use syntra_kernel::cli::inspect::inspect_context;
 
-use syntra::cognition::context::CognitiveContext;
-use syntra::cognition::observation::ObservationEmitter;
+use syntra_kernel::cognition::context::CognitiveContext;
+use syntra_kernel::cognition::observation::ObservationEmitter;
 
-use syntra::intent::intent::Intent;
-use syntra::intent::pipeline_map::resolve_pipeline;
+use syntra_kernel::intent::Intent;
+use syntra_kernel::intent::pipeline_map::resolve_pipeline;
 
-use syntra::pipeline::executor::execute_pipeline_with_actor;
+use syntra_kernel::pipeline::executor::execute_pipeline_with_actor;
 
 fn main() {
     env_logger::init();
 
-    println!("Syntra Trials — Axiom Three");
-    println!("Executable intent with actor-backed pipelines");
+    println!("Syntra Kernel Trials — Axiom Three");
+    println!("Executable intent with actor-backed pipelines\n");
 
     // ------------------------------------------------------------
-    // Cognitive context initialization
+    // Cognitive Context Initialization
     // ------------------------------------------------------------
 
     let mut cognitive_context = CognitiveContext::new();
@@ -73,7 +73,7 @@ fn main() {
     let execution_result = execute_pipeline_with_actor(&pipeline, &mut observer);
 
     // ------------------------------------------------------------
-    // Failure-aware routing (non-adaptive)
+    // Failure-Aware Routing (Non-Adaptive)
     // ------------------------------------------------------------
 
     observer.emit(
@@ -95,13 +95,13 @@ fn main() {
     );
 
     // ------------------------------------------------------------
-    // CLI Cognitive Inspection (single inspection surface)
+    // CLI Cognitive Inspection (Single Inspection Surface)
     // ------------------------------------------------------------
 
     inspect_context(&cognitive_context, 20);
 
     println!(
-        "Total cognitive events recorded: {}",
+        "\nTotal cognitive events recorded: {}",
         cognitive_context.total_events()
     );
 }
