@@ -35,14 +35,14 @@
 //     • Meta-Evolution     — Higher-order evolution proposals (Axiom Four).
 //     • Maintenance Lobe   — System health & recovery knowledge (Axiom Four).
 //     • nav_lobe           — UI/navigation lobe for future surfaces.
-//
-//   Notes:
-//     - The Cortex is intentionally modular and ASCII-safe.
-//     - It is the central nervous system of Syntra Kernel’s cognition.
-//     - Axiom Four introduces a safe self-modification sandbox; no direct writes to disk occur here.
+//     • Banner Lobe        — Canonical header/banner generation (identity preservation).
+//     • Code Introspector  — Structural analysis of Rust files.
+//     • Banner Enforcer    — Ecosystem-wide banner enforcement + telemetry.
 // ================================================================================================
 
 #![allow(dead_code)]
+
+use std::path::Path;
 
 pub mod request_lobe;
 pub mod memory_lobe;
@@ -58,6 +58,11 @@ pub mod meta_evolution_lobe;
 pub mod maintenance_lobe;
 pub mod nav_lobe;
 
+// new cortex lobes
+pub mod banner_lobe;
+pub mod code_introspector;
+pub mod banner_enforcer;
+
 pub use request_lobe::{Request, RequestKind, RequestLobe};
 pub use memory_lobe::{MemoryEntry, MemoryLobe};
 pub use plan_lobe::PlanLobe;
@@ -71,10 +76,17 @@ pub use sandbox_lobe::{SandboxFile, SandboxPatch, SandboxSession};
 pub use meta_evolution_lobe::{EvolutionProposal, FileChange, MetaEvolutionLobe};
 pub use maintenance_lobe::MaintenanceLobe;
 
+pub use banner_lobe::BannerLobe;
+pub use code_introspector::{CodeIntrospector, FileAnalysis};
+pub use banner_enforcer::{BannerEnforcer, BannerEnforcementResult, BannerEnforcementSummary};
+
 use crate::agi_core::{Intent, IntentPlan, NullReasoner, Reasoner};
 use crate::conduit::{Conduit, ConduitMessage};
 use crate::terminal;
 use crate::utilities::log_info;
+
+// feedback telemetry (from advanced feedback.rs)
+use crate::agi_core::feedback::{Feedback, SystemTelemetry, Severity};
 
 /// Simple placeholder for a future Cortex run loop.
 pub fn run() {
@@ -379,6 +391,60 @@ impl<R: Reasoner> Cortex<R> {
         self.memory.store_response(&response);
 
         response
+    }
+
+    // --------------------------------------------------------------------------------------------
+    // BANNER / INTROSPECTION API (CORTEX-FACING)
+    // --------------------------------------------------------------------------------------------
+
+    /// Introspect a single Rust file and return its analysis.
+    pub fn introspect_file(&self, path: &Path) -> std::io::Result<FileAnalysis> {
+        CodeIntrospector::analyze_file(path)
+    }
+
+    /// Enforce banners in a tree and emit telemetry feedback for banner violations.
+    ///
+    /// Returns (summary, feedback_events) so the caller can feed them into the feedback pipeline.
+    pub fn enforce_banners_with_telemetry(
+        &self,
+        root: &Path,
+        dry_run: bool,
+        banner_config_path: &Path,
+    ) -> std::io::Result<(BannerEnforcementSummary, Vec<Feedback>)> {
+        let banner_lobe = BannerLobe::new(banner_config_path);
+        let enforcer = BannerEnforcer::new(banner_lobe);
+
+        let summary = enforcer.enforce_in_tree(root, dry_run)?;
+        let mut feedback_events = Vec::new();
+
+        for result in &summary.results {
+            if !result.had_banner || result.updated {
+                let telemetry = SystemTelemetry {
+                    telemetry_id: uuid::Uuid::new_v4(),
+                    intent_label: "banner_violation".to_string(),
+                    error_code: None,
+                    anomaly_score: 1.0,
+                    details: Some(format!(
+                        "File '{}' had_banner={} updated={} module='{}'",
+                        result.path.display(),
+                        result.had_banner,
+                        result.updated,
+                        result.module_name
+                    )),
+                    timestamp: chrono::Utc::now(),
+                    severity: Severity::Critical,
+                };
+                feedback_events.push(Feedback::Telemetry(telemetry));
+            }
+        }
+
+        Ok((summary, feedback_events))
+    }
+
+    /// Set the banner author via BannerLobe config.
+    pub fn set_banner_author(&self, banner_config_path: &Path, author: &str) -> std::io::Result<()> {
+        let mut banner_lobe = BannerLobe::new(banner_config_path);
+        banner_lobe.set_author(author.to_string())
     }
 
     // --------------------------------------------------------------------------------------------
