@@ -1,48 +1,47 @@
-/* ================================================================================================
-   SYNTRA FEEDBACK LOOP — AXIOM SIX
-   ------------------------------------------------------------------------------------------------
-   SIGIL:
-         .\f/.
-        :: F ::
-         '/f\'
-
-   File:        src/agi_core/feedback.rs
-   Module:      AGI Core — Feedback Loop & Self-Improvement Engine
-   Author:      Alexandr Roussinov (gd2bk1ng)
-   Description: Syntra’s pioneering multi-modal, multi-source feedback loop architecture for AGI
-                self-improvement and continuous evolution. This module unifies user-centric feedback,
-                automated performance telemetry, and simulation-based validation into a modular,
-                extensible system designed for transparency, privacy, and adaptive learning.
-
-   Overview:
-     • Feedback Types       — UserFeedback, SystemTelemetry, SimulationResult
-     • FeedbackProcessor    — Aggregates, validates, prioritizes feedback inputs
-     • RuleUpdater          — Deterministic rule adjustment engine
-     • ModelTrainer         — Stub for ML model retraining hooks
-     • FeedbackStore        — Persistent, versioned feedback repository
-     • Async Feedback APIs  — For real-time and batch processing
-     • Privacy & Explainability — Metadata, logging, and audit trails
-     • Extensibility        — Trait-based plugins for new feedback sources and update strategies
-
-   Notes:
-     - Designed for Syntra’s Axiom Six and beyond.
-     - Emphasizes modularity, clean async design, and Rust safety.
-     - Enables ecosystem-wide self-reflection and evolution.
-     - Future integrations: federated learning, neural-symbolic fusion, multi-modal feedback.
-
-================================================================================================= */
+// ================================================================================================
+//   SYNTRA KERNEL — AGI CORE (FEEDBACK LOOP & SELF-IMPROVEMENT ENGINE)
+//   ------------------------------------------------------------------------------------------------
+//        .\f/.
+//       :: F ::
+//        '/f'
+//
+//   File:        src/agi_core/feedback.rs
+//   Module:      Feedback Loop & Self-Improvement Engine
+//   Description: Syntra Kernel’s multi-source feedback architecture for self-improvement and
+//                continuous evolution. Unifies user feedback, system telemetry, and simulation
+//                results into a modular, extensible pipeline for adaptive learning.
+//
+//   Overview:
+//     • Feedback                — UserFeedback, SystemTelemetry, SimulationResult
+//     • FeedbackStore           — Persistent, versioned feedback repository
+//     • FeedbackProcessor       — Aggregates, validates, dispatches feedback
+//     • FeedbackUpdateStrategy  — Trait for rule/model update plugins
+//     • RuleUpdater             — Deterministic rule adjustment engine
+//     • ModelTrainer            — Stub for ML retraining hooks
+//     • AsyncFeedbackIngestor   — Tokio-based async ingestion API
+//
+//   Notes:
+//     - Designed for Axiom Six and beyond.
+//     - Emphasizes modularity, async design, and Rust safety.
+//     - Future integrations: federated learning, neural-symbolic fusion, multi-modal feedback.
+// ================================================================================================
 
 #![allow(dead_code)]
 
 use std::collections::{HashMap, VecDeque};
 use std::sync::{Arc, Mutex};
-use chrono::{Utc, DateTime};
-use serde::{Serialize, Deserialize};
-use tokio::sync::mpsc;
-use uuid::Uuid;
-use log::{info, warn, error};
 
-/// Core feedback types for Syntra’s AGI self-improvement cycle.
+use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
+use tokio::sync::mpsc;
+use tracing::{error, info, warn};
+use uuid::Uuid;
+
+// ================================================================================================
+// Core Feedback Types
+// ================================================================================================
+
+/// Core feedback types for Syntra Kernel’s self-improvement cycle.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Feedback {
     User(UserFeedback),
@@ -55,7 +54,8 @@ pub enum Feedback {
 pub struct UserFeedback {
     pub feedback_id: Uuid,
     pub intent_label: String,
-    pub user_rating: u8, // 1-5 stars
+    /// 1–5 rating (e.g., stars or satisfaction score).
+    pub user_rating: u8,
     pub comments: Option<String>,
     pub timestamp: DateTime<Utc>,
 }
@@ -66,6 +66,7 @@ pub struct SystemTelemetry {
     pub telemetry_id: Uuid,
     pub intent_label: String,
     pub error_code: Option<String>,
+    /// Normalized anomaly score in [0.0, 1.0].
     pub anomaly_score: f32,
     pub details: Option<String>,
     pub timestamp: DateTime<Utc>,
@@ -83,6 +84,10 @@ pub struct SimulationResult {
     pub timestamp: DateTime<Utc>,
 }
 
+// ================================================================================================
+// Traits for Extensibility
+// ================================================================================================
+
 /// Trait for feedback sources to implement for plug-and-play extensibility.
 pub trait FeedbackSource: Send + Sync {
     fn collect_feedback(&self) -> Vec<Feedback>;
@@ -92,6 +97,10 @@ pub trait FeedbackSource: Send + Sync {
 pub trait FeedbackUpdateStrategy: Send + Sync {
     fn update(&self, feedback_batch: &[Feedback]);
 }
+
+// ================================================================================================
+// Feedback Store (Persistent, Versioned)
+// ================================================================================================
 
 /// Persistent store for feedback with versioning and audit trail.
 pub struct FeedbackStore {
@@ -110,7 +119,7 @@ impl FeedbackStore {
     }
 
     pub fn add_feedback(&self, feedback: Feedback) {
-        let mut store_guard = self.store.lock().unwrap();
+        let mut store_guard = self.store.lock().expect("FeedbackStore lock poisoned");
         let id = match &feedback {
             Feedback::User(fb) => fb.feedback_id,
             Feedback::Telemetry(fb) => fb.telemetry_id,
@@ -118,16 +127,16 @@ impl FeedbackStore {
         };
         store_guard.insert(id, feedback.clone());
 
-        let mut history_guard = self.history.lock().unwrap();
+        let mut history_guard = self.history.lock().expect("FeedbackStore history lock poisoned");
         let now = Utc::now();
+
         if let Some(last_batch) = history_guard.back_mut() {
             if (now - last_batch.0).num_seconds() < 60 {
-                // Append to last batch if within 1 minute
                 last_batch.1.push(feedback);
                 return;
             }
         }
-        // Otherwise, create a new batch
+
         history_guard.push_back((now, vec![feedback]));
         if history_guard.len() > self.max_history_len {
             history_guard.pop_front();
@@ -135,15 +144,20 @@ impl FeedbackStore {
     }
 
     pub fn get_feedback_batch(&self, since: DateTime<Utc>) -> Vec<Feedback> {
-        let history_guard = self.history.lock().unwrap();
-        history_guard.iter()
+        let history_guard = self.history.lock().expect("FeedbackStore history lock poisoned");
+        history_guard
+            .iter()
             .filter(|(ts, _)| *ts > since)
             .flat_map(|(_, batch)| batch.clone())
             .collect()
     }
 }
 
-/// Core processor that ingests feedback, validates, and dispatches updates.
+// ================================================================================================
+// Feedback Processor
+// ================================================================================================
+
+/// Core processor that ingests feedback, validates it, and dispatches updates.
 pub struct FeedbackProcessor {
     store: Arc<FeedbackStore>,
     update_strategies: Vec<Arc<dyn FeedbackUpdateStrategy>>,
@@ -165,7 +179,8 @@ impl FeedbackProcessor {
     pub fn process_feedback_batch(&self, feedback_batch: Vec<Feedback>) {
         info!("Processing feedback batch of size {}", feedback_batch.len());
 
-        let validated_feedback: Vec<Feedback> = feedback_batch.into_iter()
+        let validated_feedback: Vec<Feedback> = feedback_batch
+            .into_iter()
             .filter(|fb| self.validate_feedback(fb))
             .collect();
 
@@ -183,22 +198,26 @@ impl FeedbackProcessor {
     /// Basic validation logic to filter out malformed or suspicious feedback.
     fn validate_feedback(&self, feedback: &Feedback) -> bool {
         match feedback {
-            Feedback::User(fb) => fb.user_rating >= 1 && fb.user_rating <= 5,
-            Feedback::Telemetry(fb) => fb.anomaly_score >= 0.0 && fb.anomaly_score <= 1.0,
-            Feedback::Simulation(fb) => true, // Assume simulation results are valid
+            Feedback::User(fb) => (1..=5).contains(&fb.user_rating),
+            Feedback::Telemetry(fb) => (0.0..=1.0).contains(&fb.anomaly_score),
+            Feedback::Simulation(_) => true, // Assume simulation results are valid
         }
     }
 }
 
+// ================================================================================================
+// Rule Updater (Deterministic Rules)
+// ================================================================================================
+
 /// Deterministic rule updater that adjusts classification rules based on feedback.
 pub struct RuleUpdater {
-    // Placeholder for rule data structures, e.g., keyword weights, thresholds
+    // Placeholder for rule data structures, e.g., keyword weights, thresholds.
 }
 
 impl RuleUpdater {
     pub fn new() -> Self {
         RuleUpdater {
-            // Initialize rule sets or load from config
+            // Future: initialize rule sets or load from config.
         }
     }
 
@@ -208,21 +227,20 @@ impl RuleUpdater {
             match fb {
                 Feedback::User(user_fb) => {
                     if user_fb.user_rating < 3 {
-                        // Example: Log low ratings for manual or automated rule tuning
                         warn!(
-                            "Low user rating detected for intent '{}': {} stars. Comments: {:?}",
+                            "Low user rating for intent '{}': {} stars. Comments: {:?}",
                             user_fb.intent_label, user_fb.user_rating, user_fb.comments
                         );
-                        // TODO: Implement rule adjustment logic here
+                        // TODO: Implement rule adjustment logic here.
                     }
                 }
                 Feedback::Telemetry(telemetry) => {
                     if telemetry.anomaly_score > 0.7 {
                         warn!(
-                            "High anomaly score detected for intent '{}': {}. Details: {:?}",
+                            "High anomaly score for intent '{}': {}. Details: {:?}",
                             telemetry.intent_label, telemetry.anomaly_score, telemetry.details
                         );
-                        // TODO: Implement rule tuning or alerting
+                        // TODO: Implement rule tuning or alerting.
                     }
                 }
                 Feedback::Simulation(sim) => {
@@ -231,7 +249,7 @@ impl RuleUpdater {
                             "Simulation failure for test case '{}': expected '{}', got '{}'. Notes: {:?}",
                             sim.test_case, sim.expected_intent, sim.actual_intent, sim.notes
                         );
-                        // TODO: Integrate simulation feedback into rules
+                        // TODO: Integrate simulation feedback into rules.
                     }
                 }
             }
@@ -245,18 +263,25 @@ impl FeedbackUpdateStrategy for RuleUpdater {
     }
 }
 
+// ================================================================================================
+// Model Trainer (ML Stub)
+// ================================================================================================
+
 /// Stub for ML model trainer integration.
 /// Replace with actual ML pipeline hooks or FFI calls.
 pub struct ModelTrainer;
 
 impl ModelTrainer {
     pub fn new() -> Self {
-        ModelTrainer {}
+        ModelTrainer
     }
 
     pub fn retrain_models(&self, feedback_batch: &[Feedback]) {
-        info!("Retraining ML models with {} feedback items...", feedback_batch.len());
-        // TODO: Implement training logic or call external ML services
+        info!(
+            "Retraining ML models with {} feedback items...",
+            feedback_batch.len()
+        );
+        // TODO: Implement training logic or call external ML services.
     }
 }
 
@@ -265,6 +290,10 @@ impl FeedbackUpdateStrategy for ModelTrainer {
         self.retrain_models(feedback_batch);
     }
 }
+
+// ================================================================================================
+// Async Feedback Ingestion (Tokio)
+// ================================================================================================
 
 /// Async feedback ingestion API using Tokio channels for real-time processing.
 pub struct AsyncFeedbackIngestor {
@@ -275,7 +304,6 @@ impl AsyncFeedbackIngestor {
     pub fn new(processor: Arc<FeedbackProcessor>) -> Self {
         let (tx, mut rx) = mpsc::channel::<Feedback>(100);
 
-        // Spawn async task for processing
         tokio::spawn(async move {
             let mut batch: Vec<Feedback> = Vec::new();
             let batch_size = 20;
@@ -306,16 +334,20 @@ impl AsyncFeedbackIngestor {
     }
 
     /// Public API to submit feedback asynchronously.
-    pub async fn submit_feedback(&self, feedback: Feedback) -> Result<(), mpsc::error::SendError<Feedback>> {
+    pub async fn submit_feedback(
+        &self,
+        feedback: Feedback,
+    ) -> Result<(), mpsc::error::SendError<Feedback>> {
         self.sender.send(feedback).await
     }
 }
 
+// ================================================================================================
+// Example Flow
+// ================================================================================================
+
 /// Example integration function to demonstrate feedback ingestion.
 pub async fn example_feedback_flow(ingestor: &AsyncFeedbackIngestor) {
-    use chrono::Utc;
-    use uuid::Uuid;
-
     let user_feedback = Feedback::User(UserFeedback {
         feedback_id: Uuid::new_v4(),
         intent_label: "browse books".to_string(),
@@ -329,21 +361,13 @@ pub async fn example_feedback_flow(ingestor: &AsyncFeedbackIngestor) {
     }
 }
 
-/// Integration points with Syntra’s intent engine:
-///
-/// - After `NullReasoner` or any `Reasoner` processes an intent and generates an `IntentPlan`,
-///   surface the plan and classification to the user or system operators for feedback.
-///
-/// - Collect explicit feedback via UI or API and submit it to `AsyncFeedbackIngestor`.
-///
-/// - Continuously run background tasks that invoke `FeedbackProcessor` to update rules and models.
-///
-/// - Use `FeedbackStore` to audit and trace feedback history for explainability and compliance.
-///
-/// - Extend `FeedbackSource` trait to add new feedback channels (e.g., federated learning clients,
-///   multi-modal sensors).
-///
-
-/* ================================================================================================
-   END OF SYNTRA FEEDBACK LOOP MODULE — AXIOM SIX
-================================================================================================= */
+// ================================================================================================
+// Integration Notes
+// ================================================================================================
+//
+// - After any `Reasoner` produces an `IntentPlan`, surface the result for feedback.
+// - Collect explicit feedback via UI, API, or logs and submit it to `AsyncFeedbackIngestor`.
+// - Run background tasks that use `FeedbackProcessor` to update rules and models.
+// - Use `FeedbackStore` for auditability, explainability, and compliance.
+// - Extend `FeedbackSource` and `FeedbackUpdateStrategy` for new channels and strategies.
+//
