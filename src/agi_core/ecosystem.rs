@@ -7,6 +7,7 @@
 //
 //   File:        src/agi_core/ecosystem.rs
 //   Module:      Ecosystem Model + Diagnostic Scanner (Advanced)
+//   Author:      Alexandr Roussinov (gd2bk1ng)
 //   Description: Structural and qualitative model of the Syntra Kernel ecosystem. Scans the
 //                repository, computes lobe completeness, and produces upgrade recommendations
 //                and an overall health score.
