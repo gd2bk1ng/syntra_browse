@@ -42,7 +42,7 @@ winit = "0.29"
 pixels = "0.13"
 winit_input_helper = "0.14"
 
-ring = "0.16"
+ring = "0.17"
 data-encoding = "2.3"
 
 chrono = { version = "0.4", features = ["serde"] }
