@@ -1,0 +1,37 @@
+# ================================================================================================
+#   SYNTRA KERNEL — DEPENDENCY MAINTENANCE CONFIGURATION
+#   ------------------------------------------------------------------------------------------------
+#        .\s/.
+#       :: S ::
+#        '/s\'
+#
+#   File:        .github/dependabot.yml
+#   Module:      Syntra Kernel — Automated Dependency Updates
+#   Description: Configures Dependabot to automatically check for updates to Rust (Cargo) and
+#                frontend (npm) dependencies. Ensures the ecosystem remains secure, modern,
+#                and aligned with upstream improvements.
+#
+#   Notes:
+#     - Cargo updates cover all Rust crates in the workspace.
+#     - npm updates cover the Syntra Kernel frontend visualization layer.
+#     - Update intervals can be tuned (daily, weekly, monthly).
+# ================================================================================================
+
+version: 2
+
+updates:
+  # ----------------------------------------------------------------------------------------------
+  # Rust (Cargo) — Syntra Kernel backend, cognition, runtime, pipelines, etc.
+  # ----------------------------------------------------------------------------------------------
+  - package-ecosystem: "cargo"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # ----------------------------------------------------------------------------------------------
+  # Frontend (npm) — Syntra Kernel visualization + UI
+  # ----------------------------------------------------------------------------------------------
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
