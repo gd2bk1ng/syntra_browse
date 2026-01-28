@@ -1,30 +1,39 @@
-/* ================================================================================================
-   SYNTRA BROWSER — AXIOM FIVE
-   ------------------------------------------------------------------------------------------------
-   SIGIL:
-         .\s/.
-        :: S ::
-         '/s\'
-
-   File:        src/agi_core/ecosystem.rs
-   Module:      AGI Core — Ecosystem Model + Diagnostic Scanner
-   Author:      Alexandr Roussinov (gd2bk1ng)
-   Description: Structural model of Syntra's ecosystem. Scans the repository, identifies missing
-                lobes, incomplete modules, and recommends upgrades. Non-destructive and advisory.
-   ================================================================================================ */
+// ================================================================================================
+//   SYNTRA KERNEL — AGI CORE (ECOSYSTEM MODEL + DIAGNOSTIC SCANNER)
+//   ------------------------------------------------------------------------------------------------
+//        .\s/.
+//       :: S ::
+//        '/s\'
+//
+//   File:        src/agi_core/ecosystem.rs
+//   Module:      Ecosystem Model + Diagnostic Scanner
+//   Description: Structural model of the Syntra Kernel ecosystem. Scans the repository, identifies
+//                missing lobes, incomplete modules, and recommends upgrades. Non-destructive and
+//                advisory.
+//
+//   Notes:
+//     - This subsystem is intentionally read-only.
+//     - Designed to support evolution, refactoring, and architectural introspection.
+//     - Future versions may integrate with the distributed, continuity, and diagnostics subsystems.
+// ================================================================================================
 
 #![allow(dead_code)]
 
 use std::fs;
 use std::path::{Path, PathBuf};
 
-/// Represents a structural lobe in Syntra's ecosystem.
+/// Represents a structural lobe in the Syntra Kernel ecosystem.
 ///
-/// Lobes correspond to major filesystem or logical components such as source code,
-/// documentation, or terminal interfaces.
+/// Lobes correspond to major filesystem or logical components such as:
+///   - AGI Core
+///   - Cortex
+///   - Runtime
+///   - Renderer
+///   - Browser subsystem
+///   - Documentation
 #[derive(Debug, Clone)]
 pub struct EcosystemLobe {
-    /// Name of the lobe (e.g., "AGI Core", "Docs").
+    /// Name of the lobe (e.g., "AGI Core", "Renderer").
     pub name: String,
     /// Filesystem path or identifier for the lobe.
     pub path: PathBuf,
@@ -36,7 +45,7 @@ pub struct EcosystemLobe {
     pub is_empty: bool,
 }
 
-/// High-level model of Syntra's ecosystem health.
+/// High-level model of Syntra Kernel’s ecosystem health.
 ///
 /// This is read-only diagnostic state: it never mutates the filesystem.
 #[derive(Debug, Clone, Default)]
@@ -61,12 +70,16 @@ impl EcosystemModel {
     pub fn scan_repo(&mut self, root: impl AsRef<Path>) {
         let root = root.as_ref();
 
+        // Updated to reflect the Syntra Kernel architecture
         let expected_lobes = vec![
             ("AGI Core", "src/agi_core"),
-            ("Browser", "src/browser"),
-            ("Renderer", "src/browser/renderer"),
             ("Cortex", "src/cortex"),
+            ("Runtime", "src/runtime"),
+            ("Renderer", "src/renderer"),
+            ("Browser", "src/browser"),
             ("Terminal", "src/terminal"),
+            ("Utilities", "src/utilities"),
+            ("Dataset", "src/dataset"),
             ("Docs", "docs"),
         ];
 
@@ -114,7 +127,7 @@ impl EcosystemModel {
         for missing in &self.missing {
             self.upgrade_recommendations.push(format!(
                 "Lobe '{}' is missing. Recommend generating a scaffold module with Rust skeletons, \
-                 tests, and documentation.",
+                 documentation, and integration tests.",
                 missing
             ));
         }
@@ -140,7 +153,7 @@ impl EcosystemModel {
     pub fn diagnostic_summary(&self) -> String {
         let mut out = String::new();
 
-        out.push_str("=== Syntra Ecosystem Diagnostic ===\n");
+        out.push_str("=== Syntra Kernel Ecosystem Diagnostic ===\n");
 
         if !self.missing.is_empty() {
             out.push_str("Missing Lobes:\n");
