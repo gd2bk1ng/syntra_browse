@@ -1,37 +1,33 @@
-/* ================================================================================================
-   SYNTRA BROWSER — AXIOM FIVE
-   ------------------------------------------------------------------------------------------------
-   SIGIL:
-         .\s/.
-        :: S ::
-         '/s\'
-
-   File:        src/agi_core/intent.rs
-   Module:      AGI Core — Intent Semantics Engine
-   Author:      Alexandr Roussinov (gd2bk1ng)
-   Description: Unified semantic intent engine for Syntra’s emerging AGI Core. This module
-                classifies freeform text into structured intent classes, generates high-level
-                plans, supports probabilistic reasoning hints, and provides safe ASCII output for
-                the intent bridge. It merges Axiom Zero’s deterministic classifier with Axiom
-                Three/Four/Five’s expanded semantic domains.
-
-   Overview:
-     • Intent           — Raw user intent with confidence metadata.
-     • IntentPlan       — Classified intent with semantic class + high-level plan.
-     • Reasoner         — Dual-interface trait for pluggable reasoning engines.
-     • NullReasoner     — Deterministic baseline classifier.
-     • ProbReasoner     — Probabilistic, multi-step planning wrapper.
-     • IntentLog        — Ring buffer for introspection.
-     • debug_plan       — One-line summary for overlays/terminals.
-   ================================================================================================ */
+// ================================================================================================
+//   SYNTRA KERNEL — AGI CORE (INTENT SEMANTICS ENGINE)
+//   ------------------------------------------------------------------------------------------------
+//        .\s/.
+//       :: S ::
+//        '/s'
+//
+//   File:        src/agi_core/intent.rs
+//   Module:      Intent Semantics Engine
+//   Description: Unified semantic intent engine for the Syntra Kernel. Classifies freeform text
+//                into structured intent classes, generates high-level plans, supports simple
+//                probabilistic hints, and provides ASCII-safe output for introspection.
+//
+//   Overview:
+//     • Intent           — Raw user intent with confidence metadata.
+//     • IntentPlan       — Classified intent with semantic class + high-level plan.
+//     • Reasoner         — Trait for pluggable reasoning engines.
+//     • NullReasoner     — Deterministic baseline classifier.
+//     • ProbReasoner     — Wrapper for future probabilistic reasoning.
+//     • IntentLog        — Ring buffer for introspection.
+//     • debug_plan       — One-line summary for overlays/terminals.
+// ================================================================================================
 
 #![allow(dead_code)]
 
 use serde::{Deserialize, Serialize};
 
-/* ------------------------------------------------------------------------------------------------
-   DATA STRUCTURES
-   ------------------------------------------------------------------------------------------------ */
+// ================================================================================================
+// Data Structures
+// ================================================================================================
 
 /// Raw user intent with confidence metadata.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -57,13 +53,13 @@ pub struct IntentPlan {
     pub plan: String,
     /// Optional multi-step plan, when available.
     pub steps: Vec<String>,
-    /// Optional probability estimate (0.0–1.0) for classification confidence.
+    /// Probability estimate (0.0–1.0) for classification confidence.
     pub probability: f32,
 }
 
-/* ------------------------------------------------------------------------------------------------
-   TRAIT: Reasoner (Dual Interface)
-   ------------------------------------------------------------------------------------------------ */
+// ================================================================================================
+// Reasoner Trait (Dual Interface)
+// ================================================================================================
 
 pub trait Reasoner {
     /// Full semantic reasoning (Axiom Five).
@@ -75,9 +71,9 @@ pub trait Reasoner {
     }
 }
 
-/* ------------------------------------------------------------------------------------------------
-   NULL REASONER (Deterministic Baseline)
-   ------------------------------------------------------------------------------------------------ */
+// ================================================================================================
+// NullReasoner (Deterministic Baseline)
+// ================================================================================================
 
 pub struct NullReasoner;
 
@@ -104,9 +100,9 @@ impl Reasoner for NullReasoner {
     }
 }
 
-/* ------------------------------------------------------------------------------------------------
-   PROBABILISTIC / MULTI-STEP REASONER
-   ------------------------------------------------------------------------------------------------ */
+// ================================================================================================
+// ProbReasoner (Wrapper for Future Probabilistic Models)
+// ================================================================================================
 
 /// A thin wrapper that can, in the future, incorporate real probabilistic models.
 /// For now, it decorates NullReasoner with richer multi-step planning semantics.
@@ -129,9 +125,9 @@ impl Reasoner for ProbReasoner {
     }
 }
 
-/* ------------------------------------------------------------------------------------------------
-   SEMANTIC CLASSIFICATION (Axiom Five)
-   ------------------------------------------------------------------------------------------------ */
+// ================================================================================================
+// Semantic Classification (Axiom Five)
+// ================================================================================================
 
 pub fn classify_domain(intent: &str) -> String {
     let lower = intent.to_lowercase();
@@ -183,9 +179,9 @@ pub fn classify_domain(intent: &str) -> String {
     "freeform".to_string()
 }
 
-/* ------------------------------------------------------------------------------------------------
-   HIGH-LEVEL PLANNING (Axiom Five)
-   ------------------------------------------------------------------------------------------------ */
+// ================================================================================================
+// High-Level Planning (Axiom Five)
+// ================================================================================================
 
 pub fn plan_for_domain(classification: &str, intent: &str) -> String {
     match classification {
@@ -262,9 +258,9 @@ pub fn plan_for_domain(classification: &str, intent: &str) -> String {
     }
 }
 
-/* ------------------------------------------------------------------------------------------------
-   MULTI-STEP PLANNING (Structured)
-   ------------------------------------------------------------------------------------------------ */
+// ================================================================================================
+// Multi-Step Planning (Structured)
+// ================================================================================================
 
 pub fn multi_step_plan(classification: &str, intent: &str) -> Vec<String> {
     match classification {
@@ -296,9 +292,9 @@ pub fn multi_step_plan(classification: &str, intent: &str) -> Vec<String> {
     }
 }
 
-/* ------------------------------------------------------------------------------------------------
-   PROBABILITY ESTIMATION (Simple Heuristic)
-   ------------------------------------------------------------------------------------------------ */
+// ================================================================================================
+// Probability Estimation (Simple Heuristic)
+// ================================================================================================
 
 fn baseline_probability(classification: &str, confidence: f32) -> f32 {
     let base = match classification {
@@ -310,9 +306,9 @@ fn baseline_probability(classification: &str, confidence: f32) -> f32 {
     (base * confidence).clamp(0.0, 1.0)
 }
 
-/* ------------------------------------------------------------------------------------------------
-   DEBUG / INTROSPECTION HELPERS
-   ------------------------------------------------------------------------------------------------ */
+// ================================================================================================
+// Debug / Introspection Helpers
+// ================================================================================================
 
 pub fn debug_plan(plan: &IntentPlan) -> String {
     format!(
@@ -324,9 +320,9 @@ pub fn debug_plan(plan: &IntentPlan) -> String {
     )
 }
 
-/* ------------------------------------------------------------------------------------------------
-   INTENT LOG (Ring Buffer)
-   ------------------------------------------------------------------------------------------------ */
+// ================================================================================================
+// Intent Log (Ring Buffer)
+// ================================================================================================
 
 #[derive(Debug)]
 pub struct IntentLog {
@@ -358,9 +354,9 @@ impl IntentLog {
     }
 }
 
-/* ------------------------------------------------------------------------------------------------
-   JSON ESCAPING (ASCII-Safe)
-   ------------------------------------------------------------------------------------------------ */
+// ================================================================================================
+// JSON Escaping (ASCII-Safe)
+// ================================================================================================
 
 pub fn escape_json(input: &str) -> String {
     let mut out = String::new();
@@ -376,3 +372,4 @@ pub fn escape_json(input: &str) -> String {
     }
     out
 }
+
