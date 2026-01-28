@@ -1,11 +1,24 @@
-<!-- ============================================================================================
-   SYNTRA BROWSER - AXIOM THREE ICON
-   SIGIL:
-         .\s/.
-        :: S ::
-         '/s\'
-   Description: Syntra Helix icon — circular badge with stylized S-helix.
-   ============================================================================================ -->
+<!-- 
+============================================================================================
+  SYNTRA KERNEL — HELIX ICON
+---------------------------------------------------------------------------------------------
+ Sigil:   .\s/.
+         :: S ::
+          '/s\'
+
+ File:        /assets/syntra_helix.svg
+ Module:      Syntra Kernel — Visual Identity Asset
+ Author:      Alexandr Roussinov (gd2bk1ng)
+ Description: Official Syntra Kernel Helix icon — a circular badge featuring the stylized
+              S‑helix motif. Used across dashboards, documentation, and visualization surfaces.
+
+ Notes:
+   - This icon represents the Syntra Kernel cognitive helix: perception → cognition → action.
+   - Designed for scalability across UI, CLI, and documentation contexts.
+   - Safe for embedding in React, Rust (via include_str!), or web dashboards.
+============================================================================================
+-->
+
 <svg width="512" height="512" viewBox="0 0 512 512"
      xmlns="http://www.w3.org/2000/svg">
   <defs>
@@ -18,7 +31,9 @@
       <stop offset="100%" stop-color="#5A00FF"/>
     </linearGradient>
   </defs>
+
   <circle cx="256" cy="256" r="240" fill="url(#bg)"/>
+
   <path d="
     M 160 140
     C 220 80, 320 80, 360 160
