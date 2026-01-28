@@ -7,6 +7,7 @@
 //
 //   File:        src/agi_core/intent.rs
 //   Module:      Intent Semantics Engine (Advanced)
+//   Author:      Alexandr Roussinov (gd2bk1ng)
 //   Description: Advanced semantic intent engine for the Syntra Kernel. Provides contextual,
 //                feature-aware, hierarchical intent classification, graph-based plans, and
 //                feedback-aware confidence modeling, while remaining deterministic and explainable.
