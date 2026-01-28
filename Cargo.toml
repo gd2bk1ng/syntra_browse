@@ -16,14 +16,14 @@ publish = false
 # Library Target — exposes the Syntra API for internal and future multi-crate use
 # ================================================================================================
 [lib]
-name = "syntra"
+name = "syntra_kernel"
 path = "src/lib.rs"
 
 # ================================================================================================
 # Binary Targets — main runtime + experimental sandbox + compiler demo
 # ================================================================================================
 [[bin]]
-name = "syntra"
+name = "syntra_kernel"
 path = "src/main.rs"
 
 [[bin]]
