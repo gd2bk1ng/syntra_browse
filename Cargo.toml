@@ -40,7 +40,7 @@ path = "src/bin/syntra_compiler_demo.rs"
 [dependencies]
 winit = "0.29"
 pixels = "0.13"
-winit_input_helper = "0.14"
+winit_input_helper = "0.17"
 
 ring = "0.16"
 data-encoding = "2.3"
