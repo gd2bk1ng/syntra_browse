@@ -1,0 +1,46 @@
+# ================================================================================================
+#   SYNTRA KERNEL — RUST CHECKS WORKFLOW
+#   ------------------------------------------------------------------------------------------------
+#        .\s/.
+#       :: S ::
+#        '/s\'
+#
+#   File:        .github/workflows/rust-checks.yml
+#   Module:      Syntra Kernel — Rust Formatting, Linting & Test Checks
+#   Description: Fast CI workflow for validating Rust code quality on pull requests and pushes.
+#                Ensures formatting, linting, and unit tests pass before merging into mainline.
+#
+#   Notes:
+#     - This workflow is intentionally lightweight for rapid feedback.
+#     - Full CI (build, coverage, WASM, frontend) is handled by syntra-ci.yml.
+# ================================================================================================
+
+name: Syntra Kernel — Rust Checks
+
+on:
+  pull_request:
+    branches: [main, master]
+  push:
+    branches: [main, master]
+
+jobs:
+  rust-checks:
+    name: Rust Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain (stable)
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Run formatting check
+        run: cargo fmt --all -- --check
+
+      - name: Run Clippy lint
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+      - name: Run tests (debug)
+        run: cargo test --all --verbose
+        
