@@ -1,214 +1,148 @@
-/* ================================================================================================
-   SYNTRA BROWSER - AXIOM ZERO & THREE
-   ------------------------------------------------------------------------------------------------
-   SIGIL:
-         .\s/.
-        :: S ::
-         '/s\'
-
-   File:        src/lib.rs
-   Module:      Syntra Library Root
-   Author:      Alexandr Roussinov (gd2bk1ng)
-   Description: Core library entrypoint for the Syntra Browser engine and Syntra Reference Compiler.
-                This crate exposes foundational modules that form the backbone of Syntra's AGI-driven
-                architecture, compiler components, runtime, and rendering pipeline.
-
-   Design Philosophy:
-     - Modular and future-proof architecture aimed at multi-crate workspace evolution.
-     - ASCII-safe and dependency-light root crate for long-term stability.
-     - Emphasis on observability, safety, and composability.
-     - Stable public API surface for internal binaries and external tools.
-     - Potential future subsystems: memory, simulation, distributed runtime.
-
-   License: MIT
-   ================================================================================================ */
+// ================================================================================================
+//   SYNTRA KERNEL — ROOT LIBRARY ENTRYPOINT
+//   ------------------------------------------------------------------------------------------------
+//        .\s/.
+//       :: S ::
+//        '/s\'
+//
+//   File:        src/lib.rs
+//   Module:      Syntra Kernel — Library Root
+//   Description: Primary public API surface for the Syntra Kernel. This module exposes the core
+//                subsystems that define Syntra’s cognitive architecture, runtime orchestration,
+//                compiler components, safety systems, predictive engines, and rendering pipeline.
+//
+//   Design Philosophy:
+//     - Strict modularity with long-term maintainability.
+//     - Zero unsafe code; memory-safe by design.
+//     - Clear subsystem boundaries with explicit public interfaces.
+//     - Architecture intended for multi-crate workspace evolution.
+//     - Emphasis on observability, safety, and cognitive clarity.
+//     - Future-proof: ASCII-safe, dependency-light, and workspace-ready.
+//
+//   Notes:
+//     - All Rust files in Syntra Kernel follow the same banner format.
+//     - This crate acts as the stable API surface for internal binaries and external tools.
+//     - New advanced modules added: security, knowledge, predictive, continuity,
+//       diagnostics_ext, simulation, distributed.
+// ================================================================================================
 
 #![deny(unsafe_code)]
 #![warn(missing_docs)]
 
-//! # Syntra Browser Library
+//! # Syntra Kernel — Root Library
 //!
-//! This crate provides the core API surface for the Syntra Browser project,
-//! including modules for AGI-driven intent browsing, rendering, compiler tooling,
-//! runtime management, and more.
+//! The Syntra Kernel is a cognitive-first runtime and compiler environment designed around
+//! AGI-aligned principles, modular subsystems, and long-term architectural clarity.
 //!
-//! ## Overview of Modules
+//! This crate exposes the major subsystems that form the backbone of the Syntra ecosystem:
 //!
-//! - **genesis**: System bootstrap, initialization, and orchestration.
-//! - **agi_core**: Cognitive engine with intent semantics and reasoning primitives.
-//! - **conduit**: Inter-module communication, message routing, and data conduits.
-//! - **cortex**: UI logic, interaction models, and state management.
-//! - **renderer**: GPU pipeline, frame orchestration, and visual composition.
-//! - **utilities**: Shared helpers, diagnostics, logging, and cross-module tools.
-//! - **terminal, tokens, lexer, ast, types, errors, parser, type_checker, dataset, browser, runtime**:
-//!   Compiler and runtime components for Syntra Reference Compiler and Browser.
+//! ## Core Cognitive & Runtime Systems
+//! - **genesis** — System bootstrap, initialization, and orchestration.
+//! - **agi_core** — Cognitive engine, intent semantics, and reasoning primitives.
+//! - **runtime** — Execution environment for cognitive processes and Syntra programs.
+//! - **conduit** — Inter-module communication and message routing.
+//! - **cortex** — UI logic, interaction models, and cognitive state management.
+//! - **renderer** — GPU pipeline, frame orchestration, and visual composition.
 //!
-//! ## Example
+//! ## Compiler Pipeline
+//! - **tokens**, **lexer**, **parser**, **ast**, **type_checker**, **errors**, **types** —
+//!   Syntra Reference Compiler pipeline.
 //!
-//! ```rust
-//! // Example: Initialize the system and start the main event loop.
-//! use syntra::genesis::initialize_system;
-//! use syntra::cortex::ui::start_ui;
+//! ## Utilities & Shared Systems
+//! - **utilities** — Diagnostics, logging, tracing, and shared helpers.
+//! - **dataset** — Dataset management and structured storage.
+//! - **browser** — Browser engine core and state management.
+//! - **terminal** — Developer terminal interface.
 //!
-//! fn main() {
-//!     initialize_system();
-//!     start_ui();
-//! }
-//! ```
+//! ## Newly Added Advanced Subsystems
 //!
-//! ## Notes
+//! These modules elevate Syntra Kernel into a modern AGI-grade cognitive runtime:
 //!
-//! The root crate is designed to be lightweight and dependency-minimal to ensure
-//! stability and ease of maintenance as the project grows.
+//! - **security** — Capability-based safety, sandboxing, and intent-governed permissions.
+//! - **knowledge** — Semantic memory, embeddings, vector search, and knowledge graph.
+//! - **predictive** — Forecasting engine, temporal reasoning, and pattern modeling.
+//! - **continuity** — Long-term state persistence, episodic memory, and session stitching.
+//! - **diagnostics_ext** — Advanced profiling, telemetry, and performance analytics.
+//! - **simulation** — Sandboxed world simulation and agent-based modeling.
+//! - **distributed** — Multi-node runtime, federated cognition, distributed intent resolution.
 //!
-//! Future iterations will likely split this crate into multiple crates for better
-//! modularity and independent evolution.
+//! ## Stability
+//!
+//! This crate is the stable public API surface for the Syntra Kernel. Internal binaries,
+//! external tools, and future crates depend on this module layout remaining predictable.
 
 /// System bootstrap and initialization routines.
-///
-/// This module handles the early-stage orchestration, configuration loading,
-/// and overall system startup procedures.
-///
-/// # Example
-///
-/// ```rust
-/// use syntra::genesis::initialize_system;
-///
-/// fn main() {
-///     initialize_system();
-///     println!("System initialized successfully.");
-/// }
-/// ```
 pub mod genesis;
 
 /// Cognitive engine and AGI-driven intent processing.
-///
-/// Contains core reasoning primitives, intent semantics, and AI-driven
-/// decision-making logic.
-///
-/// # Example
-///
-/// ```rust
-/// use syntra::agi_core::IntentProcessor;
-///
-/// let mut processor = IntentProcessor::new();
-/// let result = processor.process_intent("browse for sustainable products");
-/// println!("Intent processed: {:?}", result);
-/// ```
 pub mod agi_core;
 
-/// Inter-module communication, message routing, and data conduits.
-///
-/// Provides channels and protocols for message passing between subsystems,
-/// ensuring decoupled and efficient communication.
-///
-/// # Example
-///
-/// ```rust
-/// use syntra::conduit::{MessageBus, Message};
-///
-/// let bus = MessageBus::new();
-/// bus.send(Message::new("UpdateUI", "Refresh screen"));
-/// ```
+/// Inter-module communication and message routing.
 pub mod conduit;
 
-/// UI logic, interaction models, and state management.
-///
-/// Manages user interface components, event handling, and application state.
-///
-/// # Example
-///
-/// ```rust
-/// use syntra::cortex::ui::{start_ui, UIState};
-///
-/// fn main() {
-///     start_ui();
-///     let state = UIState::default();
-///     println!("UI started with state: {:?}", state);
-/// }
-/// ```
+/// UI logic, interaction models, and cognitive state management.
 pub mod cortex;
 
 /// GPU rendering pipeline and frame orchestration.
-///
-/// Manages rendering tasks including frame composition, GPU resource management,
-/// and visual output.
-///
-/// # Example
-///
-/// ```rust
-/// use syntra::renderer::Renderer;
-///
-/// let mut renderer = Renderer::new();
-/// renderer.render_frame();
-/// ```
 pub mod renderer;
 
-/// Shared utilities, helpers, and diagnostics.
-///
-/// Contains logging utilities, error reporting helpers, and common tools shared
-/// across modules.
-///
-/// # Example
-///
-/// ```rust
-/// use syntra::utilities::logger::log_info;
-///
-/// log_info("Syntra Browser started.");
-/// ```
+/// Shared utilities, diagnostics, logging, and tracing.
 pub mod utilities;
 
 /// Terminal interface and command handling.
-///
-/// Provides terminal input/output and command parsing for developer interaction.
 pub mod terminal;
 
-/// Token definitions and lexical analysis.
-///
-/// Defines language tokens and lexical scanning logic.
+/// Token definitions for the Syntra language.
 pub mod tokens;
 
-/// Lexer implementation for Syntra language.
-///
-/// Parses raw input into tokens.
+/// Lexical scanner for Syntra language.
 pub mod lexer;
 
 /// Abstract Syntax Tree (AST) structures.
-///
-/// Defines syntax tree nodes representing parsed code.
 pub mod ast;
 
 /// Type definitions and system types.
-///
-/// Contains type system definitions and utilities.
 pub mod types;
 
 /// Error handling and diagnostics.
-///
-/// Centralized error types and diagnostic messages.
 pub mod errors;
 
-/// Parser implementation.
-///
-/// Parses tokens into AST nodes.
+/// Parser implementation for Syntra language.
 pub mod parser;
 
 /// Type checker for Syntra language.
-///
-/// Validates type correctness in AST.
 pub mod type_checker;
 
-/// Dataset management and storage.
-///
-/// Manages datasets used by the browser and runtime.
+/// Dataset management and structured storage.
 pub mod dataset;
 
-/// Browser engine core.
-///
-/// Contains core browser logic and state management.
+/// Browser engine core and state management.
 pub mod browser;
 
-/// Runtime environment and execution.
-///
-/// Manages runtime execution of Syntra code and processes.
+/// Runtime environment and execution engine.
 pub mod runtime;
+
+// ================================================================================================
+// New Advanced Subsystems
+// ================================================================================================
+
+/// Security, sandboxing, and capability-based permission systems.
+pub mod security;
+
+/// Semantic memory, embeddings, vector search, and knowledge graph.
+pub mod knowledge;
+
+/// Forecasting engine, temporal reasoning, and predictive modeling.
+pub mod predictive;
+
+/// Long-term state persistence, episodic memory, and continuity engine.
+pub mod continuity;
+
+/// Advanced diagnostics, profiling, telemetry, and performance analytics.
+pub mod diagnostics_ext;
+
+/// Sandboxed world simulation and agent-based modeling.
+pub mod simulation;
+
+/// Distributed runtime, federated cognition, and multi-node orchestration.
+pub mod distributed;
