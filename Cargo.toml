@@ -57,7 +57,7 @@ serde_json = { version = "1.0", optional = true }
 toml = "0.8"
 
 anyhow = "1.0"
-thiserror = "1.0"
+thiserror = "2.0"
 
 glam = "0.27"
 config = "0.14"
