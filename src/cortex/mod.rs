@@ -1,46 +1,46 @@
-/* ================================================================================================
-   SYNTRA BROWSER — AXIOM FOUR
-   ------------------------------------------------------------------------------------------------
-   SIGIL:
-         .\s/.
-        :: S ::
-         '/s\'
-
-   File:        src/cortex/mod.rs
-   Module:      Cortex (Cognitive Orchestration Layer)
-   Author:      Alexandr Roussinov (gd2bk1ng)
-   Description: The Cortex is Syntra’s high-level cognitive conductor. It integrates the AGI Core
-                (intent semantics), the Conduit (message bus), and all cognitive lobes introduced
-                across Axiom Zero → Axiom Four. The Cortex receives raw user input, refines it
-                through the Reasoner, routes it to the appropriate lobe, stores memory, manages
-                a self-modification sandbox, and returns structured responses.
-
-   Overview:
-     • Cortex<R>        — Generic orchestrator over any Reasoner implementation.
-     • handle_intent    — Legacy Axiom Zero/One intent dispatch.
-     • process          — Axiom Three/Four cognitive pipeline (classification → routing → memory).
-     • pump_messages    — Polls the Conduit for logs, intents, and shutdown signals.
-
-   Integrated Lobes:
-     • Request Lobe       — High-level request classification (Axiom Two).
-     • Memory Lobe        — Stores intents + responses (Axiom Two).
-     • Knowledge Lobe     — Semantic memory from browsing (Axiom Three).
-     • Execution Lobe     — Multi-step workflows (Axiom Three).
-     • Perception Lobe    — Content parsing and summarization (Axiom Three).
-     • Action Lobe        — External actions (fetch, run commands).
-     • Reflection Lobe    — Self-analysis and introspection.
-     • Plan Lobe          — Multi-step planning.
-     • Evolution Lobe     — Architectural improvement narratives.
-     • Sandbox Lobe       — In-memory self-modification workspace (Axiom Four).
-     • Meta-Evolution     — Higher-order evolution proposals (Axiom Four).
-     • Maintenance Lobe   — System health & recovery knowledge (Axiom Four).
-     • nav_lobe           — UI/navigation lobe for future browser surfaces.
-
-   Notes:
-     - The Cortex is intentionally modular and ASCII-safe.
-     - It is the central nervous system of Syntra’s cognition.
-     - Axiom Four introduces a safe self-modification sandbox; no direct writes to disk occur here.
-   ================================================================================================ */
+// ================================================================================================
+//   SYNTRA KERNEL — CORTEX (COGNITIVE ORCHESTRATION LAYER)
+//   ------------------------------------------------------------------------------------------------
+//        .\s/.
+//       :: S ::
+//        '/s\'
+//
+//   File:        src/cortex/mod.rs
+//   Module:      Cortex — Cognitive Orchestration Layer
+//   Description: The Cortex is Syntra Kernel’s high-level cognitive conductor. It integrates the
+//                AGI Core (intent semantics), the Conduit (message bus), and all cognitive lobes
+//                introduced across Axiom Zero → Axiom Four.
+//
+//                The Cortex receives raw user input, refines it through the Reasoner, routes it
+//                to the appropriate lobe, stores memory, manages a self-modification sandbox,
+//                and returns structured responses.
+//
+//   Overview:
+//     • Cortex<R>        — Generic orchestrator over any Reasoner implementation.
+//     • handle_intent    — Legacy Axiom Zero/One intent dispatch.
+//     • process          — Axiom Three/Four cognitive pipeline (classification → routing → memory).
+//     • pump_messages    — Polls the Conduit for logs, intents, and shutdown signals.
+//
+//   Integrated Lobes:
+//     • Request Lobe       — High-level request classification (Axiom Two).
+//     • Memory Lobe        — Stores intents + responses (Axiom Two).
+//     • Knowledge Lobe     — Semantic memory from browsing (Axiom Three).
+//     • Execution Lobe     — Multi-step workflows (Axiom Three).
+//     • Perception Lobe    — Content parsing and summarization (Axiom Three).
+//     • Action Lobe        — External actions (fetch, run commands).
+//     • Reflection Lobe    — Self-analysis and introspection.
+//     • Plan Lobe          — Multi-step planning.
+//     • Evolution Lobe     — Architectural improvement narratives.
+//     • Sandbox Lobe       — In-memory self-modification workspace (Axiom Four).
+//     • Meta-Evolution     — Higher-order evolution proposals (Axiom Four).
+//     • Maintenance Lobe   — System health & recovery knowledge (Axiom Four).
+//     • nav_lobe           — UI/navigation lobe for future surfaces.
+//
+//   Notes:
+//     - The Cortex is intentionally modular and ASCII-safe.
+//     - It is the central nervous system of Syntra Kernel’s cognition.
+//     - Axiom Four introduces a safe self-modification sandbox; no direct writes to disk occur here.
+// ================================================================================================
 
 #![allow(dead_code)]
 
@@ -59,22 +59,22 @@ pub mod maintenance_lobe;
 pub mod nav_lobe;
 
 pub use request_lobe::{Request, RequestKind, RequestLobe};
-pub use memory_lobe::{MemoryLobe, MemoryEntry};
+pub use memory_lobe::{MemoryEntry, MemoryLobe};
 pub use plan_lobe::PlanLobe;
 pub use reflection_lobe::ReflectionLobe;
 pub use evolution_lobe::EvolutionLobe;
-pub use perception_lobe::{PerceptionLobe, Perception};
+pub use perception_lobe::{Perception, PerceptionLobe};
 pub use action_lobe::{ActionLobe, ActionResult};
-pub use knowledge_lobe::{KnowledgeLobe, KnowledgeEntry};
+pub use knowledge_lobe::{KnowledgeEntry, KnowledgeLobe};
 pub use execution_lobe::{ExecutionLobe, Task, TaskStep};
-pub use sandbox_lobe::{SandboxSession, SandboxFile, SandboxPatch};
-pub use meta_evolution_lobe::{MetaEvolutionLobe, EvolutionProposal, FileChange};
+pub use sandbox_lobe::{SandboxFile, SandboxPatch, SandboxSession};
+pub use meta_evolution_lobe::{EvolutionProposal, FileChange, MetaEvolutionLobe};
 pub use maintenance_lobe::MaintenanceLobe;
 
-use crate::agi_core::{Intent, Reasoner, NullReasoner, IntentPlan};
+use crate::agi_core::{Intent, IntentPlan, NullReasoner, Reasoner};
 use crate::conduit::{Conduit, ConduitMessage};
-use crate::utilities::log_info;
 use crate::terminal;
+use crate::utilities::log_info;
 
 /// Simple placeholder for a future Cortex run loop.
 pub fn run() {
@@ -104,9 +104,9 @@ impl<R: Reasoner> Cortex<R> {
         }
     }
 
-    /* --------------------------------------------------------------------------------------------
-       AXIOM ZERO / ONE — LEGACY INTENT HANDLER
-       -------------------------------------------------------------------------------------------- */
+    // --------------------------------------------------------------------------------------------
+    // AXIOM ZERO / ONE — LEGACY INTENT HANDLER
+    // --------------------------------------------------------------------------------------------
 
     /// Legacy: refine intent and push to conduit.
     /// Still used by older components and for backward compatibility.
@@ -128,9 +128,9 @@ impl<R: Reasoner> Cortex<R> {
         self.conduit.send(ConduitMessage::Intent(refined.intent));
     }
 
-    /* --------------------------------------------------------------------------------------------
-       AXIOM THREE / FOUR — FULL COGNITIVE PIPELINE
-       -------------------------------------------------------------------------------------------- */
+    // --------------------------------------------------------------------------------------------
+    // AXIOM THREE / FOUR — FULL COGNITIVE PIPELINE
+    // --------------------------------------------------------------------------------------------
 
     /// Axiom Three/Four: full cognitive processing pipeline.
     /// Returns a human-readable response string.
@@ -152,14 +152,14 @@ impl<R: Reasoner> Cortex<R> {
         // Store the intent in memory.
         self.memory.store_intent(&plan.intent, &plan.class);
 
-        /* ----------------------------------------------------------------------------------------
-           ROUTE TO LOBES
-           ---------------------------------------------------------------------------------------- */
+        // ----------------------------------------------------------------------------------------
+        // ROUTE TO LOBES
+        // ----------------------------------------------------------------------------------------
 
         let response = match plan.class.as_str() {
-            /* ------------------------------------------------------------------------------------
-               MAINTENANCE — System Health & Recovery (Axiom Four)
-               ------------------------------------------------------------------------------------ */
+            // ------------------------------------------------------------------------------------
+            // MAINTENANCE — System Health & Recovery (Axiom Four)
+            // ------------------------------------------------------------------------------------
             "maintenance" => {
                 let arg = plan
                     .intent
@@ -178,9 +178,9 @@ impl<R: Reasoner> Cortex<R> {
                 }
             }
 
-            /* ------------------------------------------------------------------------------------
-               BROWSE — Fetch + Perceive + Store
-               ------------------------------------------------------------------------------------ */
+            // ------------------------------------------------------------------------------------
+            // BROWSE — Fetch + Perceive + Store
+            // ------------------------------------------------------------------------------------
             "browse" => {
                 // Expect: "browse <url>"
                 let mut parts = plan.intent.split_whitespace();
@@ -209,9 +209,9 @@ impl<R: Reasoner> Cortex<R> {
                 }
             }
 
-            /* ------------------------------------------------------------------------------------
-               KNOWLEDGE — Semantic Memory Search
-               ------------------------------------------------------------------------------------ */
+            // ------------------------------------------------------------------------------------
+            // KNOWLEDGE — Semantic Memory Search
+            // ------------------------------------------------------------------------------------
             "knowledge" => {
                 // Expect: "knowledge <query>" or "search <query>"
                 let query = plan
@@ -241,9 +241,9 @@ impl<R: Reasoner> Cortex<R> {
                 }
             }
 
-            /* ------------------------------------------------------------------------------------
-               TASK — Multi-Step Execution
-               ------------------------------------------------------------------------------------ */
+            // ------------------------------------------------------------------------------------
+            // TASK — Multi-Step Execution
+            // ------------------------------------------------------------------------------------
             "task" => {
                 // Expect: "task <name>"
                 let name = plan
@@ -264,9 +264,9 @@ impl<R: Reasoner> Cortex<R> {
                 }
             }
 
-            /* ------------------------------------------------------------------------------------
-               PERCEPTION — Parse & Summarize Text
-               ------------------------------------------------------------------------------------ */
+            // ------------------------------------------------------------------------------------
+            // PERCEPTION — Parse & Summarize Text
+            // ------------------------------------------------------------------------------------
             "perception" => {
                 // Expect: "perceive <text>"
                 let text = plan
@@ -286,9 +286,9 @@ impl<R: Reasoner> Cortex<R> {
                 }
             }
 
-            /* ------------------------------------------------------------------------------------
-               ACTION — System Commands
-               ------------------------------------------------------------------------------------ */
+            // ------------------------------------------------------------------------------------
+            // ACTION — System Commands
+            // ------------------------------------------------------------------------------------
             "action" => {
                 // Expect: "act <cmd> [args...]"
                 let mut parts = plan.intent.split_whitespace().skip(1);
@@ -305,17 +305,17 @@ impl<R: Reasoner> Cortex<R> {
                 }
             }
 
-            /* ------------------------------------------------------------------------------------
-               EVOLUTION — Architectural Proposals (Axiom Four)
-               ------------------------------------------------------------------------------------ */
+            // ------------------------------------------------------------------------------------
+            // EVOLUTION — Architectural Proposals (Axiom Four)
+            // ------------------------------------------------------------------------------------
             "evolution" => {
                 let proposal = MetaEvolutionLobe::generate_proposal(&plan.intent);
                 MetaEvolutionLobe::describe_proposal(&proposal)
             }
 
-            /* ------------------------------------------------------------------------------------
-               SANDBOX — Self-Modification Workspace Introspection
-               ------------------------------------------------------------------------------------ */
+            // ------------------------------------------------------------------------------------
+            // SANDBOX — Self-Modification Workspace Introspection
+            // ------------------------------------------------------------------------------------
             "sandbox" => {
                 // Expect: "sandbox diff" or "sandbox snapshot"
                 let cmd = plan
@@ -351,24 +351,24 @@ impl<R: Reasoner> Cortex<R> {
                 }
             }
 
-            /* ------------------------------------------------------------------------------------
-               PLANNING — Multi-Step Plans
-               ------------------------------------------------------------------------------------ */
+            // ------------------------------------------------------------------------------------
+            // PLANNING — Multi-Step Plans
+            // ------------------------------------------------------------------------------------
             "planning" => PlanLobe::generate_plan(&plan.intent),
 
-            /* ------------------------------------------------------------------------------------
-               SELF-REFLECTION — Introspection
-               ------------------------------------------------------------------------------------ */
+            // ------------------------------------------------------------------------------------
+            // SELF-REFLECTION — Introspection
+            // ------------------------------------------------------------------------------------
             "self_reflection" => ReflectionLobe::self_reflect(),
 
-            /* ------------------------------------------------------------------------------------
-               FREEFORM — General Reflection
-               ------------------------------------------------------------------------------------ */
+            // ------------------------------------------------------------------------------------
+            // FREEFORM — General Reflection
+            // ------------------------------------------------------------------------------------
             "freeform" => ReflectionLobe::reflect(&plan.intent),
 
-            /* ------------------------------------------------------------------------------------
-               FALLBACK
-               ------------------------------------------------------------------------------------ */
+            // ------------------------------------------------------------------------------------
+            // FALLBACK
+            // ------------------------------------------------------------------------------------
             other => format!(
                 "I classified this as '{}' but have no handler yet.\nPlan: {}",
                 other, plan.plan
@@ -381,9 +381,9 @@ impl<R: Reasoner> Cortex<R> {
         response
     }
 
-    /* --------------------------------------------------------------------------------------------
-       CONDUIT MESSAGE PUMP
-       -------------------------------------------------------------------------------------------- */
+    // --------------------------------------------------------------------------------------------
+    // CONDUIT MESSAGE PUMP
+    // --------------------------------------------------------------------------------------------
 
     /// Polls the conduit for messages and logs them.
     pub fn pump_messages(&self) {
