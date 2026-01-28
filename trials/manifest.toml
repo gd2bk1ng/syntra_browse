@@ -1,0 +1,26 @@
+# ================================================================================================
+# SYNTRA KERNEL — TRIAL MANIFEST
+# ------------------------------------------------------------------------------------------------
+#        .\s/.
+#       :: S ::
+#        '/s\'
+#
+# This manifest tracks all experimental trials within the Syntra Kernel ecosystem.
+# Each entry documents the purpose, axiom level, and status of the trial.
+# ================================================================================================
+
+[[trial]]
+name = "first_intent"
+file = "first_intent.rs"
+axiom = "Axiom Zero"
+status = "active"
+description = "Minimal end‑to‑end intent pipeline using Cortex, Conduit, and Reasoner."
+
+[[trial]]
+name = "axiom_three_executor"
+file = "main.rs"
+axiom = "Axiom Three"
+status = "active"
+description = "Executable intent via static pipelines with actor‑backed execution."
+
+# Add new trials below using the same structure.
