@@ -1,36 +1,87 @@
-name: Release
+# ================================================================================================
+#   SYNTRA KERNEL — RELEASE PIPELINE
+#   ------------------------------------------------------------------------------------------------
+#        .\s/.
+#       :: S ::
+#        '/s\'
+#
+#   File:        .github/workflows/release.yml
+#   Module:      Syntra Kernel — Release Automation
+#   Description: Builds, tests, packages, and publishes release artifacts whenever a semantic
+#                version tag (vX.Y.Z) is pushed. This workflow ensures that Syntra Kernel
+#                releases are reproducible, validated, and ready for distribution.
+#
+#   Notes:
+#     - Artifacts include compiled binaries and any additional release assets.
+#     - Extend this workflow to publish crates, GitHub Releases, Docker images, etc.
+# ================================================================================================
+
+name: Syntra Kernel — Release
 
 on:
   push:
     tags:
-      - 'v*.*.*'  # Semantic versioning tags like v1.2.3
+      - "v*.*.*"   # Semantic versioning tags like v1.2.3
 
 jobs:
   release:
-    name: Build and Publish Release
+    name: Build & Publish Release
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      # ------------------------------------------------------------
+      # Checkout
+      # ------------------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
+      # ------------------------------------------------------------
+      # Rust Toolchain
+      # ------------------------------------------------------------
       - name: Install Rust toolchain (stable)
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Build release
+      # ------------------------------------------------------------
+      # Build & Test
+      # ------------------------------------------------------------
+      - name: Build Syntra Kernel (release)
         run: cargo build --all-features --release --verbose
 
       - name: Run tests (release)
         run: cargo test --all-features --release --verbose
 
+      # ------------------------------------------------------------
+      # Package Release Artifacts
+      # ------------------------------------------------------------
       - name: Package release artifacts
         run: |
           mkdir -p release
-          cp target/release/syntra_browse
+          # Copy primary binary (adjust if multiple binaries exist)
+          cp target/release/syntra_kernel release/ || true
+          # Include README, LICENSE, or other assets if desired
+          # cp README.md release/
+          # cp LICENSE release/
 
+      # ------------------------------------------------------------
+      # Upload Artifacts
+      # ------------------------------------------------------------
       - name: Upload release artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: release-artifacts
+          name: syntra-kernel-release
           path: release/
+          if-no-files-found: error
 
-      # Add steps for publishing to crates.io, GitHub Releases, Docker Hub, etc., as needed
+      # ------------------------------------------------------------
+      # Optional: Publish to GitHub Releases, crates.io, Docker Hub, etc.
+      # ------------------------------------------------------------
+      # - name: Publish to crates.io
+      #   run: cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+      #
+      # - name: Create GitHub Release
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     files: release/*
+      #
+      # - name: Publish Docker image
+      #   run: docker build -t syntra/kernel:${{ github.ref_name }} .
