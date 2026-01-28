@@ -1,12 +1,13 @@
 // ================================================================================================
 //   SYNTRA KERNEL — AGI CORE (FEEDBACK LOOP & SELF-IMPROVEMENT ENGINE)
 //   ------------------------------------------------------------------------------------------------
-//        .\f/.
-//       :: F ::
-//        '/f'
+//        .\s/.
+//       :: S ::
+//        '/s\'
 //
 //   File:        src/agi_core/feedback.rs
 //   Module:      Feedback Loop & Self-Improvement Engine
+//   Author:      Alexandr Roussinov (gd2bk1ng)
 //   Description: Syntra Kernel’s multi-source feedback architecture for self-improvement and
 //                continuous evolution. Unifies user feedback, system telemetry, and simulation
 //                results into a modular, extensible pipeline for adaptive learning.
