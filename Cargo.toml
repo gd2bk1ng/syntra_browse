@@ -1,10 +1,10 @@
 [package]
-name = "syntra_browse"
+name = "syntra_kernel"
 version = "0.3.0"
 edition = "2024"
 authors = ["Alexandr Roussinov <gd2bk1ng@proton.me>"]
 license = "MIT"
-description = "Syntra Browser — Axiom Three: An AGI-driven intent browser."
+description = "Syntra Kernel is a Cognitive Operating System - A modular, world‑model‑driven cognitive architecture for building next‑generation intent‑driven systems. Includes multi‑agent cognition, semantic memory, simulation sandbox, evolution engine, Syntra Language 2.0, and a full cognitive runtime designed for adaptive, transparent reasoning."
 readme = "README.md"
 repository = "https://github.com/gd2bk1ng/syntra_browse"
 homepage = "https://github.com/gd2bk1ng/syntra_browse"
