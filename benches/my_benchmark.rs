@@ -7,14 +7,15 @@
 //
 //   File:        benches/my_benchmark.rs
 //   Module:      Syntra Kernel — Performance Benchmarks
-//   Description: Criterion-based microbenchmarks for validating performance characteristics of
-//                isolated subsystems. These examples serve as a template for future benchmarks
-//                involving world-model updates, agent scheduling, and cognitive pipeline tasks.
+//   Description: Criterion-based microbenchmarks for evaluating isolated computational workloads.
+//                This file serves as a template for future benchmarking of world-model updates,
+//                agent scheduling, memory access patterns, and cognitive pipeline operations.
 //
 //   Notes:
 //     - Run with: `cargo bench`
-//     - Criterion provides statistical analysis, warmup cycles, and variance tracking.
-//     - These benchmarks are intentionally simple but structured for future expansion.
+//     - All benchmarks follow Syntra Kernel's uniform header and formatting standards.
+//     - Recursive Fibonacci is intentionally slow to demonstrate variance.
+//     - Iterative Fibonacci provides a stable baseline for comparison.
 // ================================================================================================
 
 use criterion::{
@@ -22,10 +23,11 @@ use criterion::{
 };
 
 // -------------------------------------------------------------------------------------------------
-// Example Workloads
+// Workloads
 // -------------------------------------------------------------------------------------------------
 
-/// A deliberately slow recursive Fibonacci for demonstrating variance.
+/// Slow recursive Fibonacci — intentionally exponential.
+/// Useful for demonstrating Criterion's variance tracking.
 fn fibonacci_recursive(n: u64) -> u64 {
     match n {
         0 => 0,
@@ -34,7 +36,8 @@ fn fibonacci_recursive(n: u64) -> u64 {
     }
 }
 
-/// A fast iterative Fibonacci for comparison.
+/// Fast iterative Fibonacci — stable and predictable.
+/// Useful for benchmarking throughput and tight loops.
 fn fibonacci_iterative(n: u64) -> u64 {
     let mut a = 0;
     let mut b = 1;
@@ -55,7 +58,7 @@ fn fibonacci_iterative(n: u64) -> u64 {
 fn bench_fibonacci(c: &mut Criterion) {
     let mut group = c.benchmark_group("fibonacci_comparison");
 
-    // Benchmark recursive Fibonacci for small n
+    // Recursive Fibonacci for small n
     for &n in &[10u64, 20, 25] {
         group.throughput(Throughput::Elements(1));
         group.bench_with_input(BenchmarkId::new("recursive", n), &n, |b, &n| {
@@ -63,7 +66,7 @@ fn bench_fibonacci(c: &mut Criterion) {
         });
     }
 
-    // Benchmark iterative Fibonacci for larger n
+    // Iterative Fibonacci for larger n
     for &n in &[100u64, 1_000, 10_000] {
         group.throughput(Throughput::Elements(1));
         group.bench_with_input(BenchmarkId::new("iterative", n), &n, |b, &n| {
@@ -75,18 +78,18 @@ fn bench_fibonacci(c: &mut Criterion) {
 }
 
 // -------------------------------------------------------------------------------------------------
-// Criterion Configuration (Optional)
+// Criterion Configuration
 // -------------------------------------------------------------------------------------------------
 
 fn configure_criterion() -> Criterion {
     Criterion::default()
-        .sample_size(50)          // More samples for stable results
+        .sample_size(50)
         .warm_up_time(std::time::Duration::from_secs(2))
         .measurement_time(std::time::Duration::from_secs(5))
 }
 
 // -------------------------------------------------------------------------------------------------
-// Benchmark Entrypoints
+// Entrypoints
 // -------------------------------------------------------------------------------------------------
 
 criterion_group! {
