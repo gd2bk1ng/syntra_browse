@@ -33,6 +33,7 @@ pub mod reasoner;
 pub mod ecosystem;
 pub mod self_mod;
 pub mod safety;
+pub mod behavioral_profile;
 
 // ================================================================================================
 // Public Exports
@@ -46,6 +47,8 @@ pub use intent::{
 pub use reasoner::{NullReasoner, ProbReasoner, Reasoner};
 
 pub use ecosystem::{EcosystemLobe, EcosystemModel};
+
+pub use behavioral_profile::{CreatorProfile, TypingPattern};
 
 pub use self_mod::{
     ChangeKind, ChangeProposal, CircularDependency, DeadCodeReport, EvolutionPlan,
