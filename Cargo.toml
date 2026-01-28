@@ -2,14 +2,14 @@
 name = "syntra_kernel"
 version = "0.3.0"
 edition = "2024"
-authors = ["Alexandr Roussinov <gd2bk1ng@proton.me>"]
+authors = [ "Alexandr Roussinov <gd2bk1ng@proton.me>" ]
 license = "MIT"
-description = "Syntra Kernel is a Cognitive Operating System - A modular, world‑model‑driven cognitive architecture for building next‑generation intent‑driven systems. Includes multi‑agent cognition, semantic memory, simulation sandbox, evolution engine, Syntra Language 2.0, and a full cognitive runtime designed for adaptive, transparent reasoning."
+description = "Syntra Kernel - A world‑model‑driven cognitive OS for intent‑driven systems, featuring multi‑agent cognition, semantic memory, simulation, and adaptive reasoning."
 readme = "README.md"
-repository = "https://github.com/gd2bk1ng/syntra_browse"
-homepage = "https://github.com/gd2bk1ng/syntra_browse"
-keywords = ["agi", "browser", "intent-engine", "syntra", "rendering"]
-categories = ["gui", "graphics", "ai", "wasm"]
+repository = "https://github.com/gd2bk1ng/syntra_kernel/"
+homepage = "https://github.com/gd2bk1ng/syntra_kernel/"
+keywords = [ "syntra", "ai", "agi", "rust", "world-model", "intent-engine", "multi-agent", "cognitive-architecture" ]
+categories = [ "gui", "ai", "wasm", "data-structures", "simulation" ]
 publish = false
 
 # ================================================================================================
