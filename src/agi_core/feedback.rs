@@ -1,6 +1,6 @@
 // ================================================================================================
 //   SYNTRA KERNEL — AGI CORE (FEEDBACK LOOP & SELF-IMPROVEMENT ENGINE)
-//   ------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 //        .\s/.
 //       :: S ::
 //        '/s\'
@@ -8,23 +8,29 @@
 //   File:        src/agi_core/feedback.rs
 //   Module:      Feedback Loop & Self-Improvement Engine
 //   Author:      Alexandr Roussinov (gd2bk1ng)
-//   Description: Syntra Kernel’s multi-source feedback architecture for self-improvement and
-//                continuous evolution. Unifies user feedback, system telemetry, and simulation
-//                results into a modular, extensible pipeline for adaptive learning.
+//   Description:
+//       Syntra Kernel’s multi-source feedback architecture for self-improvement and continuous
+//       evolution. Unifies user feedback, system telemetry, and simulation results into a modular,
+//       extensible pipeline for adaptive learning.
+//
+//   Architectural Role:
+//       • Axiom Three — Cognitive Awareness (closing the loop on reasoning quality).
+//       • Axiom Four  — Routing refinement (improving perception/cognition/action decisions).
+//       • Axiom Six   — Evolution (data-driven self-modification).
 //
 //   Overview:
-//     • Feedback                — UserFeedback, SystemTelemetry, SimulationResult
-//     • FeedbackStore           — Persistent, versioned feedback repository
-//     • FeedbackProcessor       — Aggregates, validates, dispatches feedback
-//     • FeedbackUpdateStrategy  — Trait for rule/model update plugins
-//     • RuleUpdater             — Deterministic rule adjustment engine
-//     • ModelTrainer            — Stub for ML retraining hooks
-//     • AsyncFeedbackIngestor   — Tokio-based async ingestion API
+//       • Feedback                — UserFeedback, SystemTelemetry, SimulationResult
+//       • FeedbackStore           — In-memory, versioned feedback repository
+//       • FeedbackProcessor       — Aggregates, validates, dispatches feedback
+//       • FeedbackUpdateStrategy  — Trait for rule/model update plugins
+//       • RuleUpdater             — Deterministic rule adjustment engine
+//       • ModelTrainer            — Stub for ML retraining hooks
+//       • AsyncFeedbackIngestor   — Tokio-based async ingestion API
 //
 //   Notes:
-//     - Designed for Axiom Six and beyond.
-//     - Emphasizes modularity, async design, and Rust safety.
-//     - Future integrations: federated learning, neural-symbolic fusion, multi-modal feedback.
+//       - No direct I/O; integration happens at the edges (UI, API, logs).
+//       - Designed to be safe to call from any lobe.
+//       - Future: federated learning, neural-symbolic fusion, multi-modal feedback.
 // ================================================================================================
 
 #![allow(dead_code)]
@@ -45,8 +51,11 @@ use uuid::Uuid;
 /// Core feedback types for Syntra Kernel’s self-improvement cycle.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Feedback {
+    /// Explicit user feedback on classification or plan execution.
     User(UserFeedback),
+    /// Automated system telemetry capturing runtime behavior and anomalies.
     Telemetry(SystemTelemetry),
+    /// Synthetic feedback from simulation runs for validation and stress-testing.
     Simulation(SimulationResult),
 }
 
@@ -95,15 +104,23 @@ pub trait FeedbackSource: Send + Sync {
 }
 
 /// Trait for update strategies that consume aggregated feedback.
+///
+/// Implementations can:
+///   • Adjust deterministic rules
+///   • Trigger ML retraining
+///   • Emit alerts or telemetry
 pub trait FeedbackUpdateStrategy: Send + Sync {
     fn update(&self, feedback_batch: &[Feedback]);
 }
 
 // ================================================================================================
-// Feedback Store (Persistent, Versioned)
+// Feedback Store (In-Memory, Versioned)
 // ================================================================================================
 
-/// Persistent store for feedback with versioning and audit trail.
+/// In-memory store for feedback with versioned, timestamped batches.
+///
+/// This is intentionally simple and side-effect free; persistence is
+/// expected to be handled by higher-level services if needed.
 pub struct FeedbackStore {
     store: Mutex<HashMap<Uuid, Feedback>>,
     history: Mutex<VecDeque<(DateTime<Utc>, Vec<Feedback>)>>, // Timestamped batches
@@ -111,6 +128,7 @@ pub struct FeedbackStore {
 }
 
 impl FeedbackStore {
+    /// Create a new FeedbackStore with a maximum history length.
     pub fn new(max_history_len: usize) -> Self {
         FeedbackStore {
             store: Mutex::new(HashMap::new()),
@@ -119,6 +137,7 @@ impl FeedbackStore {
         }
     }
 
+    /// Add a single feedback item to the store and history.
     pub fn add_feedback(&self, feedback: Feedback) {
         let mut store_guard = self.store.lock().expect("FeedbackStore lock poisoned");
         let id = match &feedback {
@@ -127,6 +146,7 @@ impl FeedbackStore {
             Feedback::Simulation(fb) => fb.simulation_id,
         };
         store_guard.insert(id, feedback.clone());
+        drop(store_guard);
 
         let mut history_guard = self.history.lock().expect("FeedbackStore history lock poisoned");
         let now = Utc::now();
@@ -144,6 +164,7 @@ impl FeedbackStore {
         }
     }
 
+    /// Retrieve all feedback items added after a given timestamp.
     pub fn get_feedback_batch(&self, since: DateTime<Utc>) -> Vec<Feedback> {
         let history_guard = self.history.lock().expect("FeedbackStore history lock poisoned");
         history_guard
@@ -159,12 +180,18 @@ impl FeedbackStore {
 // ================================================================================================
 
 /// Core processor that ingests feedback, validates it, and dispatches updates.
+///
+/// This is the central hub of the feedback loop. It:
+///   • Validates incoming feedback
+///   • Stores it in FeedbackStore
+///   • Dispatches it to registered update strategies
 pub struct FeedbackProcessor {
     store: Arc<FeedbackStore>,
     update_strategies: Vec<Arc<dyn FeedbackUpdateStrategy>>,
 }
 
 impl FeedbackProcessor {
+    /// Create a new FeedbackProcessor bound to a FeedbackStore.
     pub fn new(store: Arc<FeedbackStore>) -> Self {
         FeedbackProcessor {
             store,
@@ -172,11 +199,12 @@ impl FeedbackProcessor {
         }
     }
 
+    /// Register a new update strategy.
     pub fn register_strategy(&mut self, strategy: Arc<dyn FeedbackUpdateStrategy>) {
         self.update_strategies.push(strategy);
     }
 
-    /// Ingests a batch of feedback, stores it, validates it, and triggers updates.
+    /// Ingest a batch of feedback, store it, validate it, and trigger updates.
     pub fn process_feedback_batch(&self, feedback_batch: Vec<Feedback>) {
         info!("Processing feedback batch of size {}", feedback_batch.len());
 
@@ -211,6 +239,9 @@ impl FeedbackProcessor {
 // ================================================================================================
 
 /// Deterministic rule updater that adjusts classification rules based on feedback.
+///
+/// This is the symbolic side of Axiom Six: using structured feedback to
+/// refine thresholds, keyword weights, and routing decisions.
 pub struct RuleUpdater {
     // Placeholder for rule data structures, e.g., keyword weights, thresholds.
 }
@@ -269,7 +300,9 @@ impl FeedbackUpdateStrategy for RuleUpdater {
 // ================================================================================================
 
 /// Stub for ML model trainer integration.
-/// Replace with actual ML pipeline hooks or FFI calls.
+///
+/// Replace with actual ML pipeline hooks or FFI calls when integrating
+/// external models or on-device learners.
 pub struct ModelTrainer;
 
 impl ModelTrainer {
@@ -297,11 +330,15 @@ impl FeedbackUpdateStrategy for ModelTrainer {
 // ================================================================================================
 
 /// Async feedback ingestion API using Tokio channels for real-time processing.
+///
+/// This is the primary entry point for UI/API layers to submit feedback
+/// without blocking.
 pub struct AsyncFeedbackIngestor {
     sender: mpsc::Sender<Feedback>,
 }
 
 impl AsyncFeedbackIngestor {
+    /// Create a new async ingestor bound to a FeedbackProcessor.
     pub fn new(processor: Arc<FeedbackProcessor>) -> Self {
         let (tx, mut rx) = mpsc::channel::<Feedback>(100);
 
@@ -348,6 +385,9 @@ impl AsyncFeedbackIngestor {
 // ================================================================================================
 
 /// Example integration function to demonstrate feedback ingestion.
+///
+/// This is not used in production directly, but serves as a reference
+/// for how UI/API layers can wire into the feedback loop.
 pub async fn example_feedback_flow(ingestor: &AsyncFeedbackIngestor) {
     let user_feedback = Feedback::User(UserFeedback {
         feedback_id: Uuid::new_v4(),
@@ -371,4 +411,4 @@ pub async fn example_feedback_flow(ingestor: &AsyncFeedbackIngestor) {
 // - Run background tasks that use `FeedbackProcessor` to update rules and models.
 // - Use `FeedbackStore` for auditability, explainability, and compliance.
 // - Extend `FeedbackSource` and `FeedbackUpdateStrategy` for new channels and strategies.
-//
+// ================================================================================================
