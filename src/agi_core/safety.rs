@@ -1,5 +1,5 @@
 /* ================================================================================================
-   SYNTRA BROWSER — AXIOM SEVEN
+   SYNTRA KERNEL — AGI CORE (SAFETY & GOVERNANCE LAYER)
    ------------------------------------------------------------------------------------------------
    SIGIL:
          .\s/.
@@ -9,10 +9,15 @@
    File:        src/agi_core/safety.rs
    Module:      AGI Core — Safety & Governance Layer
    Author:      Alexandr Roussinov (gd2bk1ng)
-   Description: Defines safety policies and governance rules for Syntra. Evaluates self-modification
-                proposals and enforces boundaries: non-lethal, non-destructive, human-approved.
-                This layer never mutates code; it only governs what is allowed to be proposed or
-                auto-applied.
+   Description:
+       Defines safety policies and governance rules for Syntra. Evaluates self-modification
+       proposals and enforces boundaries: non-lethal, non-destructive, human-approved.
+       This layer never mutates code; it only governs what is allowed to be proposed or
+       auto-applied.
+
+   Architectural Role:
+       • Axiom Five  — Safety & Governance.
+       • Axiom Six   — Evolution (constrained self-modification).
    ================================================================================================ */
 
 #![allow(dead_code)]
@@ -35,6 +40,9 @@ pub enum SafetyLevel {
 }
 
 /// A single safety rule.
+///
+/// Rules are evaluated in order of appearance; the first matching
+/// non-modifiable rule can immediately forbid a proposal.
 #[derive(Debug, Clone)]
 pub struct SafetyRule {
     /// Human-readable description of the rule.
@@ -48,6 +56,7 @@ pub struct SafetyRule {
 /// A safety policy: collection of rules + global constraints.
 #[derive(Debug, Clone)]
 pub struct SafetyPolicy {
+    /// Ordered list of rules.
     pub rules: Vec<SafetyRule>,
     /// Whether Syntra is allowed to auto-apply changes without human approval.
     pub allow_auto_apply: bool,
@@ -56,12 +65,18 @@ pub struct SafetyPolicy {
 /// Verdict for a single proposal.
 #[derive(Debug, Clone)]
 pub struct SafetyVerdict {
+    /// The original proposal being evaluated.
     pub proposal: ChangeProposal,
+    /// Safety level assigned by the policy.
     pub level: SafetyLevel,
+    /// Human-readable explanation for the verdict.
     pub reason: String,
 }
 
 /// Safety gate: evaluates proposals against the policy.
+///
+/// This is the main entry point for the evolution engine and self-mod
+/// subsystems when deciding whether a proposed change is permissible.
 #[derive(Debug, Clone)]
 pub struct SafetyGate {
     pub policy: SafetyPolicy,
@@ -98,6 +113,7 @@ impl SafetyPolicy {
 }
 
 impl SafetyGate {
+    /// Construct a new SafetyGate from a policy.
     pub fn new(policy: SafetyPolicy) -> Self {
         Self { policy }
     }
@@ -133,7 +149,8 @@ impl SafetyGate {
             }
         }
 
-        // Some kinds are always advisory only.
+        // Some kinds are always advisory only; they can be auto-applied
+        // if and only if the policy explicitly allows it.
         match proposal.kind {
             ChangeKind::NewLobe
             | ChangeKind::Upgrade
@@ -141,7 +158,6 @@ impl SafetyGate {
             | ChangeKind::DeadCodeCleanup
             | ChangeKind::DependencyFix
             | ChangeKind::Evolution => {
-                // Keep as ReviewRequired unless policy explicitly allows auto-apply.
                 if self.policy.allow_auto_apply {
                     level = SafetyLevel::Safe;
                     reason = "Policy allows auto-apply for this kind of change.".into();
@@ -157,6 +173,9 @@ impl SafetyGate {
     }
 
     /// Evaluate an entire evolution plan and split into allowed + blocked.
+    ///
+    /// `allowed` includes both `Safe` and `ReviewRequired` proposals.
+    /// `blocked` includes all `Forbidden` proposals.
     pub fn evaluate_evolution_plan(
         &self,
         plan: EvolutionPlan,
