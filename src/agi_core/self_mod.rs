@@ -24,6 +24,7 @@
 use std::path::Path;
 
 use crate::agi_core::ecosystem::EcosystemModel;
+use crate::agi_core::telemetry::{TelemetryBus, TelemetryLevel};
 
 // ================================================================================================
 // Data Structures
@@ -97,11 +98,21 @@ pub struct EvolutionPlan {
 /// Produces structured proposals based on ecosystem analysis. It never
 /// mutates the filesystem or applies patches directly.
 #[derive(Debug, Default)]
-pub struct SelfModEngine;
+pub struct SelfModEngine {
+    telemetry: Option<TelemetryBus>,
+}
 
 impl SelfModEngine {
+    /// Construct a self-mod engine without telemetry.
     pub fn new() -> Self {
-        Self
+        Self { telemetry: None }
+    }
+
+    /// Construct a self-mod engine with telemetry enabled.
+    pub fn with_telemetry(telemetry: TelemetryBus) -> Self {
+        Self {
+            telemetry: Some(telemetry),
+        }
     }
 
     /// High-level entry point: analyze the ecosystem and produce change proposals.
@@ -135,7 +146,20 @@ impl SelfModEngine {
         // 5) Evolution narrative.
         let summary = self.build_evolution_summary(&proposals);
 
-        EvolutionPlan { summary, proposals }
+        let plan = EvolutionPlan { summary, proposals };
+
+        // 6) Telemetry: emit a high-level evolution summary (future-proof hook).
+        if let Some(t) = &self.telemetry {
+            t.log(
+                TelemetryLevel::Info,
+                format!(
+                    "SelfModEngine generated evolution plan with {} proposals.",
+                    plan.proposals.len()
+                ),
+            );
+        }
+
+        plan
     }
 
     // --------------------------------------------------------------------------------------------
@@ -196,7 +220,7 @@ impl SelfModEngine {
                 title: format!("Clean dead code in '{}'", report.module),
                 description: format!(
                     "Module '{}' appears to contain unused symbols: {:?}. \
-                     Recommend removing or consolidating them.",
+                     Recommend removing or consolidating them after human review.",
                     report.module, report.symbols
                 ),
                 target: Some(report.module.clone()),
@@ -243,7 +267,7 @@ impl SelfModEngine {
 
     // --------------------------------------------------------------------------------------------
     // Analysis Hooks (Stubs)
-    // --------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
 
     /// Placeholder: scan for dead code (hook for future static analysis).
     ///
@@ -271,17 +295,22 @@ impl SelfModEngine {
     // --------------------------------------------------------------------------------------------
 
     /// Build a human-readable evolution summary from proposals.
+    ///
+    /// Includes safety-aware narrative so operators understand that all proposals are
+    /// advisory and will be evaluated by the safety subsystem before any application.
     fn build_evolution_summary(&self, proposals: &[ChangeProposal]) -> String {
         let mut out = String::new();
 
         out.push_str("=== Syntra Evolution Plan (Axiom Six) ===\n");
-        out.push_str("This plan is advisory. All changes require explicit human approval.\n\n");
+        out.push_str("This plan is advisory. All changes require explicit human approval.\n");
+        out.push_str("Safety subsystem (Axiom Five) will evaluate each proposal before any action.\n\n");
 
         let mut new_lobes = 0;
         let mut upgrades = 0;
         let mut refactors = 0;
         let mut cleanups = 0;
         let mut dep_fixes = 0;
+        let mut meta_evolution = 0;
 
         for p in proposals {
             match p.kind {
@@ -290,7 +319,7 @@ impl SelfModEngine {
                 ChangeKind::Refactor => refactors += 1,
                 ChangeKind::DeadCodeCleanup => cleanups += 1,
                 ChangeKind::DependencyFix => dep_fixes += 1,
-                ChangeKind::Evolution => {}
+                ChangeKind::Evolution => meta_evolution += 1,
             }
         }
 
@@ -299,6 +328,7 @@ impl SelfModEngine {
         out.push_str(&format!("Refactors proposed: {}\n", refactors));
         out.push_str(&format!("Dead code cleanups proposed: {}\n", cleanups));
         out.push_str(&format!("Dependency fixes proposed: {}\n", dep_fixes));
+        out.push_str(&format!("Meta-evolution proposals: {}\n", meta_evolution));
 
         out
     }
