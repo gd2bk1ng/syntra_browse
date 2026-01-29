@@ -44,6 +44,9 @@ use tokio::sync::mpsc;
 use tracing::{error, info, warn};
 use uuid::Uuid;
 
+use crate::agi_core::telemetry::{TelemetryEvent, TelemetryLevel};
+use crate::agi_core::safety::SafetyVerdict;
+
 // ================================================================================================
 // Core Feedback Types
 // ================================================================================================
@@ -114,7 +117,7 @@ pub trait FeedbackUpdateStrategy: Send + Sync {
 }
 
 // ================================================================================================
-// Feedback Store (In-Memory, Versioned)
+– Feedback Store (In-Memory, Versioned)
 // ================================================================================================
 
 /// In-memory store for feedback with versioned, timestamped batches.
@@ -381,6 +384,106 @@ impl AsyncFeedbackIngestor {
 }
 
 // ================================================================================================
+// Telemetry & Safety Integration Helpers
+// ================================================================================================
+
+/// Convert a TelemetryEvent into a Feedback item when appropriate.
+///
+/// Not all telemetry events map cleanly to SystemTelemetry; we focus on
+/// routing anomalies and safety decisions as structured feedback.
+pub fn feedback_from_telemetry_event(event: TelemetryEvent) -> Option<Feedback> {
+    match event {
+        TelemetryEvent::Routing { target, confidence, reason } => {
+            // Treat low-confidence routing as telemetry feedback.
+            let anomaly = if confidence < 0.5 { 0.8 } else { 0.2 };
+            Some(Feedback::Telemetry(SystemTelemetry {
+                telemetry_id: Uuid::new_v4(),
+                intent_label: target,
+                error_code: None,
+                anomaly_score: anomaly,
+                details: Some(format!("Routing reason: {}", reason)),
+                timestamp: Utc::now(),
+            }))
+        }
+        TelemetryEvent::SafetyDecision { verdict } => {
+            Some(feedback_from_safety_verdict(&verdict))
+        }
+        TelemetryEvent::EvolutionSummary { total, allowed, blocked } => {
+            // Treat high block ratio as an anomaly.
+            let anomaly = if total > 0 {
+                (blocked as f32 / total as f32).min(1.0)
+            } else {
+                0.0
+            };
+
+            Some(Feedback::Telemetry(SystemTelemetry {
+                telemetry_id: Uuid::new_v4(),
+                intent_label: "evolution".to_string(),
+                error_code: None,
+                anomaly_score: anomaly,
+                details: Some(format!(
+                    "Evolution summary: total={}, allowed={}, blocked={}",
+                    total, allowed, blocked
+                )),
+                timestamp: Utc::now(),
+            }))
+        }
+        TelemetryEvent::Log { level, message } => {
+            // Only treat Error logs as telemetry feedback.
+            match level {
+                TelemetryLevel::Error => Some(Feedback::Telemetry(SystemTelemetry {
+                    telemetry_id: Uuid::new_v4(),
+                    intent_label: "log".to_string(),
+                    error_code: Some("error_log".to_string()),
+                    anomaly_score: 0.9,
+                    details: Some(message),
+                    timestamp: Utc::now(),
+                })),
+                _ => None,
+            }
+        }
+    }
+}
+
+/// Convert a SafetyVerdict into SystemTelemetry-style feedback.
+pub fn feedback_from_safety_verdict(verdict: &SafetyVerdict) -> Feedback {
+    let (anomaly_score, details) = if verdict.is_forbidden() {
+        (
+            1.0,
+            Some(format!(
+                "Forbidden proposal: {}",
+                verdict.reason
+            )),
+        )
+    } else if verdict.requires_review() {
+        (
+            0.7,
+            Some(format!(
+                "Review-required proposal: {}",
+                verdict.reason
+            )),
+        )
+    } else {
+        (
+            0.2,
+            Some(format!(
+                "Safe proposal: {}",
+                verdict.reason
+            )),
+        )
+    };
+
+    Feedback::Telemetry(SystemTelemetry {
+        telemetry_id: Uuid::new_v4(),
+        intent_label: "safety".to_string(),
+        error_code: None,
+        anomaly_score,
+        details,
+        timestamp: Utc::now(),
+    })
+}
+
+// ================================================================================================
 // Example Flow
 // ================================================================================================
 
@@ -411,4 +514,6 @@ pub async fn example_feedback_flow(ingestor: &AsyncFeedbackIngestor) {
 // - Run background tasks that use `FeedbackProcessor` to update rules and models.
 // - Use `FeedbackStore` for auditability, explainability, and compliance.
 // - Extend `FeedbackSource` and `FeedbackUpdateStrategy` for new channels and strategies.
+// - Use `feedback_from_telemetry_event` and `feedback_from_safety_verdict` to bridge
+//   telemetry/safety subsystems into the feedback loop.
 // ================================================================================================
