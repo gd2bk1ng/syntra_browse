@@ -1,23 +1,23 @@
-/* ================================================================================================
-   SYNTRA BROWSER — AXIOM SIX
-   ------------------------------------------------------------------------------------------------
-   SIGIL:
-         .\s/.
-        :: S ::
-         '/s\'
-
-   File:        src/agi_core/self_mod.rs
-   Module:      AGI Core — Self-Modification Engine (Advisory)
-   Author:      Alexandr Roussinov (gd2bk1ng)
-   Description: Analyzes Syntra's ecosystem and proposes code changes, patches, refactors, and new
-                lobes. Detection is heuristic and non-destructive: it generates structured
-                proposals, not direct mutations. All changes require explicit human approval.
-
-   Safety Notes:
-     - This engine NEVER writes to disk.
-     - It only emits proposals and patch hints.
-     - Any actual mutation must be performed by the host user or an explicitly authorized layer.
-   ================================================================================================ */
+// ================================================================================================
+//   SYNTRA KERNEL — AXIOM SIX (SELF-MODIFICATION ENGINE, ADVISORY ONLY)
+// ------------------------------------------------------------------------------------------------
+//        .\s/.
+//       :: S ::
+//        '/s\'
+//
+//   File:        src/agi_core/self_mod.rs
+//   Module:      AGI Core — Self-Modification Engine (Advisory)
+//   Author:      Alexandr Roussinov (gd2bk1ng)
+//   Description:
+//       Analyzes Syntra's ecosystem and proposes code changes, patches, refactors, and new lobes.
+//       Detection is heuristic and non-destructive: it generates structured proposals, not direct
+//       mutations. All changes require explicit human approval.
+//
+//   Safety Notes:
+//       • This engine NEVER writes to disk.
+//       • It only emits proposals and patch hints.
+//       • Any actual mutation must be performed by the host user or an explicitly authorized layer.
+// ================================================================================================
 
 #![allow(dead_code)]
 
@@ -25,20 +25,30 @@ use std::path::Path;
 
 use crate::agi_core::ecosystem::EcosystemModel;
 
-/* ------------------------------------------------------------------------------------------------
-   DATA STRUCTURES
-   ------------------------------------------------------------------------------------------------ */
+// ================================================================================================
+// Data Structures
+// ================================================================================================
 
+/// Kind of change being proposed by the self-mod engine.
 #[derive(Debug, Clone)]
 pub enum ChangeKind {
+    /// Introduce a new lobe (module/subsystem).
     NewLobe,
+    /// Structural refactor of existing code.
     Refactor,
+    /// Removal or consolidation of unused code.
     DeadCodeCleanup,
+    /// Fix or simplify dependencies between modules.
     DependencyFix,
+    /// Upgrade an existing lobe (fill in missing logic, tests, docs).
     Upgrade,
+    /// Meta-evolution change (high-level architectural evolution).
     Evolution,
 }
 
+/// A single change proposal emitted by the self-mod engine.
+///
+/// This is advisory only; it never implies direct mutation.
 #[derive(Debug, Clone)]
 pub struct ChangeProposal {
     pub kind: ChangeKind,
@@ -50,6 +60,7 @@ pub struct ChangeProposal {
     pub patch_hint: Option<String>,
 }
 
+/// Refactor suggestion for a specific module.
 #[derive(Debug, Clone)]
 pub struct RefactorSuggestion {
     pub module: String,
@@ -57,12 +68,14 @@ pub struct RefactorSuggestion {
     pub suggestion: String,
 }
 
+/// Report of suspected dead code in a module.
 #[derive(Debug, Clone)]
 pub struct DeadCodeReport {
     pub module: String,
     pub symbols: Vec<String>,
 }
 
+/// Description of a circular dependency between modules.
 #[derive(Debug, Clone)]
 pub struct CircularDependency {
     pub modules: Vec<String>,
@@ -75,10 +88,14 @@ pub struct EvolutionPlan {
     pub proposals: Vec<ChangeProposal>,
 }
 
-/* ------------------------------------------------------------------------------------------------
-   SELF-MOD ENGINE
-   ------------------------------------------------------------------------------------------------ */
+// ================================================================================================
+// Self-Mod Engine
+// ================================================================================================
 
+/// Advisory self-modification engine.
+///
+/// Produces structured proposals based on ecosystem analysis. It never
+/// mutates the filesystem or applies patches directly.
 #[derive(Debug, Default)]
 pub struct SelfModEngine;
 
@@ -99,7 +116,37 @@ impl SelfModEngine {
 
         let mut proposals = Vec::new();
 
-        // 1. Missing / incomplete lobes → new lobe / upgrade proposals.
+        // 1) Missing / incomplete lobes → new lobe / upgrade proposals.
+        self.propose_missing_lobes(&mut proposals, ecosystem);
+        self.propose_incomplete_lobes(&mut proposals, ecosystem);
+
+        // 2) Heuristic dead code / unused module detection (hook).
+        let dead_code_reports = self.detect_dead_code(root);
+        self.propose_dead_code_cleanups(&mut proposals, &dead_code_reports);
+
+        // 3) Circular dependency detection (hook).
+        let cycles = self.detect_circular_dependencies(root);
+        self.propose_dependency_fixes(&mut proposals, &cycles);
+
+        // 4) High-level refactor suggestions (hook).
+        let refactors = self.propose_refactors(root);
+        self.propose_refactors_from_suggestions(&mut proposals, &refactors);
+
+        // 5) Evolution narrative.
+        let summary = self.build_evolution_summary(&proposals);
+
+        EvolutionPlan { summary, proposals }
+    }
+
+    // --------------------------------------------------------------------------------------------
+    // Proposal Builders
+    // --------------------------------------------------------------------------------------------
+
+    fn propose_missing_lobes(
+        &self,
+        proposals: &mut Vec<ChangeProposal>,
+        ecosystem: &EcosystemModel,
+    ) {
         for missing in &ecosystem.missing {
             proposals.push(ChangeProposal {
                 kind: ChangeKind::NewLobe,
@@ -116,7 +163,13 @@ impl SelfModEngine {
                 )),
             });
         }
+    }
 
+    fn propose_incomplete_lobes(
+        &self,
+        proposals: &mut Vec<ChangeProposal>,
+        ecosystem: &EcosystemModel,
+    ) {
         for incomplete in &ecosystem.incomplete {
             proposals.push(ChangeProposal {
                 kind: ChangeKind::Upgrade,
@@ -130,10 +183,14 @@ impl SelfModEngine {
                 patch_hint: None,
             });
         }
+    }
 
-        // 2. Heuristic dead code / unused module detection (hook).
-        let dead_code_reports = self.detect_dead_code(root);
-        for report in &dead_code_reports {
+    fn propose_dead_code_cleanups(
+        &self,
+        proposals: &mut Vec<ChangeProposal>,
+        reports: &[DeadCodeReport],
+    ) {
+        for report in reports {
             proposals.push(ChangeProposal {
                 kind: ChangeKind::DeadCodeCleanup,
                 title: format!("Clean dead code in '{}'", report.module),
@@ -146,10 +203,14 @@ impl SelfModEngine {
                 patch_hint: None,
             });
         }
+    }
 
-        // 3. Circular dependency detection (hook).
-        let cycles = self.detect_circular_dependencies(root);
-        for cycle in &cycles {
+    fn propose_dependency_fixes(
+        &self,
+        proposals: &mut Vec<ChangeProposal>,
+        cycles: &[CircularDependency],
+    ) {
+        for cycle in cycles {
             proposals.push(ChangeProposal {
                 kind: ChangeKind::DependencyFix,
                 title: "Resolve circular dependency".into(),
@@ -162,27 +223,27 @@ impl SelfModEngine {
                 patch_hint: None,
             });
         }
+    }
 
-        // 4. High-level refactor suggestions (hook).
-        let refactors = self.propose_refactors(root);
-        for r in &refactors {
+    fn propose_refactors_from_suggestions(
+        &self,
+        proposals: &mut Vec<ChangeProposal>,
+        refactors: &[RefactorSuggestion],
+    ) {
+        for r in refactors {
             proposals.push(ChangeProposal {
                 kind: ChangeKind::Refactor,
                 title: format!("Refactor module '{}'", r.module),
-                description: format!(
-                    "Reason: {}. Suggestion: {}",
-                    r.reason, r.suggestion
-                ),
+                description: format!("Reason: {}. Suggestion: {}", r.reason, r.suggestion),
                 target: Some(r.module.clone()),
                 patch_hint: None,
             });
         }
-
-        // 5. Evolution narrative.
-        let summary = self.build_evolution_summary(&proposals);
-
-        EvolutionPlan { summary, proposals }
     }
+
+    // --------------------------------------------------------------------------------------------
+    // Analysis Hooks (Stubs)
+    // --------------------------------------------------------------------------------------------
 
     /// Placeholder: scan for dead code (hook for future static analysis).
     ///
@@ -204,6 +265,10 @@ impl SelfModEngine {
     fn propose_refactors(&self, _root: &Path) -> Vec<RefactorSuggestion> {
         Vec::new()
     }
+
+    // --------------------------------------------------------------------------------------------
+    // Evolution Summary
+    // --------------------------------------------------------------------------------------------
 
     /// Build a human-readable evolution summary from proposals.
     fn build_evolution_summary(&self, proposals: &[ChangeProposal]) -> String {
