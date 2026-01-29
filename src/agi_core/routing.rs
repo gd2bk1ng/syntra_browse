@@ -17,7 +17,7 @@
 
 use crate::agi_core::schema::intent_schema::Intent;
 use crate::agi_core::schema::plan_schema::RoutePlan;
-use crate::agi_core::telemetry::TelemetryEvent;
+use crate::agi_core::telemetry::{TelemetryBus, TelemetryEvent, TelemetryLevel};
 use crate::agi_core::safety::SafetyGate;
 
 /// Routing decision for a single intent.
@@ -32,11 +32,12 @@ pub struct RouteDecision {
 #[derive(Debug)]
 pub struct Router {
     pub safety_gate: SafetyGate,
+    pub telemetry: TelemetryBus,
 }
 
 impl Router {
-    pub fn new(safety_gate: SafetyGate) -> Self {
-        Self { safety_gate }
+    pub fn new(safety_gate: SafetyGate, telemetry: TelemetryBus) -> Self {
+        Self { safety_gate, telemetry }
     }
 
     /// Route an intent to the appropriate lobe.
@@ -50,11 +51,20 @@ impl Router {
             _ => ("reasoner", "Unknown intent → fallback to Reasoner"),
         };
 
-        RouteDecision {
+        let decision = RouteDecision {
             target_lobe: target.into(),
             confidence: 0.85,
             reason: reason.into(),
-        }
+        };
+
+        // Emit routing telemetry.
+        self.telemetry.record(TelemetryEvent::Routing {
+            target: decision.target_lobe.clone(),
+            confidence: decision.confidence,
+            reason: decision.reason.clone(),
+        });
+
+        decision
     }
 
     /// Build a route plan for execution.
@@ -69,12 +79,9 @@ impl Router {
         }
     }
 
-    /// Emit telemetry for routing decisions.
-    pub fn emit_routing_telemetry(&self, plan: &RoutePlan) -> TelemetryEvent {
-        TelemetryEvent::Routing {
-            target: plan.target_lobe.clone(),
-            confidence: plan.confidence,
-            reason: plan.reason.clone(),
-        }
+    /// Convenience helper to log routing anomalies.
+    pub fn log_routing_anomaly(&self, message: impl Into<String>) {
+        self.telemetry
+            .log(TelemetryLevel::Warn, message.into());
     }
 }
