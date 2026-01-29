@@ -14,6 +14,9 @@
 //   Execution Flow:
 //     1. Initialize structured logging + diagnostics.
 //     2. Parse CLI arguments.
+//        • --demo       → compiler demo hint
+//        • --terminal   → Syntra Terminal (CLI lobe)
+//        • (default)    → Browser UI + behavioral monitor
 //     3. Invoke Genesis bootstrap sequence.
 //     4. Initialize behavioral monitor + session manager.
 //     5. Launch UI (blocking or async depending on backend).
@@ -26,8 +29,6 @@
 //     - Behavioral monitoring runs continuously and silently.
 //     - Session locking integrates with cortex::ui::lock_screen.
 //     - Compiler demos are handled by a separate binary.
-//
-//   License: MIT
 // ================================================================================================
 
 use std::env;
@@ -53,6 +54,7 @@ use syntra_kernel::continuity::EpisodicMemory;
 use syntra_kernel::diagnostics_ext::Profiler;
 use syntra_kernel::genesis;
 use syntra_kernel::security::Sandbox;
+use syntra_kernel::terminal::run_cli;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -67,9 +69,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let _profiler = Profiler::start_global();
 
     // --------------------------------------------------------------------------------------------
-    // 2. Parse CLI Arguments
+    // 2. Parse CLI Arguments (mode selection)
     // --------------------------------------------------------------------------------------------
     let args: Vec<String> = env::args().collect();
+
+    // Dedicated demo flag (unchanged).
     if args.len() > 1 && args[1] == "--demo" {
         println!("🔧 Syntra Reference Compiler Demo");
         println!("================================\n");
@@ -78,6 +82,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("    cargo run --bin syntra_compiler_demo\n");
         return Ok(());
     }
+
+    // New: terminal mode. This turns the main binary into the Syntra Terminal lobe.
+    if args.len() > 1 && (args[1] == "--terminal" || args[1] == "terminal") {
+        // run_cli() is synchronous and owns its own Cortex + Conduit.
+        run_cli();
+        return Ok(());
+    }
+
+    // Default: full browser/runtime stack.
 
     // --------------------------------------------------------------------------------------------
     // 3. Genesis Bootstrap
