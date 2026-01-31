@@ -32,6 +32,8 @@ use std::path::{Path, PathBuf};
 
 use serde::{Deserialize, Serialize};
 
+use crate::agi_core::telemetry::{TelemetryBus, TelemetryEvent, TelemetryLevel};
+
 /// High-level category of a lobe.
 ///
 /// This is a coarse taxonomy used to reason about the role of each
@@ -143,12 +145,35 @@ pub struct EcosystemModel {
 
     /// 0.0–1.0 overall ecosystem health score.
     pub health_score: f32,
+
+    /// Optional telemetry bus for emitting ecosystem health events.
+    #[serde(skip)]
+    pub telemetry: Option<TelemetryBus>,
 }
 
 impl EcosystemModel {
-    /// Create a new, empty ecosystem model.
+    /// Create a new, empty ecosystem model without telemetry.
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            lobes: Vec::new(),
+            missing: Vec::new(),
+            incomplete: Vec::new(),
+            upgrade_recommendations: Vec::new(),
+            health_score: 0.0,
+            telemetry: None,
+        }
+    }
+
+    /// Create a new ecosystem model with telemetry enabled.
+    pub fn with_telemetry(telemetry: TelemetryBus) -> Self {
+        Self {
+            lobes: Vec::new(),
+            missing: Vec::new(),
+            incomplete: Vec::new(),
+            upgrade_recommendations: Vec::new(),
+            health_score: 0.0,
+            telemetry: Some(telemetry),
+        }
     }
 
     /// Scan the repository root and populate the ecosystem model.
@@ -160,8 +185,22 @@ impl EcosystemModel {
     ///   - Populates missing/incomplete lists.
     ///   - Generates upgrade recommendations.
     ///   - Computes an overall health score.
+    ///   - Emits rich telemetry about ecosystem health.
     pub fn scan_repo(&mut self, root: impl AsRef<Path>) {
         let root = root.as_ref();
+
+        if let Some(t) = &self.telemetry {
+            t.log(
+                TelemetryLevel::Info,
+                format!("Ecosystem scan started at root: {}", root.display()),
+            );
+        }
+
+        self.lobes.clear();
+        self.missing.clear();
+        self.incomplete.clear();
+        self.upgrade_recommendations.clear();
+        self.health_score = 0.0;
 
         // Expected lobes in the Syntra Kernel ecosystem.
         // This list can evolve as the architecture grows.
@@ -238,29 +277,37 @@ impl EcosystemModel {
             ),
         ];
 
-        self.lobes.clear();
-        self.missing.clear();
-        self.incomplete.clear();
-        self.upgrade_recommendations.clear();
-
         for (name, rel_path, kind, criticality, tags) in expected_lobes {
             let full_path = root.join(rel_path);
 
             if !full_path.exists() {
                 // Lobe is missing entirely.
                 self.missing.push(name.clone());
-                self.lobes.push(EcosystemLobe {
-                    name,
-                    path: full_path,
+                let lobe = EcosystemLobe {
+                    name: name.clone(),
+                    path: full_path.clone(),
                     present: false,
                     size_bytes: 0,
                     is_empty: true,
                     file_count: 0,
-                    kind,
-                    criticality,
-                    tags,
+                    kind: kind.clone(),
+                    criticality: criticality.clone(),
+                    tags: tags.clone(),
                     completeness: 0.0,
-                });
+                };
+                self.lobes.push(lobe);
+
+                if let Some(t) = &self.telemetry {
+                    t.log(
+                        TelemetryLevel::Warn,
+                        format!(
+                            "Ecosystem lobe missing: '{}' at '{}'",
+                            name,
+                            full_path.display()
+                        ),
+                    );
+                }
+
                 continue;
             }
 
@@ -272,22 +319,75 @@ impl EcosystemModel {
 
             let completeness = compute_completeness(&kind, &criticality, size_bytes, file_count);
 
-            self.lobes.push(EcosystemLobe {
-                name,
-                path: full_path,
+            let lobe = EcosystemLobe {
+                name: name.clone(),
+                path: full_path.clone(),
                 present: true,
                 size_bytes,
                 is_empty,
                 file_count,
-                kind,
-                criticality,
-                tags,
+                kind: kind.clone(),
+                criticality: criticality.clone(),
+                tags: tags.clone(),
                 completeness,
-            });
+            };
+
+            if let Some(t) = &self.telemetry {
+                t.record(TelemetryEvent::Routing {
+                    target: name.clone(),
+                    confidence: completeness,
+                    reason: format!(
+                        "Ecosystem lobe completeness (files={}, size={}B)",
+                        file_count, size_bytes
+                    ),
+                });
+
+                if is_empty || completeness < 0.4 {
+                    t.log(
+                        TelemetryLevel::Warn,
+                        format!(
+                            "Ecosystem lobe '{}' appears incomplete (completeness {:.2}, files={}, size={}B)",
+                            name, completeness, file_count, size_bytes
+                        ),
+                    );
+                } else {
+                    t.log(
+                        TelemetryLevel::Info,
+                        format!(
+                            "Ecosystem lobe '{}' scanned: completeness {:.2}, files={}, size={}B",
+                            name, completeness, file_count, size_bytes
+                        ),
+                    );
+                }
+            }
+
+            self.lobes.push(lobe);
         }
 
         self.generate_recommendations();
         self.compute_health_score();
+
+        if let Some(t) = &self.telemetry {
+            let total = self.lobes.len();
+            let blocked = self.missing.len() + self.incomplete.len();
+            let allowed = total.saturating_sub(blocked);
+
+            t.record(TelemetryEvent::EvolutionSummary {
+                total,
+                allowed,
+                blocked,
+            });
+
+            t.log(
+                TelemetryLevel::Info,
+                format!(
+                    "Ecosystem scan complete. Health score={:.2}, missing={}, incomplete={}",
+                    self.health_score,
+                    self.missing.len(),
+                    self.incomplete.len()
+                ),
+            );
+        }
     }
 
     /// Generate human-readable upgrade recommendations based on lobe status.
