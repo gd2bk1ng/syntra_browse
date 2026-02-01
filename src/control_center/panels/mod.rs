@@ -9,26 +9,31 @@
    Module:      SyntraOS Control Center — Panels Index
    Author:      Alexandr Roussinov (gd2bk1ng)
    Description:
-       Index and re-exports for all Control Center panels.
+       Central index and re-export hub for all Control Center panels.
 
-       Panels:
-         • system        — core OS status
-         • cognition     — cognitive loop & context
-         • robotics      — robot embodiment
-         • network       — connectivity & throughput
-         • smart_home    — home automation
-         • security      — security posture
-         • diagnostics   — health & integrity
-         • evolution     — version lineage & growth
-         • assistant     — conversational interface
-         • world_model   — spatial & semantic world model
-         • agents        — multi-agent runtime
-         • memory        — cognitive memory
-         • safety        — safety governance
-         • predictive    — forecasting & trends
-         • simulation    — sandbox & what-if engine
-         • plugins       — extension ecosystem
-         • developer     — dev-facing internals
+       Panels provide *read-only*, structured, UI-agnostic access to subsystem state:
+         • system        — core OS & hardware status
+         • cognition     — cognitive loop, context & thoughtstream
+         • robotics      — embodiment, locomotion, manipulation & sensors
+         • network       — connectivity, throughput & interface health
+         • smart_home    — automation, environment & device orchestration
+         • security      — threat posture, sensors, cameras & zones
+         • diagnostics   — system integrity, anomalies & health scoring
+         • evolution     — capability lineage, scheduler & experiments
+         • assistant     — conversational state, routing & reasoning trace
+         • world_model   — spatial, semantic & temporal world representation
+         • agents        — multi-agent runtime, roles, tasks & coordination
+         • memory        — episodic, semantic, vector & cluster memory
+         • safety        — governance, constraints, envelopes & risk scoring
+         • predictive    — forecasting, trends, anomalies & projections
+         • simulation    — physics, behavior, scenarios & sandbox state
+         • plugins       — extension ecosystem, metadata, lifecycle & health
+         • developer     — introspection, profiling, hot reload & dev tools
+
+       Notes:
+         • Panels are strictly read-only views.
+         • All mutation flows through ControlCenterCommand.
+         • This file is intentionally stable and future-proof.
    ================================================================================================ */
 
 pub mod system;
@@ -49,6 +54,7 @@ pub mod simulation;
 pub mod plugins;
 pub mod developer;
 
+// Re-exports for ergonomic access
 pub use system::SystemPanel;
 pub use cognition::CognitionPanel;
 pub use robotics::RoboticsPanel;
