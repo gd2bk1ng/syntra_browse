@@ -7,6 +7,7 @@
 //
 //   File:        src/main.rs
 //   Module:      Syntra Kernel — Main Entrypoint
+//   Author:      Alexandr Roussinov (gd2bk1ng)
 //   Description: Launches the Syntra Kernel runtime, initializes diagnostics, loads behavioral
 //                profiles, starts the UI subsystem, and orchestrates background cognitive and
 //                security processes.
@@ -16,26 +17,21 @@
 //     2. Parse CLI arguments.
 //        • --demo       → compiler demo hint
 //        • --terminal   → Syntra Terminal (CLI lobe)
-//        • (default)    → Browser UI + behavioral monitor
+//        • (default)    → Browser UI + behavioral monitor + SyntraOS runtime
 //     3. Invoke Genesis bootstrap sequence.
-//     4. Initialize behavioral monitor + session manager.
+//     4. Initialize SyntraNode (SyntraOS brain), behavioral monitor + session manager.
 //     5. Launch UI (blocking or async depending on backend).
 //     6. Spawn periodic behavioral evaluation loop.
-//     7. Listen for Ctrl+C for graceful shutdown.
-//
-//   Notes:
-//     - This binary is intentionally minimal and orchestration-focused.
-//     - Heavy logic lives in subsystems (cortex, runtime, agi_core, security, continuity, etc.).
-//     - Behavioral monitoring runs continuously and silently.
-//     - Session locking integrates with cortex::ui::lock_screen.
-//     - Compiler demos are handled by a separate binary.
+//     7. Spawn periodic SyntraOS state refresh loop.
+//     8. Listen for Ctrl+C for graceful shutdown.
 // ================================================================================================
 
 use std::env;
+use std::sync::Arc;
 
 use tokio::{
     signal,
-    sync::mpsc,
+    sync::{mpsc, Mutex},
     task,
     time::{self, Duration},
 };
@@ -43,7 +39,11 @@ use tokio::{
 use tracing::{error, info};
 use tracing_subscriber;
 
-use syntra_kernel::agi_core::behavioral_profile::CreatorProfile;
+use syntra_kernel::agi_core::{
+    behavioral_profile::CreatorProfile,
+    node::SyntraNode,
+    telemetry::TelemetryBus,
+};
 use syntra_kernel::browser::{
     behavioral_monitor::{BehavioralMonitor, TypingEvent},
     input_handler,
@@ -83,7 +83,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     }
 
-    // New: terminal mode. This turns the main binary into the Syntra Terminal lobe.
+    // Terminal mode. This turns the main binary into the Syntra Terminal lobe.
     if args.len() > 1 && (args[1] == "--terminal" || args[1] == "terminal") {
         // run_cli() is synchronous and owns its own Cortex + Conduit.
         run_cli();
@@ -99,8 +99,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     task::spawn_blocking(|| genesis::main()).await??;
 
     // --------------------------------------------------------------------------------------------
-    // 4. Behavioral Monitor + Session Manager
+    // 4. Initialize SyntraOS Runtime (SyntraNode) + Behavioral Monitor + Session Manager
     // --------------------------------------------------------------------------------------------
+    info!("🧠 Initializing SyntraOS runtime (SyntraNode)...");
+
+    let telemetry = TelemetryBus::new("syntra_main".to_string());
+    let root = std::env::current_dir()?;
+    let syntra_node = SyntraNode::new(root, telemetry.clone());
+    let syntra_node = Arc::new(Mutex::new(syntra_node));
+
     info!("🚀 Initializing Behavioral Monitor and Session Manager...");
 
     let creator_profile = CreatorProfile::load().await.unwrap_or_default();
@@ -134,6 +141,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 6. Launch UI
     // --------------------------------------------------------------------------------------------
     info!("🚀 Launching UI...");
+    // For now, BrowserUI::run() does not yet take a SyntraNode handle.
+    // Later, you can extend it to accept Arc<Mutex<SyntraNode>> for live OS state binding.
     let ui_handle = task::spawn_blocking(|| BrowserUI::run());
 
     // --------------------------------------------------------------------------------------------
@@ -158,7 +167,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     });
 
     // --------------------------------------------------------------------------------------------
-    // 8. Graceful Shutdown
+    // 8. Periodic SyntraOS State Refresh Loop (SyntraNode::refresh_tick)
+    // --------------------------------------------------------------------------------------------
+    let syntra_node_clone = syntra_node.clone();
+    tokio::spawn(async move {
+        let mut interval = time::interval(Duration::from_millis(500));
+        loop {
+            interval.tick().await;
+            if let Ok(mut node) = syntra_node_clone.lock().await {
+                node.refresh_tick();
+            }
+        }
+    });
+
+    // --------------------------------------------------------------------------------------------
+    // 9. Graceful Shutdown
     // --------------------------------------------------------------------------------------------
     tokio::select! {
         res = ui_handle => {
