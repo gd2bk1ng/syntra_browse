@@ -9,18 +9,12 @@
    Module:      SyntraOS Control Center — Cognition Panel
    Author:      Alexandr Roussinov (gd2bk1ng)
    Description:
-       Provides structured access to cognition state:
-         • Active intents
-         • Active tasks
-         • Routing confidence
-         • Safety block counts
-         • Feedback events
-
-       This panel is UI-agnostic. It prepares cognition data for:
-         • SyntraOS Shell (desktop)
-         • Browser UI
-         • Robot HUD
-         • AR overlays
+       Read-only view over the cognitive loop:
+         • Active cognitive context
+         • Focus stack
+         • Last observation / thought
+         • Cognitive load
+         • Loop phase (perceive, plan, act, reflect)
    ================================================================================================ */
 
 use crate::control_center::state::ControlCenterState;
@@ -34,18 +28,27 @@ impl<'a> CognitionPanel<'a> {
         Self { state }
     }
 
-    /// Returns the list of active cognitive intents.
-    pub fn active_intents(&self) -> &[String] {
-        &self.state.cognition.active_intents
+    pub fn active_context(&self) -> Option<String> {
+        self.state.cognition.active_context.clone()
     }
 
-    /// Returns the list of active cognitive tasks.
-    pub fn active_tasks(&self) -> &[String] {
-        &self.state.cognition.active_tasks
+    pub fn focus_stack(&self) -> &[String] {
+        &self.state.cognition.focus_stack
     }
 
-    /// Returns the average routing confidence.
-    pub fn routing_confidence(&self) -> f32 {
-        self.state.cognition.routing_confidence_avg
+    pub fn last_observation(&self) -> Option<String> {
+        self.state.cognition.last_observation.clone()
+    }
+
+    pub fn last_thought(&self) -> Option<String> {
+        self.state.cognition.last_thought.clone()
+    }
+
+    pub fn cognitive_load(&self) -> f32 {
+        self.state.cognition.cognitive_load
+    }
+
+    pub fn loop_phase(&self) -> Option<String> {
+        self.state.cognition.loop_phase.clone()
     }
 }
