@@ -42,6 +42,7 @@
 
 #![allow(dead_code)]
 
+use uuid::Uuid;
 use std::path::Path;
 
 pub mod request_lobe;
