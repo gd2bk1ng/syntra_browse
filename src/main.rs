@@ -8,22 +8,16 @@
 //   File:        src/main.rs
 //   Module:      Syntra Kernel — Main Entrypoint
 //   Author:      Alexandr Roussinov (gd2bk1ng)
-//   Description: Launches the Syntra Kernel runtime, initializes diagnostics, loads behavioral
-//                profiles, starts the UI subsystem, and orchestrates background cognitive and
-//                security processes.
+//   Description:
+//       Launches the Syntra Kernel runtime, initializes diagnostics, loads behavioral
+//       profiles, starts the UI subsystem, and orchestrates background cognitive,
+//       robotics, predictive, safety, and developer processes.
 //
-//   Execution Flow:
-//     1. Initialize structured logging + diagnostics.
-//     2. Parse CLI arguments.
-//        • --demo       → compiler demo hint
-//        • --terminal   → Syntra Terminal (CLI lobe)
-//        • (default)    → Browser UI + behavioral monitor + SyntraOS runtime
-//     3. Invoke Genesis bootstrap sequence.
-//     4. Initialize SyntraNode (SyntraOS brain), behavioral monitor + session manager.
-//     5. Launch UI (blocking or async depending on backend).
-//     6. Spawn periodic behavioral evaluation loop.
-//     7. Spawn periodic SyntraOS state refresh loop.
-//     8. Listen for Ctrl+C for graceful shutdown.
+//       Now includes:
+//         • ControlCenterState initialization
+//         • ControlCenterShell binding
+//         • Global shared state for UI + AGI runtime
+//         • Periodic Control Center refresh loop
 // ================================================================================================
 
 use std::env;
@@ -44,20 +38,30 @@ use syntra_kernel::agi_core::{
     node::SyntraNode,
     telemetry::TelemetryBus,
 };
+
 use syntra_kernel::browser::{
     behavioral_monitor::{BehavioralMonitor, TypingEvent},
     input_handler,
     session_manager::SessionManager,
     ui::BrowserUI,
 };
+
 use syntra_kernel::continuity::EpisodicMemory;
 use syntra_kernel::diagnostics_ext::Profiler;
 use syntra_kernel::genesis;
 use syntra_kernel::security::Sandbox;
 use syntra_kernel::terminal::run_cli;
 
+// NEW: Control Center
+use syntra_kernel::control_center::{
+    ControlCenterState,
+    ControlCenterShell,
+    ControlCenterCommand,
+};
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+
     // --------------------------------------------------------------------------------------------
     // 1. Initialize Logging + Diagnostics
     // --------------------------------------------------------------------------------------------
@@ -65,32 +69,24 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     info!("🔮 Syntra Kernel — Axiom Three");
     info!("Initializing diagnostics and runtime environment...");
 
-    // Optional: attach advanced profiler
     let _profiler = Profiler::start_global();
 
     // --------------------------------------------------------------------------------------------
-    // 2. Parse CLI Arguments (mode selection)
+    // 2. Parse CLI Arguments
     // --------------------------------------------------------------------------------------------
     let args: Vec<String> = env::args().collect();
 
-    // Dedicated demo flag (unchanged).
     if args.len() > 1 && args[1] == "--demo" {
         println!("🔧 Syntra Reference Compiler Demo");
         println!("================================\n");
-        println!("This flag is reserved for future in-process demos.");
-        println!("For now, run the standalone demo binary:\n");
-        println!("    cargo run --bin syntra_compiler_demo\n");
+        println!("Run: cargo run --bin syntra_compiler_demo\n");
         return Ok(());
     }
 
-    // Terminal mode. This turns the main binary into the Syntra Terminal lobe.
     if args.len() > 1 && (args[1] == "--terminal" || args[1] == "terminal") {
-        // run_cli() is synchronous and owns its own Cortex + Conduit.
         run_cli();
         return Ok(());
     }
-
-    // Default: full browser/runtime stack.
 
     // --------------------------------------------------------------------------------------------
     // 3. Genesis Bootstrap
@@ -99,14 +95,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     task::spawn_blocking(|| genesis::main()).await??;
 
     // --------------------------------------------------------------------------------------------
-    // 4. Initialize SyntraOS Runtime (SyntraNode) + Behavioral Monitor + Session Manager
+    // 4. Initialize SyntraNode + Behavioral Monitor + Session Manager
     // --------------------------------------------------------------------------------------------
     info!("🧠 Initializing SyntraOS runtime (SyntraNode)...");
 
     let telemetry = TelemetryBus::new("syntra_main".to_string());
     let root = std::env::current_dir()?;
-    let syntra_node = SyntraNode::new(root, telemetry.clone());
-    let syntra_node = Arc::new(Mutex::new(syntra_node));
+    let syntra_node = Arc::new(Mutex::new(SyntraNode::new(root, telemetry.clone())));
 
     info!("🚀 Initializing Behavioral Monitor and Session Manager...");
 
@@ -114,14 +109,24 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut behavioral_monitor = BehavioralMonitor::new(creator_profile);
     let session_manager = SessionManager::new();
 
-    // Optional: continuity engine (episodic memory)
     let _episodic_memory = EpisodicMemory::new();
-
-    // Optional: security sandbox (future integration)
     let _sandbox = Sandbox::new();
 
     // --------------------------------------------------------------------------------------------
-    // 5. Input Event Channel + Handler Task
+    // 5. Initialize Control Center (NEW)
+    // --------------------------------------------------------------------------------------------
+    info!("🧩 Initializing Control Center...");
+
+    let control_center_state = Arc::new(Mutex::new(ControlCenterState::default()));
+
+    // Optional: initial system mode
+    {
+        let mut cc = control_center_state.lock().await;
+        ControlCenterCommand::SetSystemMode { mode: "booting".into() }.apply(&mut cc);
+    }
+
+    // --------------------------------------------------------------------------------------------
+    // 6. Input Event Channel + Handler Task
     // --------------------------------------------------------------------------------------------
     let (input_tx, mut input_rx) = mpsc::channel::<TypingEvent>(128);
 
@@ -134,22 +139,25 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     });
 
-    // `input_tx` is ready to be wired to real input sources later.
     let _ = input_tx;
 
     // --------------------------------------------------------------------------------------------
-    // 6. Launch UI
+    // 7. Launch UI (Browser)
     // --------------------------------------------------------------------------------------------
     info!("🚀 Launching UI...");
-    // For now, BrowserUI::run() does not yet take a SyntraNode handle.
-    // Later, you can extend it to accept Arc<Mutex<SyntraNode>> for live OS state binding.
-    let ui_handle = task::spawn_blocking(|| BrowserUI::run());
+
+    // Pass Control Center state into UI if needed
+    let cc_for_ui = control_center_state.clone();
+
+    let ui_handle = task::spawn_blocking(move || {
+        BrowserUI::run_with_control_center(cc_for_ui)
+    });
 
     // --------------------------------------------------------------------------------------------
-    // 7. Periodic Behavioral Evaluation Loop
+    // 8. Periodic Behavioral Evaluation Loop
     // --------------------------------------------------------------------------------------------
-    let behavioral_monitor_ref = &behavioral_monitor;
-    let session_manager_ref = &session_manager;
+    let behavioral_monitor_ref = behavioral_monitor.clone();
+    let session_manager_ref = session_manager.clone();
 
     tokio::spawn(async move {
         let mut interval = time::interval(Duration::from_secs(5));
@@ -159,15 +167,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             if !behavioral_monitor_ref.evaluate() && !session_manager_ref.is_locked() {
                 info!("⚠️ Behavioral anomaly detected. Locking session...");
                 session_manager_ref.lock().await;
-
-                // Future: integrate cortex::ui::lock_screen
-                // lock_screen::show().await;
             }
         }
     });
 
     // --------------------------------------------------------------------------------------------
-    // 8. Periodic SyntraOS State Refresh Loop (SyntraNode::refresh_tick)
+    // 9. Periodic SyntraNode Refresh Loop
     // --------------------------------------------------------------------------------------------
     let syntra_node_clone = syntra_node.clone();
     tokio::spawn(async move {
@@ -181,7 +186,26 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     });
 
     // --------------------------------------------------------------------------------------------
-    // 9. Graceful Shutdown
+    // 10. Periodic Control Center Refresh Loop (NEW)
+    // --------------------------------------------------------------------------------------------
+    let cc_clone = control_center_state.clone();
+    tokio::spawn(async move {
+        let mut interval = time::interval(Duration::from_millis(750));
+        loop {
+            interval.tick().await;
+
+            let mut cc = cc_clone.lock().await;
+
+            // Example: update uptime or system metrics
+            cc.system.uptime_seconds += 1;
+
+            // Example: update developer heartbeat
+            cc.developer.last_log = Some(format!("Heartbeat @ {:?}", chrono::Utc::now()));
+        }
+    });
+
+    // --------------------------------------------------------------------------------------------
+    // 11. Graceful Shutdown
     // --------------------------------------------------------------------------------------------
     tokio::select! {
         res = ui_handle => {
