@@ -1,40 +1,38 @@
 /* ================================================================================================
-   SYNTRAOS — CONTROL CENTER PANELS
+   SYNTRAOS — CONTROL CENTER PANELS INDEX
    ------------------------------------------------------------------------------------------------
          .\s/.
         :: S ::
          '/s\'
 
    File:        src/control_center/panels/mod.rs
-   Module:      SyntraOS Control Center — Panels Root
+   Module:      SyntraOS Control Center — Panels Index
    Author:      Alexandr Roussinov (gd2bk1ng)
    Description:
-       Panels are the individual “views” inside the SyntraOS Control Center:
-         • System
-         • Cognition
-         • Robotics
-         • Smart Home
-         • Security
-         • Diagnostics
-         • Evolution
-         • Assistant
-         • World Model
-         • Predictive Engine
-         • and more...
+       Index and re-exports for all Control Center panels.
 
-       Each panel is responsible for:
-         • reading from ControlCenterState
-         • providing a structured data model for UI layers
-         • (future) rendering hints, layout metadata, animations
-
-       Panels are UI-agnostic and do not draw pixels.
+       Panels:
+         • system        — core OS status
+         • cognition     — cognitive loop & context
+         • robotics      — robot embodiment
+         • network       — connectivity & throughput
+         • smart_home    — home automation
+         • security      — security posture
+         • diagnostics   — health & integrity
+         • evolution     — version lineage & growth
+         • assistant     — conversational interface
+         • world_model   — spatial & semantic world model
+         • agents        — multi-agent runtime
+         • memory        — cognitive memory
+         • safety        — safety governance
+         • predictive    — forecasting & trends
+         • simulation    — sandbox & what-if engine
+         • plugins       — extension ecosystem
+         • developer     — dev-facing internals
    ================================================================================================ */
 
-
-pub mod cognition;
-
 pub mod system;
-pub mod environment;
+pub mod cognition;
 pub mod robotics;
 pub mod network;
 pub mod smart_home;
@@ -51,12 +49,8 @@ pub mod simulation;
 pub mod plugins;
 pub mod developer;
 
-pub mod ml;
-pub mod continuity;
-
-// Re-exports for ergonomic access
 pub use system::SystemPanel;
-pub use environment::EnvironmentPanel;
+pub use cognition::CognitionPanel;
 pub use robotics::RoboticsPanel;
 pub use network::NetworkPanel;
 pub use smart_home::SmartHomePanel;
