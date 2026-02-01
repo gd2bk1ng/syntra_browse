@@ -30,8 +30,11 @@
        Panels are UI-agnostic and do not draw pixels.
    ================================================================================================ */
 
-pub mod system;
+
 pub mod cognition;
+
+pub mod system;
+pub mod environment;
 pub mod robotics;
 pub mod network;
 pub mod smart_home;
@@ -46,5 +49,26 @@ pub mod safety;
 pub mod predictive;
 pub mod simulation;
 pub mod plugins;
+pub mod developer;
+
 pub mod ml;
 pub mod continuity;
+
+// Re-exports for ergonomic access
+pub use system::SystemPanel;
+pub use environment::EnvironmentPanel;
+pub use robotics::RoboticsPanel;
+pub use network::NetworkPanel;
+pub use smart_home::SmartHomePanel;
+pub use security::SecurityPanel;
+pub use diagnostics::DiagnosticsPanel;
+pub use evolution::EvolutionPanel;
+pub use assistant::AssistantPanel;
+pub use world_model::WorldModelPanel;
+pub use agents::AgentsPanel;
+pub use memory::MemoryPanel;
+pub use safety::SafetyPanel;
+pub use predictive::PredictivePanel;
+pub use simulation::SimulationPanel;
+pub use plugins::PluginsPanel;
+pub use developer::DeveloperPanel;
