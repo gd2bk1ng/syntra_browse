@@ -16,6 +16,8 @@
      - Axiom Three keeps UI minimal, fast, and GPU-accelerated.
    ================================================================================================ */
 
+use winit::keyboard::KeyCode;
+
 use winit::{
     dpi::LogicalSize,
     event::{Event, WindowEvent},
@@ -99,7 +101,8 @@ impl BrowserUI {
                     ui.address_bar.handle_text_input(text);
                 }
 
-                if input.key_pressed(winit::event::VirtualKeyCode::Return) {
+                // UPDATED FOR WINIT 0.30: use KeyCode instead of VirtualKeyCode
+                if input.key_pressed(KeyCode::Enter) {
                     if let Some(url) = ui.address_bar.current_url() {
                         ui.tabs.open_tab(url.clone());
                         ui.renderer.load_url(&url);
