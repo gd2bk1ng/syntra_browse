@@ -1,105 +1,68 @@
 /* ================================================================================================
-   SYNTRAOS — CONTROL CENTER COMMAND MODEL
+   SYNTRAOS — CONTROL CENTER COMMANDS
    ------------------------------------------------------------------------------------------------
          .\s/.
         :: S ::
          '/s\'
 
    File:        src/control_center/commands.rs
-   Module:      SyntraOS Control Center — Command Bus
+   Module:      SyntraOS Control Center — Command API
    Author:      Alexandr Roussinov (gd2bk1ng)
    Description:
-       Unified command model for SyntraOS. Commands are issued by:
-         • SyntraOS Shell (UI)
-         • Syntra Browser (optional integration)
-         • Assistant / Intent Bridge
-         • Automation / Scenes
-         • Robotics subsystems
+       Mutation layer for the Control Center.
 
-       Commands mutate the ControlCenterState via SyntraNode::execute_command().
-       This file defines the canonical command enum for all OS-level actions.
+       Design:
+         • Commands are explicit, auditable state transitions
+         • Panels remain read-only views
+         • Commands can be invoked from:
+             – terminal (syntra shell)
+             – browser dashboard
+             – AGI core (agi_core::commands)
+             – tests / benches
+
+       Notes:
+         • Keep commands coarse-grained and semantic (SetMode, ArmSecurity, etc.)
+         • Avoid leaking low-level implementation details to callers
    ================================================================================================ */
 
-use serde::{Deserialize, Serialize};
+use crate::control_center::state::ControlCenterState;
 
-use super::state::{ControlCenterSection, SyntraSpace};
+#[derive(Debug, Clone)]
+pub enum ControlCenterCommand {
+    SetSystemMode { mode: String },
+    SetSafetyMode { mode: String, override_active: bool },
+    ArmSecurity { armed: bool, mode: Option<String> },
+    SetActiveScene { scene: String },
+    SetAssistantMode { mode: String },
+    PushDeveloperLog { entry: String },
+}
 
-/// High-level OS commands that SyntraNode can execute.
-///
-/// These represent *intentional* state transitions or actions within SyntraOS.
-/// They are safe, declarative, and UI-agnostic.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum SyntraCommand {
-    // --------------------------------------------------------------------------------------------
-    // OS Shell / Navigation
-    // --------------------------------------------------------------------------------------------
-    /// Switch between SyntraOS spaces (Desktop, Robot HUD, Home, Console).
-    SwitchSpace(SyntraSpace),
-
-    /// Switch the active Control Center section/panel.
-    SwitchSection(ControlCenterSection),
-
-    // --------------------------------------------------------------------------------------------
-    // Themes & Identity
-    // --------------------------------------------------------------------------------------------
-    /// Set the active theme by name.
-    SetTheme(String),
-
-    // --------------------------------------------------------------------------------------------
-    // Smart Home
-    // --------------------------------------------------------------------------------------------
-    /// Activate a named smart home scene (e.g., "Night", "Studio", "Away").
-    ActivateScene(String),
-
-    /// Toggle a specific light in a room.
-    ToggleLight {
-        room: String,
-        device: String,
-    },
-
-    /// Lock a specific door.
-    LockDoor {
-        door: String,
-    },
-
-    /// Unlock a specific door.
-    UnlockDoor {
-        door: String,
-    },
-
-    // --------------------------------------------------------------------------------------------
-    // Security
-    // --------------------------------------------------------------------------------------------
-    /// Arm the security system.
-    ArmSystem,
-
-    /// Disarm the security system.
-    DisarmSystem,
-
-    // --------------------------------------------------------------------------------------------
-    // System / Diagnostics
-    // --------------------------------------------------------------------------------------------
-    /// Trigger a system diagnostics run.
-    RunDiagnostics,
-
-    /// Re-scan the ecosystem (lobes, modules, health).
-    RescanEcosystem,
-
-    // --------------------------------------------------------------------------------------------
-    // Session / Continuity
-    // --------------------------------------------------------------------------------------------
-    /// Lock the current session (UI lock screen).
-    LockSession,
-
-    // --------------------------------------------------------------------------------------------
-    // Robotics
-    // --------------------------------------------------------------------------------------------
-    /// Generic robotics command (placeholder for HAL integration).
-    RobotCommand(String),
-
-    // --------------------------------------------------------------------------------------------
-    // Custom / Extensibility
-    // --------------------------------------------------------------------------------------------
-    /// Arbitrary custom command payload.
-    Custom(String),
+impl ControlCenterCommand {
+    pub fn apply(self, state: &mut ControlCenterState) {
+        match self {
+            ControlCenterCommand::SetSystemMode { mode } => {
+                state.system.mode = Some(mode);
+            }
+            ControlCenterCommand::SetSafetyMode { mode, override_active } => {
+                state.safety.mode = Some(mode);
+                state.safety.override_active = override_active;
+            }
+            ControlCenterCommand::ArmSecurity { armed, mode } => {
+                state.security.armed = armed;
+                if mode.is_some() {
+                    state.security.mode = mode;
+                }
+            }
+            ControlCenterCommand::SetActiveScene { scene } => {
+                state.smart_home.active_scene = Some(scene);
+            }
+            ControlCenterCommand::SetAssistantMode { mode } => {
+                state.assistant.mode = Some(mode);
+            }
+            ControlCenterCommand::PushDeveloperLog { entry } => {
+                state.developer.logs.push(entry.clone());
+                state.developer.last_log = Some(entry);
+            }
+        }
+    }
 }
