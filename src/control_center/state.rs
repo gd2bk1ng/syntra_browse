@@ -1,561 +1,364 @@
-// ================================================================================================
-//   SyntraOS — CONTROL CENTER STATE (FULL EXPANDED MODEL)
-// ------------------------------------------------------------------------------------------------
-//   File:        src/control_center/state.rs
-//   Author:      Alexandr Roussinov (gd2bk1ng)
-//   Description:
-//       Central nervous system for the SyntraOS shell. This file models:
-//         - OS spaces (desktop, robot HUD, home, console)
-//         - System, cognition, robotics, network, diagnostics, evolution, settings
-//         - Smart home, security, assistant persona, notifications
-//         - Thoughtstream, world model, multi-agent runtime, memory architecture
-//         - Safety & governance, robotics HAL, network topology, evolution engine
-//         - Plugin system, simulation sandbox, predictive engine, ML/federated learning
-//         - Continuity/session timeline, UI shell state, HUD rendering
-//       Frontends (desktop, web, robot HUD, AR) bind to this, not to raw internals.
-//       Designed to be extended safely as Syntra Kernel evolves.
-// ================================================================================================
+/* ================================================================================================
+   SYNTRAOS — CONTROL CENTER STATE
+   ------------------------------------------------------------------------------------------------
+         .\s/.
+        :: S ::
+         '/s\'
 
-#![allow(dead_code)]
+   File:        src/control_center/state.rs
+   Module:      SyntraOS Control Center — State Model
+   Author:      Alexandr Roussinov (gd2bk1ng)
+   Description:
+       Canonical state model for the SyntraOS Control Center.
 
-use std::time::Duration;
+       This is the single source of truth for:
+         • System status
+         • Network & robotics
+         • Cognitive / world model
+         • Agents, memory, safety
+         • Simulation, plugins, developer diagnostics
+
+       Panels provide read-only, structured views over this state.
+       Commands mutate this state in controlled, auditable ways.
+   ================================================================================================ */
 
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
-use crate::agi_core::ecosystem::EcosystemModel;
-use crate::agi_core::theme::ThemePack;
-
-/// Top-level navigation sections in the Control Center.
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
-pub enum ControlCenterSection {
-    System,
-    Cognition,
-    Robotics,
-    Network,
-    ThemesIdentity,
-    Diagnostics,
-    Evolution,
-    Settings,
-    SmartHome,
-    Security,
-    Assistant,
-    WorldModel,
-    Agents,
-    Memory,
-    Safety,
-    Predictive,
-    Simulation,
-    Plugins,
-    Continuity,
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ControlCenterState {
+    pub system: SystemState,
+    pub cognition: CognitionState,
+    pub robotics: RoboticsState,
+    pub network: NetworkState,
+    pub smart_home: SmartHomeState,
+    pub security: SecurityState,
+    pub diagnostics: DiagnosticsState,
+    pub evolution: EvolutionState,
+    pub assistant: AssistantState,
+    pub world_model: WorldModelState,
+    pub agents: AgentsState,
+    pub memory: MemoryState,
+    pub safety: SafetyState,
+    pub predictive: PredictiveState,
+    pub simulation: SimulationState,
+    pub plugins: PluginsState,
+    pub developer: DeveloperState,
 }
 
-/// High-level SyntraOS "spaces" / modes.
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
-pub enum SyntraSpace {
-    Desktop,
-    RobotHud,
-    Home,
-    Console,
-}
-
-/// Severity for notifications / alerts.
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
-pub enum Severity {
-    Info,
-    Warning,
-    Error,
-    Critical,
-}
-
-/// High-level status summary for the System panel.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct SystemStatusSummary {
-    pub hostname: String,
-    pub os_name: String,
-    pub os_version: String,
-    pub uptime: Duration,
-
-    pub cpu_model: String,
-    pub cpu_cores: u8,
-    pub cpu_threads: u8,
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SystemState {
+    pub hostname: Option<String>,
+    pub os_version: Option<String>,
+    pub kernel_revision: Option<String>,
+    pub uptime_seconds: u64,
     pub cpu_usage_percent: f32,
-    pub cpu_temperature_c: Option<f32>,
-
-    pub ram_total_gb: f32,
-    pub ram_used_gb: f32,
-
-    pub gpu_model: Option<String>,
-    pub gpu_usage_percent: Option<f32>,
-    pub gpu_temperature_c: Option<f32>,
-
-    pub storage_total_gb: f32,
-    pub storage_used_gb: f32,
-
-    pub battery_percent: Option<f32>,
-    pub power_source: Option<String>, // "AC", "Battery", "Unknown"
+    pub memory_usage_percent: f32,
+    pub disk_usage_percent: f32,
+    pub thermal_throttling: bool,
+    pub power_profile: Option<String>,
+    pub mode: Option<String>, // e.g. "normal", "maintenance", "sandbox"
 }
 
-/// High-level cognition summary for the Cognition panel.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct CognitionSummary {
-    pub active_intents: Vec<String>,
-    pub active_tasks: Vec<String>,
-    pub routing_confidence_avg: f32,
-    pub safety_block_count_recent: u32,
-    pub feedback_events_recent: u32,
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CognitionState {
+    pub active_context: Option<String>,
+    pub focus_stack: Vec<String>,
+    pub last_observation: Option<String>,
+    pub last_thought: Option<String>,
+    pub cognitive_load: f32, // 0.0–1.0
+    pub loop_phase: Option<String>, // e.g. "perceive", "plan", "act", "reflect"
 }
 
-/// High-level robotics summary for the Robotics panel.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct RoboticsSummary {
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RoboticsState {
     pub robot_mode_enabled: bool,
     pub robot_model: Option<String>,
-    pub battery_percent: Option<f32>,
     pub joint_temperature_max_c: Option<f32>,
     pub joint_load_max_percent: Option<f32>,
-    pub gait_stability_score: Option<f32>, // 0.0–1.0
-    pub imu_orientation: Option<String>,   // e.g., "upright", "tilted", "falling"
+    pub gait_stability_score: Option<f32>,
+    pub imu_orientation: Option<String>,
     pub sensor_health_ok: bool,
 }
 
-/// High-level network summary for the Network panel.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct NetworkSummary {
-    pub primary_interface: Option<String>,
-    pub ip_address: Option<String>,
-    pub link_speed_mbps: Option<u32>,
-    pub latency_ms: Option<f32>,
-    pub packet_loss_percent: Option<f32>,
-    pub connected_devices_count: u32,
-    pub syntra_nodes_online: u32,
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct NetworkState {
+    pub online: bool,
+    pub active_interface: Option<String>,
+    pub upload_mbps: f32,
+    pub download_mbps: f32,
+    pub latency_ms: f32,
+    pub packet_loss_percent: f32,
+    pub connected_devices: Vec<String>,
+    pub topology_map: Option<String>,
 }
 
-/// Theme & identity summary for the Themes & Identity panel.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct ThemeIdentitySummary {
-    pub active_theme_name: Option<String>,
-    pub available_themes: Vec<String>,
-    pub institution_name: Option<String>,
-    pub watermark: Option<String>,
-    pub logo_path: Option<String>,
-}
-
-/// Diagnostics summary for the Diagnostics panel.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct DiagnosticsSummary {
-    pub hardware_health_ok: bool,
-    pub storage_health_ok: bool,
-    pub thermal_health_ok: bool,
-    pub last_diagnostic_run: Option<String>,
-    pub warnings_recent: Vec<String>,
-    pub errors_recent: Vec<String>,
-}
-
-/// Evolution summary for the Evolution panel.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct EvolutionSummary {
-    pub ecosystem_health_score: f32,
-    pub missing_lobes: Vec<String>,
-    pub incomplete_lobes: Vec<String>,
-    pub upgrade_recommendations: Vec<String>,
-    pub evolution_stage: Option<String>,
-    pub scheduled_upgrades: Vec<String>,
-    pub lobe_health: Vec<LobeHealth>,
-}
-
-/// Per-lobe health snapshot.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct LobeHealth {
-    pub name: String,
-    pub status: String,
-    pub fitness_score: f32,
-}
-
-/// Settings summary for the Settings panel.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct SettingsSummary {
-    pub syntra_version: String,
-    pub update_channel: String, // "stable", "beta", "nightly"
-    pub auto_update_enabled: bool,
-    pub telemetry_enabled: bool,
-    pub robot_mode_enabled: bool,
-}
-
-/// Smart home summary for the Smart Home panel / Home space.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct SmartHomeSummary {
-    pub scenes: Vec<String>,                 // e.g., "Night", "Away", "Studio"
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SmartHomeState {
     pub active_scene: Option<String>,
-    pub lights_on_count: u32,
-    pub lights_total_count: u32,
-    pub doors_locked_count: u32,
-    pub doors_total_count: u32,
-    pub cameras_online_count: u32,
-    pub cameras_total_count: u32,
-    pub energy_usage_kw: Option<f32>,
-    pub alerts_recent: Vec<String>,
-    pub device_graph_summary: Vec<RoomDevicesSummary>,
+    pub available_scenes: Vec<String>,
+
+    pub lights: HashMap<String, Vec<String>>, // room -> lights
+    pub doors: Vec<String>,
+    pub door_locked: HashMap<String, bool>,
+
+    pub thermostat_temp_c: Option<f32>,
+    pub thermostat_target_c: Option<f32>,
+
+    pub cameras: Vec<String>,
+    pub camera_online: HashMap<String, bool>,
+
+    pub energy_usage_watts: f32,
+    pub energy_usage_kwh: f32,
+
+    pub alerts: Vec<String>,
 }
 
-/// Per-room device summary.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct RoomDevicesSummary {
-    pub room_name: String,
-    pub devices: Vec<String>, // e.g., "Ceiling Light", "Door Lock", "Thermostat"
-}
-
-/// Security summary for the Security panel.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct SecuritySummary {
-    pub system_armed: bool,
-    pub perimeter_secure: bool,
-    pub last_breach: Option<String>,
-    pub active_alerts: Vec<String>,
-    pub sandbox_enabled: bool,
-    pub sandbox_policy_profile: Option<String>,
-    pub security_zones: Vec<SecurityZone>,
-}
-
-/// Security zone (e.g., "Perimeter", "Interior", "Garage").
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct SecurityZone {
-    pub name: String,
-    pub secure: bool,
-    pub last_event: Option<String>,
-}
-
-/// Assistant summary for the Assistant panel / Console space.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct AssistantSummary {
-    pub persona_name: String,          // e.g., "Syntra", "Friday", etc.
-    pub active_conversation_id: Option<String>,
-    pub last_user_utterance: Option<String>,
-    pub last_assistant_reply: Option<String>,
-    pub pending_actions: Vec<String>,  // high-level descriptions of queued actions
-    pub attention_level: f32,          // 0.0–1.0, conceptual "focus" metric
-    pub mood: Option<String>,          // optional persona mood
-    pub tone: Option<String>,          // optional conversational tone
-}
-
-/// Notification / alert item.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Notification {
-    pub id: String,
-    pub title: String,
-    pub message: String,
-    pub severity: Severity,
-    pub timestamp: String,
-    pub read: bool,
+pub struct SecurityState {
+    pub armed: bool,
+    pub mode: Option<String>,
+    pub threat_level: f32,
+
+    pub sensors: Vec<String>,
+    pub sensor_triggered: HashMap<String, bool>,
+    pub last_triggered_sensor: Option<String>,
+
+    pub cameras: Vec<String>,
+    pub camera_online: HashMap<String, bool>,
+
+    pub doors: Vec<String>,
+    pub door_locked: HashMap<String, bool>,
+
+    pub alerts: Vec<String>,
+    pub intrusion_detected: bool,
 }
 
-impl Default for Notification {
-    fn default() -> Self {
-        Self {
-            id: String::new(),
-            title: String::new(),
-            message: String::new(),
-            severity: Severity::Info,
-            timestamp: String::new(),
-            read: false,
-        }
-    }
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DiagnosticsState {
+    pub system_health_score: f32,
+    pub kernel_health_score: f32,
+    pub provider_health_score: f32,
+
+    pub last_run: Option<String>,
+    pub last_run_passed: bool,
+
+    pub error_logs: Vec<String>,
+    pub warnings: Vec<String>,
+
+    pub integrity_ok: bool,
+    pub integrity_violations: Vec<String>,
+
+    pub performance_anomalies: Vec<String>,
 }
 
-/// Thoughtstream / cognitive loop summary.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct ThoughtstreamSummary {
-    pub current_thought: Option<String>,
-    pub last_reasoning_step: Option<String>,
-    pub active_pipeline: Option<String>,
-    pub cognitive_load: f32, // 0.0–1.0
-    pub safety_state: Option<String>,
-    pub emotional_tone: Option<String>,
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EvolutionState {
+    pub version: Option<String>,
+    pub lineage: Vec<String>,
+
+    pub capability_growth_score: f32,
+    pub new_capabilities: Vec<String>,
+
+    pub evolved_modules: Vec<String>,
+    pub upcoming_evolution: Vec<String>,
+
+    pub changelog: Vec<String>,
+
+    pub experimental_features: Vec<String>,
+    pub experimental_mode: bool,
+
+    pub maturity_score: f32,
 }
 
-/// World model summary.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct WorldModelSummary {
-    pub known_entities_count: u32,
-    pub known_locations_count: u32,
-    pub active_context: Option<String>,
-    pub uncertainty_score: f32,
-    pub prediction_horizon_seconds: u32,
-    pub highlighted_entities: Vec<String>,
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AssistantState {
+    pub mode: Option<String>,
+    pub status: Option<String>,
+
+    pub conversation: Vec<String>,
+    pub last_user_message: Option<String>,
+    pub last_assistant_response: Option<String>,
+
+    pub last_intent: Option<String>,
+    pub routing_confidence: f32,
+
+    pub suggestions: Vec<String>,
 }
 
-/// Multi-agent runtime summary.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct AgentRuntimeSummary {
-    pub active_agents: Vec<String>,
-    pub sleeping_agents: Vec<String>,
-    pub agent_health: Vec<AgentHealth>,
-    pub agent_conflicts: Vec<String>,
-    pub agent_bandwidth_percent: f32,
-}
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct WorldModelState {
+    pub spatial_map: Option<String>,
+    pub known_locations: Vec<String>,
 
-/// Per-agent health snapshot.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct AgentHealth {
-    pub name: String,
-    pub status: String,
-    pub load_percent: f32,
-}
+    pub scene_graph: Option<String>,
+    pub recognized_objects: Vec<String>,
 
-/// Memory architecture summary.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct MemorySummary {
-    pub episodic_memory_recent: Vec<String>,
-    pub semantic_memory_topics: Vec<String>,
-    pub working_memory_slots_used: u32,
-    pub working_memory_slots_total: u32,
-    pub memory_pressure: f32,
-    pub memory_retention_score: f32,
-}
+    pub persistent_objects: Vec<String>,
+    pub object_last_seen: HashMap<String, String>,
 
-/// Safety & governance summary.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct SafetySummary {
-    pub last_safety_verdict: Option<String>,
-    pub blocked_actions_recent: Vec<String>,
-    pub policy_profile: Option<String>,
-    pub risk_score: f32,
-    pub compliance_state: Option<String>,
-}
-
-/// Robotics HAL / HUD summary.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct RoboticsHalSummary {
-    pub motor_status: Option<String>,
-    pub sensor_map: Vec<String>,
-    pub localization_state: Option<String>,
-    pub path_planning_state: Option<String>,
-    pub robot_mode: Option<String>, // e.g., "idle", "patrol", "follow"
-}
-
-/// Network topology summary.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct NetworkTopologySummary {
-    pub network_graph_nodes: u32,
-    pub network_graph_edges: u32,
-    pub syntra_nodes: Vec<String>,
-    pub mesh_health_score: f32,
-}
-
-/// Predictive engine summary.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct PredictiveSummary {
     pub predictions: Vec<String>,
-    pub confidence_scores: Vec<f32>,
-    pub anomalies: Vec<String>,
-    pub trends: Vec<String>,
+    pub prediction_confidence: f32,
+
+    pub uncertainty: f32,
+
+    pub deltas: Vec<String>,
+    pub last_update: Option<String>,
 }
 
-/// Simulation sandbox summary.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct SimulationSummary {
-    pub simulation_running: bool,
-    pub simulation_time_seconds: f32,
-    pub simulation_entities_count: u32,
-    pub simulation_metrics: Vec<String>,
-}
-
-/// Plugin / extension system summary.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct PluginSummary {
-    pub installed_plugins: Vec<String>,
-    pub plugin_health: Vec<PluginHealth>,
-    pub plugin_events_recent: Vec<String>,
-}
-
-/// Per-plugin health snapshot.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct PluginHealth {
-    pub name: String,
-    pub status: String,
-    pub permissions: Vec<String>,
-}
-
-/// ML / federated learning summary.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct MlSummary {
-    pub training_jobs: Vec<String>,
-    pub model_versions: Vec<String>,
-    pub accuracy_metrics: Vec<String>,
-    pub drift_score: f32,
-}
-
-/// Continuity / session timeline summary.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct ContinuitySummary {
-    pub session_history: Vec<String>,
-    pub last_unlock: Option<String>,
-    pub last_activity: Option<String>,
-    pub continuity_score: f32,
-}
-
-/// UI shell state for holographic desktop.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct UiShellState {
-    pub open_panels: Vec<String>,
-    pub panel_layout: Option<String>,
-    pub active_window: Option<String>,
-    pub hologram_intensity: f32, // 0.0–1.0
-    pub depth_effects_enabled: bool,
-    pub gesture_mode_enabled: bool,
-}
-
-/// HUD rendering state (robot HUD / AR).
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct HudState {
-    pub hud_layers: Vec<String>,
-    pub hud_focus_target: Option<String>,
-    pub hud_alert_level: f32, // 0.0–1.0
-    pub hud_color_profile: Option<String>,
-}
-
-/// The full Control Center state.
-///
-/// Single source of truth for the SyntraOS shell.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ControlCenterState {
-    /// Which section/panel is currently active in the Control Center UI.
-    pub active_section: ControlCenterSection,
+pub struct AgentsState {
+    pub active_agents: Vec<String>,
+    pub agent_role: HashMap<String, String>,
+    pub agent_state: HashMap<String, String>,
 
-    /// Which SyntraOS "space" is currently active (desktop, robot HUD, home, console).
-    pub active_space: SyntraSpace,
+    pub agent_task: HashMap<String, String>,
+    pub global_tasks: Vec<String>,
 
-    pub system: SystemStatusSummary,
-    pub cognition: CognitionSummary,
-    pub robotics: RoboticsSummary,
-    pub network: NetworkSummary,
-    pub themes_identity: ThemeIdentitySummary,
-    pub diagnostics: DiagnosticsSummary,
-    pub evolution: EvolutionSummary,
-    pub settings: SettingsSummary,
-    pub smart_home: SmartHomeSummary,
-    pub security: SecuritySummary,
-    pub assistant: AssistantSummary,
+    pub agent_health: HashMap<String, f32>,
+    pub agent_confidence: HashMap<String, f32>,
 
-    pub thoughtstream: ThoughtstreamSummary,
-    pub world_model: WorldModelSummary,
-    pub agents: AgentRuntimeSummary,
-    pub memory: MemorySummary,
-    pub safety: SafetySummary,
-    pub robotics_hal: RoboticsHalSummary,
-    pub network_topology: NetworkTopologySummary,
-    pub predictive: PredictiveSummary,
-    pub simulation: SimulationSummary,
-    pub plugins: PluginSummary,
-    pub ml: MlSummary,
-    pub continuity: ContinuitySummary,
+    pub coordination_messages: Vec<String>,
+    pub agent_last_message: HashMap<String, String>,
 
-    pub ui_shell: UiShellState,
-    pub hud: HudState,
-
-    pub notifications: Vec<Notification>,
-
-    #[serde(skip)]
-    pub active_theme: Option<ThemePack>,
+    pub agent_capabilities: HashMap<String, Vec<String>>,
 }
 
-impl Default for ControlCenterState {
-    fn default() -> Self {
-        Self {
-            active_section: ControlCenterSection::System,
-            active_space: SyntraSpace::Desktop,
-            system: SystemStatusSummary::default(),
-            cognition: CognitionSummary::default(),
-            robotics: RoboticsSummary::default(),
-            network: NetworkSummary::default(),
-            themes_identity: ThemeIdentitySummary::default(),
-            diagnostics: DiagnosticsSummary::default(),
-            evolution: EvolutionSummary::default(),
-            settings: SettingsSummary {
-                syntra_version: "0.1.0-dev".to_string(),
-                update_channel: "dev".to_string(),
-                auto_update_enabled: false,
-                telemetry_enabled: true,
-                robot_mode_enabled: false,
-            },
-            smart_home: SmartHomeSummary::default(),
-            security: SecuritySummary::default(),
-            assistant: AssistantSummary {
-                persona_name: "Syntra".to_string(),
-                ..AssistantSummary::default()
-            },
-            thoughtstream: ThoughtstreamSummary::default(),
-            world_model: WorldModelSummary::default(),
-            agents: AgentRuntimeSummary::default(),
-            memory: MemorySummary::default(),
-            safety: SafetySummary::default(),
-            robotics_hal: RoboticsHalSummary::default(),
-            network_topology: NetworkTopologySummary::default(),
-            predictive: PredictiveSummary::default(),
-            simulation: SimulationSummary::default(),
-            plugins: PluginSummary::default(),
-            ml: MlSummary::default(),
-            continuity: ContinuitySummary::default(),
-            ui_shell: UiShellState {
-                hologram_intensity: 0.8,
-                depth_effects_enabled: true,
-                gesture_mode_enabled: false,
-                ..UiShellState::default()
-            },
-            hud: HudState::default(),
-            notifications: Vec::new(),
-            active_theme: None,
-        }
-    }
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MemoryState {
+    pub episodic: Vec<String>,
+    pub last_episode: Option<String>,
+
+    pub semantic: Vec<String>,
+    pub last_semantic: Option<String>,
+
+    pub clusters: Vec<String>,
+    pub cluster_of: HashMap<String, String>,
+
+    pub tags: Vec<String>,
+    pub tags_of: HashMap<String, Vec<String>>,
+
+    pub recall_confidence: f32,
+    pub search_results: Vec<String>,
+
+    pub health_score: f32,
 }
 
-impl ControlCenterState {
-    pub fn from_core(
-        active_theme: Option<ThemePack>,
-        ecosystem: Option<&EcosystemModel>,
-    ) -> Self {
-        let mut state = ControlCenterState::default();
-        state.active_theme = active_theme;
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SafetyState {
+    pub mode: Option<String>,
+    pub override_active: bool,
 
-        if let Some(ecosystem) = ecosystem {
-            state.evolution.ecosystem_health_score = ecosystem.health_score;
-            state.evolution.missing_lobes = ecosystem.missing.clone();
-            state.evolution.incomplete_lobes = ecosystem.incomplete.clone();
-            state.evolution.upgrade_recommendations =
-                ecosystem.upgrade_recommendations.clone();
-        }
+    pub active_blocks: Vec<String>,
+    pub triggered_rules: Vec<String>,
 
-        if let Some(theme) = &state.active_theme {
-            state.themes_identity.active_theme_name = Some(theme.name.clone());
-            state.themes_identity.institution_name =
-                theme.identity.institution.clone();
-            state.themes_identity.watermark = theme.identity.watermark.clone();
-            state.themes_identity.logo_path = theme.identity.logo_path.clone();
-        }
+    pub risk_score: f32,
+    pub risk_factors: Vec<String>,
 
-        state
-    }
+    pub logs: Vec<String>,
+    pub last_event: Option<String>,
 
-    pub fn set_active_section(&mut self, section: ControlCenterSection) {
-        self.active_section = section;
-    }
+    pub confidence: f32,
+    pub health_score: f32,
+}
 
-    pub fn set_active_space(&mut self, space: SyntraSpace) {
-        self.active_space = space;
-    }
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PredictiveState {
+    pub forecasts: Vec<String>,
+    pub window: Option<String>,
 
-    pub fn set_active_theme(&mut self, theme: ThemePack) {
-        self.themes_identity.active_theme_name = Some(theme.name.clone());
-        self.themes_identity.institution_name = theme.identity.institution.clone();
-        self.themes_identity.watermark = theme.identity.watermark.clone();
-        self.themes_identity.logo_path = theme.identity.logo_path.clone();
-        self.active_theme = Some(theme);
-    }
+    pub confidence: f32,
+    pub forecast_confidence: Vec<f32>,
 
-    pub fn set_available_themes(&mut self, names: Vec<String>) {
-        self.themes_identity.available_themes = names;
-    }
+    pub trends: Vec<String>,
+    pub dominant_trend: Option<String>,
 
-    pub fn push_notification(&mut self, notification: Notification) {
-        self.notifications.push(notification);
-    }
+    pub anomalies: Vec<String>,
+    pub anomaly_severity: f32,
+
+    pub projected_state: Option<String>,
+    pub last_update: Option<String>,
+
+    pub health_score: f32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SimulationState {
+    pub scenarios: Vec<String>,
+    pub active_scenario: Option<String>,
+
+    pub physics_model: Option<String>,
+    pub behavior_model: Option<String>,
+
+    pub environment_state: Option<String>,
+    pub environment_variables: Vec<String>,
+
+    pub results: Vec<String>,
+    pub summary: Option<String>,
+
+    pub logs: Vec<String>,
+    pub last_log: Option<String>,
+
+    pub last_run: Option<String>,
+    pub last_run_duration_ms: Option<u64>,
+
+    pub health_score: f32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PluginsState {
+    pub installed: Vec<String>,
+    pub active: Vec<String>,
+
+    pub metadata: HashMap<String, Vec<String>>,
+    pub version: HashMap<String, String>,
+
+    pub capabilities: HashMap<String, Vec<String>>,
+    pub permissions: HashMap<String, Vec<String>>,
+
+    pub health: HashMap<String, f32>,
+    pub subsystem_health: f32,
+
+    pub logs: HashMap<String, Vec<String>>,
+    pub last_log: HashMap<String, String>,
+
+    pub update_available: HashMap<String, bool>,
+    pub plugins_with_updates: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DeveloperState {
+    pub build_id: Option<String>,
+    pub build_timestamp: Option<String>,
+    pub compiler_version: Option<String>,
+
+    pub feature_flags: HashMap<String, bool>,
+
+    pub debug_channels: Vec<String>,
+    pub debug_last: HashMap<String, String>,
+
+    pub cpu_profile: Option<String>,
+    pub memory_profile: Option<String>,
+    pub hotspots: Vec<String>,
+
+    pub hot_reload_enabled: bool,
+    pub hot_reload_log: Vec<String>,
+
+    pub modules: Vec<String>,
+    pub module_metadata: HashMap<String, Vec<String>>,
+
+    pub experimental_toggles: Vec<String>,
+    pub experimental_active: HashMap<String, bool>,
+
+    pub logs: Vec<String>,
+    pub last_log: Option<String>,
+
+    pub kv: HashMap<String, String>,
+    pub config: HashMap<String, String>,
+
+    pub hooks: Vec<String>,
+    pub last_hook: Option<String>,
+
+    pub sandbox_state: Option<String>,
+    pub sandbox_warnings: Vec<String>,
 }
