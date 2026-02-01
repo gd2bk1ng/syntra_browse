@@ -1,142 +1,45 @@
 /* ================================================================================================
-   SYNTRAOS — SHELL ENGINE (AXIOM THREE)
+   SYNTRAOS — CONTROL CENTER SHELL ADAPTER
    ------------------------------------------------------------------------------------------------
          .\s/.
         :: S ::
          '/s\'
 
    File:        src/control_center/shell.rs
-   Module:      SyntraOS Shell Engine
+   Module:      SyntraOS Control Center — Shell Integration
    Author:      Alexandr Roussinov (gd2bk1ng)
    Description:
-       The SyntraOS Shell Engine is the high-level orchestrator that sits between:
-         • SyntraNode (kernel runtime)
-         • ControlCenterState (OS state model)
-         • UI layers (desktop, browser, robot HUD, AR overlays)
+       Thin adapter between the Control Center and the Syntra terminal shell.
 
        Responsibilities:
-         • Provide a clean API for UI frontends to read OS state
-         • Dispatch SyntraCommands to SyntraNode
-         • Route SyntraEvents from SyntraNode to UI
-         • Manage OS spaces (Desktop, Home, HUD, Console)
-         • Manage Control Center panels
-         • Future: animations, transitions, layout engine, HUD layers
+         • Map high-level shell commands to ControlCenterCommand
+         • Provide read-only snapshots for UI rendering
+         • Keep shell logic decoupled from internal state layout
 
-       This module is intentionally UI-agnostic. It does not draw pixels or manage windows.
-       It is the "OS Shell Brain" — the UI runtime that all frontends talk to.
+       This module intentionally avoids any direct I/O.
+       The terminal/CLI layer is responsible for printing and input handling.
    ================================================================================================ */
 
-use std::sync::{Arc, Mutex};
+use crate::control_center::commands::ControlCenterCommand;
+use crate::control_center::state::ControlCenterState;
 
-use crate::agi_core::node::SyntraNode;
-use crate::control_center::{
-    commands::SyntraCommand,
-    state::{ControlCenterSection, ControlCenterState, SyntraSpace},
-};
-use crate::agi_core::events::{EventBus, SyntraEvent};
-
-/// Public handle for UI layers to interact with SyntraOS Shell.
-///
-/// This is what BrowserUI, RobotHUD, DesktopUI, or any other frontend receives.
-/// It exposes:
-///   - read-only access to ControlCenterState
-///   - a command dispatch API
-///   - an event subscription API
-///
-/// Internally, it wraps an Arc<Mutex<SyntraNode>>.
-pub struct SyntraShell {
-    node: Arc<Mutex<SyntraNode>>,
+#[derive(Debug)]
+pub struct ControlCenterShell<'a> {
+    pub state: &'a mut ControlCenterState,
 }
 
-impl SyntraShell {
-    /// Create a new shell engine from a SyntraNode handle.
-    pub fn new(node: Arc<Mutex<SyntraNode>>) -> Self {
-        Self { node }
+impl<'a> ControlCenterShell<'a> {
+    pub fn new(state: &'a mut ControlCenterState) -> Self {
+        Self { state }
     }
 
-    // ============================================================================================
-    //  STATE ACCESS
-    // ============================================================================================
-
-    /// Get a snapshot of the current ControlCenterState.
-    ///
-    /// UI layers should call this each frame or on-demand.
-    pub fn state(&self) -> ControlCenterState {
-        let node = self.node.lock().unwrap();
-        node.control_center_state().clone()
+    /// Applies a high-level command to the Control Center state.
+    pub fn execute(&mut self, cmd: ControlCenterCommand) {
+        cmd.apply(self.state);
     }
 
-    /// Get the active OS space (Desktop, Home, HUD, Console).
-    pub fn active_space(&self) -> SyntraSpace {
-        let node = self.node.lock().unwrap();
-        node.control_center_state().active_space
-    }
-
-    /// Get the active Control Center section (System, Smart Home, Security, etc.).
-    pub fn active_section(&self) -> ControlCenterSection {
-        let node = self.node.lock().unwrap();
-        node.control_center_state().active_section
-    }
-
-    // ============================================================================================
-    //  COMMAND DISPATCH
-    // ============================================================================================
-
-    /// Dispatch a SyntraCommand to the kernel runtime.
-    ///
-    /// UI layers call this to mutate OS state or trigger actions.
-    pub fn dispatch(&self, cmd: SyntraCommand) {
-        if let Ok(mut node) = self.node.lock() {
-            node.execute_command(cmd);
-        }
-    }
-
-    /// Convenience: switch OS space.
-    pub fn switch_space(&self, space: SyntraSpace) {
-        self.dispatch(SyntraCommand::SwitchSpace(space));
-    }
-
-    /// Convenience: switch Control Center section.
-    pub fn switch_section(&self, section: ControlCenterSection) {
-        self.dispatch(SyntraCommand::SwitchSection(section));
-    }
-
-    // ============================================================================================
-    //  EVENT ROUTING
-    // ============================================================================================
-
-    /// Drain all pending SyntraEvents from the kernel.
-    ///
-    /// UI layers can poll this each frame to react to:
-    ///   - notifications
-    ///   - alerts
-    ///   - state-changed events
-    pub fn drain_events(&self) -> Vec<SyntraEvent> {
-        if let Ok(mut node) = self.node.lock() {
-            return node.events.drain();
-        }
-        Vec::new()
-    }
-
-    // ============================================================================================
-    //  FUTURE: PANEL + SPACE RUNTIME
-    // ============================================================================================
-
-    /// Placeholder for future panel-specific logic.
-    ///
-    /// Example:
-    ///   shell.panel("system").render(...)
-    ///   shell.panel("smart_home").update(...)
-    pub fn panel_runtime(&self) {
-        // Reserved for future expansion.
-    }
-
-    /// Placeholder for future space-specific logic.
-    ///
-    /// Example:
-    ///   shell.space(SyntraSpace::Desktop).layout(...)
-    ///   shell.space(SyntraSpace::RobotHud).overlay(...)
-    pub fn space_runtime(&self) {
-        // Reserved for future expansion.
+    /// Returns an immutable snapshot reference for rendering.
+    pub fn snapshot(&self) -> &ControlCenterState {
+        self.state
     }
 }
