@@ -24,6 +24,8 @@
          • Dynamic configuration
          • Internal hooks
          • Sandbox state
+         • Developer dashboards
+         • Developer notes
 
        This panel is UI‑agnostic. It prepares developer data for:
          • SyntraOS Shell (desktop)
@@ -223,5 +225,23 @@ impl<'a> DeveloperPanel<'a> {
     /// Returns sandbox warnings.
     pub fn sandbox_warnings(&self) -> &[String] {
         &self.state.developer.sandbox_warnings
+    }
+
+    // --------------------------------------------------------------------------------------------
+    //  Developer Dashboards
+    // --------------------------------------------------------------------------------------------
+
+    /// Returns the list of developer dashboards (serialized layouts).
+    pub fn dashboards(&self) -> &[String] {
+        &self.state.developer.dashboards
+    }
+
+    // --------------------------------------------------------------------------------------------
+    //  Developer Notes
+    // --------------------------------------------------------------------------------------------
+
+    /// Returns developer notes.
+    pub fn notes(&self) -> &[String] {
+        &self.state.developer.notes
     }
 }
