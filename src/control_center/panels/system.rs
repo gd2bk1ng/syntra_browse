@@ -9,18 +9,12 @@
    Module:      SyntraOS Control Center — System Panel
    Author:      Alexandr Roussinov (gd2bk1ng)
    Description:
-       Provides structured access to system metrics:
-         • CPU, RAM, GPU
-         • Storage
-         • Battery / Power
+       Read-only view over core system state:
+         • Hostname, OS, kernel revision
          • Uptime
-         • Host identity
-
-       This module does not render UI. It prepares data for any frontend:
-         • SyntraOS Shell (desktop)
-         • Browser UI
-         • Robot HUD
-         • AR overlays
+         • CPU / memory / disk usage
+         • Power profile & mode
+         • Thermal throttling
    ================================================================================================ */
 
 use crate::control_center::state::ControlCenterState;
@@ -34,14 +28,43 @@ impl<'a> SystemPanel<'a> {
         Self { state }
     }
 
-    /// Example: return CPU usage as a simple value.
-    pub fn cpu_usage(&self) -> f32 {
+    pub fn hostname(&self) -> Option<String> {
+        self.state.system.hostname.clone()
+    }
+
+    pub fn os_version(&self) -> Option<String> {
+        self.state.system.os_version.clone()
+    }
+
+    pub fn kernel_revision(&self) -> Option<String> {
+        self.state.system.kernel_revision.clone()
+    }
+
+    pub fn uptime_seconds(&self) -> u64 {
+        self.state.system.uptime_seconds
+    }
+
+    pub fn cpu_usage_percent(&self) -> f32 {
         self.state.system.cpu_usage_percent
     }
 
-    /// Example: return a formatted uptime string.
-    pub fn uptime_string(&self) -> String {
-        let secs = self.state.system.uptime.as_secs();
-        format!("{}h {}m {}s", secs / 3600, (secs / 60) % 60, secs % 60)
+    pub fn memory_usage_percent(&self) -> f32 {
+        self.state.system.memory_usage_percent
+    }
+
+    pub fn disk_usage_percent(&self) -> f32 {
+        self.state.system.disk_usage_percent
+    }
+
+    pub fn thermal_throttling(&self) -> bool {
+        self.state.system.thermal_throttling
+    }
+
+    pub fn power_profile(&self) -> Option<String> {
+        self.state.system.power_profile.clone()
+    }
+
+    pub fn mode(&self) -> Option<String> {
+        self.state.system.mode.clone()
     }
 }
