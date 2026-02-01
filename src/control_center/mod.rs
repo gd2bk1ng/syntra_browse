@@ -1,27 +1,35 @@
 /* ================================================================================================
-   SYNTRAOS — CONTROL CENTER CORE
+   SYNTRAOS — CONTROL CENTER ROOT
    ------------------------------------------------------------------------------------------------
          .\s/.
         :: S ::
          '/s\'
 
    File:        src/control_center/mod.rs
-   Module:      SyntraOS Control Center — Module Root
+   Module:      SyntraOS Control Center — Root
    Author:      Alexandr Roussinov (gd2bk1ng)
    Description:
-       Root module for the SyntraOS Control Center subsystem. Exposes:
-         • Unified OS state model (state.rs)
-         • SyntraOS command model (commands.rs)
-         • Future: panels/, spaces/, shell runtime, event routing
+       Entry point for the SyntraOS Control Center.
 
-       This module acts as the public API surface for the SyntraOS Shell and any UI layer
-       (desktop, browser, robot HUD, AR overlay) that needs to read or manipulate OS state.
+       Responsibilities:
+         • Expose the ControlCenterState (single source of truth)
+         • Expose all panels as typed views over state
+         • Expose high-level commands for shell / terminal / UI
+         • Provide a stable integration surface for the rest of syntra_kernel
+
+       Design:
+         • UI-agnostic (terminal, web, HUD, AR, etc.)
+         • Read-only views via panels
+         • Mutations via explicit commands
+         • Safe to call from async and sync contexts
    ================================================================================================ */
 
 pub mod state;
+pub mod panels;
 pub mod commands;
+pub mod shell;
 
-// Future expansion:
-// pub mod panels;
-// pub mod spaces;
-// pub mod shell;
+pub use state::ControlCenterState;
+pub use panels::*;
+pub use commands::ControlCenterCommand;
+pub use shell::ControlCenterShell;
