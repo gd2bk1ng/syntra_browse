@@ -18,13 +18,12 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use serde::{Deserialize, Serialize};
-
 use crate::cortex::banner_lobe::BannerLobe;
 use crate::cortex::code_introspector::{CodeIntrospector, FileAnalysis};
 
 /// Result of enforcing a banner on a single file.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "agi", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Debug, Clone)]
 pub struct BannerEnforcementResult {
     pub path: PathBuf,
     pub had_banner: bool,
@@ -34,7 +33,8 @@ pub struct BannerEnforcementResult {
 }
 
 /// High-level summary of a banner enforcement run.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "agi", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Debug, Clone)]
 pub struct BannerEnforcementSummary {
     pub scanned_files: usize,
     pub updated_files: usize,
@@ -84,8 +84,8 @@ impl BannerEnforcer {
 
             results.push(result);
 
-            // Optional: you could log or print progress here.
-            let _ = file_str; // placeholder to avoid unused warning if you add logging later.
+            // Optional: progress logging could go here.
+            let _ = file_str;
         }
 
         Ok(BannerEnforcementSummary {
