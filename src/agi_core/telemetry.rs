@@ -16,7 +16,7 @@
 #![allow(dead_code)]
 
 use crate::agi_core::safety::SafetyVerdict;
-use crate::agi_core::schema::plan_schema::RoutePlan;
+use crate::agi_core::planner::RoutePlan;
 
 /// Telemetry events emitted by the kernel.
 #[derive(Debug, Clone)]
