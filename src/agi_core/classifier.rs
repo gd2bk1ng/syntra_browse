@@ -25,13 +25,12 @@
 
 #![allow(dead_code)]
 
-use serde::{Deserialize, Serialize};
-
 use crate::agi_core::features::IntentFeatures;
 use crate::agi_core::intent::Context;
 
 /// Result of a classification pass.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "agi", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Debug, Clone)]
 pub struct ClassificationResult {
     /// Primary semantic class.
     pub class: String,
@@ -47,7 +46,7 @@ pub struct ClassificationResult {
 
 /// Hierarchical, feature-aware domain classification.
 ///
-/// This function is deterministic and explainable. It uses:
+/// Deterministic and explainable. Uses:
 ///   • Keyword patterns
 ///   • URL presence
 ///   • Question detection
