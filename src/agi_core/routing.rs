@@ -15,8 +15,8 @@
 
 #![allow(dead_code)]
 
-use crate::agi_core::schema::intent_schema::Intent;
-use crate::agi_core::schema::plan_schema::RoutePlan;
+use crate::agi_core::intent::Intent;
+use crate::agi_core::planner::RoutePlan;
 use crate::agi_core::telemetry::{TelemetryBus, TelemetryEvent, TelemetryLevel};
 use crate::agi_core::safety::SafetyGate;
 
@@ -43,11 +43,11 @@ impl Router {
     /// Route an intent to the appropriate lobe.
     pub fn route_intent(&self, intent: &Intent) -> RouteDecision {
         // Basic heuristic routing (placeholder for now).
-        let (target, reason) = match intent.kind.as_str() {
-            "analysis" => ("reasoner", "Analytical intent → Reasoner"),
-            "plan" => ("planner", "Planning intent → Planner"),
-            "classify" => ("classifier", "Classification intent → Classifier"),
-            "feedback" => ("feedback", "Feedback intent → Feedback Engine"),
+        let (target, reason) = match intent.label.to_lowercase().as_str() {
+            s if s.starts_with("analy") => ("reasoner", "Analytical intent → Reasoner"),
+            s if s.starts_with("plan") => ("planner", "Planning intent → Planner"),
+            s if s.starts_with("class") => ("classifier", "Classification intent → Classifier"),
+            s if s.starts_with("feedback") => ("feedback", "Feedback intent → Feedback Engine"),
             _ => ("reasoner", "Unknown intent → fallback to Reasoner"),
         };
 
@@ -81,7 +81,6 @@ impl Router {
 
     /// Convenience helper to log routing anomalies.
     pub fn log_routing_anomaly(&self, message: impl Into<String>) {
-        self.telemetry
-            .log(TelemetryLevel::Warn, message.into());
+        self.telemetry.log(TelemetryLevel::Warn, message.into());
     }
 }
