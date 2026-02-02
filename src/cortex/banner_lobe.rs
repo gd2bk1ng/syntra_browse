@@ -19,10 +19,14 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use chrono::Utc;
+
+// Serde is optional — only active when the "agi" feature is enabled.
+#[cfg(feature = "agi")]
 use serde::{Deserialize, Serialize};
 
 /// Persistent configuration for banner generation.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "agi", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Debug, Clone)]
 pub struct BannerConfig {
     /// Default author name to use when generating banners.
     pub author: Option<String>,
@@ -42,6 +46,8 @@ impl Default for BannerConfig {
 impl BannerConfig {
     pub fn load_from(path: &Path) -> Self {
         if let Ok(bytes) = fs::read(path) {
+            // toml 0.9 uses `from_slice`, unchanged
+            #[cfg(feature = "agi")]
             if let Ok(cfg) = toml::from_slice::<BannerConfig>(&bytes) {
                 return cfg;
             }
@@ -50,11 +56,16 @@ impl BannerConfig {
     }
 
     pub fn save_to(&self, path: &Path) -> std::io::Result<()> {
-        let data = toml::to_vec_pretty(self).expect("Failed to serialize BannerConfig");
-        fs::create_dir_all(
-            path.parent()
-                .unwrap_or_else(|| Path::new(".")),
-        )?;
+        // toml 0.9 removed `to_vec_pretty` — use `to_string_pretty` + bytes
+        #[cfg(feature = "agi")]
+        let data = toml::to_string_pretty(self)
+            .expect("Failed to serialize BannerConfig")
+            .into_bytes();
+
+        #[cfg(not(feature = "agi"))]
+        let data = Vec::new(); // no-op when serde is disabled
+
+        fs::create_dir_all(path.parent().unwrap_or_else(|| Path::new(".")))?;
         fs::write(path, data)
     }
 }
@@ -133,13 +144,17 @@ impl BannerLobe {
     ) -> String {
         let mut banner = self.render_banner(file, module, description);
         let ts = Utc::now().to_rfc3339();
-        banner.push_str(&format!("\n//   Generated:   {ts}\n// ================================================================================================"));
+        banner.push_str(&format!(
+            "\n//   Generated:   {ts}\n// ================================================================================================"
+        ));
         banner
     }
 
     /// Check if a given text already starts with a Syntra Kernel banner.
     pub fn has_banner(&self, content: &str) -> bool {
-        content.contains("SYNTRA KERNEL") && content.contains(".\\s/.") && content.contains("'/s\\'")
+        content.contains("SYNTRA KERNEL")
+            && content.contains(".\\s/.")
+            && content.contains("'/s\\'")
     }
 
     /// Replace or insert a banner at the top of a file.
@@ -160,8 +175,7 @@ impl BannerLobe {
 
             while let Some(line) = lines.next() {
                 if in_banner && line.trim_start().starts_with("//") {
-                    // skip old banner lines
-                    continue;
+                    continue; // skip old banner lines
                 } else {
                     in_banner = false;
                     after_banner.push(line);
