@@ -33,8 +33,6 @@
 
 #![allow(dead_code)]
 
-use serde::{Deserialize, Serialize};
-
 use crate::agi_core::embedding::IntentEmbedding;
 use crate::agi_core::features::IntentFeatures;
 
@@ -50,7 +48,8 @@ pub struct IntentLog; // TODO: flesh out later
 /// is typically the raw text from the user; `confidence` can be used by
 /// upstream systems to indicate how certain they are that this text is
 /// indeed the primary intent (e.g., after pre-parsing).
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "agi", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Debug, Clone)]
 pub struct Intent {
     /// Raw intent text (usually user input).
     pub label: String,
@@ -73,7 +72,8 @@ impl Intent {
 /// This is intentionally minimal and ASCII-safe. It allows the Reasoner
 /// to incorporate recent history and system state without depending on
 /// heavy-weight global singletons.
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[cfg_attr(feature = "agi", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Debug, Clone, Default)]
 pub struct Context {
     /// Recent intent labels (most recent last).
     pub recent_intents: Vec<String>,
@@ -87,7 +87,8 @@ pub struct Context {
 ///
 /// Plans can be represented as a DAG of nodes, where each node describes
 /// a step and edges indicate possible transitions.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "agi", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Debug, Clone)]
 pub struct PlanNode {
     /// Node identifier (index into the plan graph).
     pub id: usize,
@@ -103,7 +104,8 @@ pub struct PlanNode {
 ///   • Human-readable
 ///   • Machine-consumable
 ///   • Stable across versions (backwards compatible)
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "agi", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Debug, Clone)]
 pub struct IntentPlan {
     /// Original intent text.
     pub intent: String,
