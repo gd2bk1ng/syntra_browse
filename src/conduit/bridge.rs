@@ -29,6 +29,8 @@
      - Future expansions may include richer metadata, confidence scores, or multi-step plans.
    ================================================================================================ */
 
+use crate::agi_core::{classify_intent, escape_json, plan_for_intent};
+
 use crate::agi_core::intent::{classify_intent, escape_json, plan_for_intent};
 
 /// Represents a structured response from the intent bridge.
