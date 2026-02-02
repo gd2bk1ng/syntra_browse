@@ -42,6 +42,8 @@ use crate::agi_core::features::IntentFeatures;
 // Core Intent Structures
 // ================================================================================================
 
+pub struct IntentLog; // TODO: flesh out later
+
 /// Raw user intent with confidence metadata.
 ///
 /// This is the minimal unit passed into the reasoning engine. The `label`
