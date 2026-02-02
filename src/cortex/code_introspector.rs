@@ -17,10 +17,9 @@
 use std::fs;
 use std::path::Path;
 
-use serde::{Deserialize, Serialize};
-
 /// High-level classification of a file’s role.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "agi", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Debug, Clone)]
 pub enum FileRole {
     AgiCore,
     Cortex,
@@ -34,7 +33,8 @@ pub enum FileRole {
 }
 
 /// Summary of a Rust source file for banner generation and documentation.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "agi", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Debug, Clone)]
 pub struct FileAnalysis {
     pub module_name: String,
     pub description: String,
@@ -207,7 +207,12 @@ fn infer_description(
     if !functions.is_empty() {
         desc.push_str(&format!(
             "Provides functions such as: {}.",
-            functions.iter().take(4).cloned().collect::<Vec<_>>().join(", ")
+            functions
+                .iter()
+                .take(4)
+                .cloned()
+                .collect::<Vec<_>>()
+                .join(", ")
         ));
     }
 
@@ -241,7 +246,10 @@ fn infer_notes(
     if !traits.is_empty() {
         notes.push("Traits defined here may be implemented across multiple lobes.".into());
     }
-    if functions.iter().any(|f| f.contains("scan") || f.contains("diagnostic")) {
+    if functions
+        .iter()
+        .any(|f| f.contains("scan") || f.contains("diagnostic"))
+    {
         notes.push("Contains diagnostic or scanning logic.".into());
     }
 
