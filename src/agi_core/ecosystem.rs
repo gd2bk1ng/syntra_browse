@@ -30,129 +30,61 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use serde::{Deserialize, Serialize};
-
 use crate::agi_core::telemetry::{TelemetryBus, TelemetryEvent, TelemetryLevel};
 
 /// High-level category of a lobe.
-///
-/// This is a coarse taxonomy used to reason about the role of each
-/// structural region in the Syntra Kernel ecosystem.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "agi", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Debug, Clone)]
 pub enum LobeKind {
-    /// Core cognitive and orchestration logic (AGI Core, Cortex, Runtime).
     Core,
-
-    /// Execution, scheduling, and runtime orchestration.
     Runtime,
-
-    /// User-facing interfaces (browser, terminal, renderer).
     Interface,
-
-    /// Compiler, parser, and language tooling.
     Compiler,
-
-    /// Data storage, datasets, caches, and related infrastructure.
     Data,
-
-    /// Documentation, guides, and design notes.
     Docs,
-
-    /// Experimental or sandboxed lobes not yet fully integrated.
     Experimental,
 }
 
 /// Importance of a lobe for overall system health.
-///
-/// This is used to weight completeness when computing the global
-/// ecosystem health score.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "agi", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Debug, Clone)]
 pub enum Criticality {
-    /// Absolutely required for Syntra to function coherently.
     Essential,
-
-    /// Important for a complete experience, but not strictly required to boot.
     Important,
-
-    /// Nice-to-have or auxiliary lobes.
     Optional,
 }
 
 /// Represents a structural lobe in the Syntra Kernel ecosystem.
-///
-/// A "lobe" is a conceptual region of the codebase (e.g., AGI Core, Cortex,
-/// Renderer, Docs). Each lobe is evaluated for presence, size, and heuristic
-/// completeness.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "agi", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Debug, Clone)]
 pub struct EcosystemLobe {
-    /// Human-readable lobe name (e.g., "AGI Core", "Cortex").
     pub name: String,
-
-    /// Filesystem path to the lobe root.
     pub path: PathBuf,
-
-    /// Whether the lobe directory exists.
     pub present: bool,
-
-    /// Total size of files under this lobe, in bytes.
     pub size_bytes: u64,
-
-    /// Whether the lobe is effectively empty (no files or zero size).
     pub is_empty: bool,
-
-    /// Number of files under this lobe.
     pub file_count: u64,
-
-    /// High-level category of this lobe.
     pub kind: LobeKind,
-
-    /// Criticality for overall system health.
     pub criticality: Criticality,
-
-    /// Free-form tags describing the lobe’s role (e.g., ["agi", "core"]).
     pub tags: Vec<String>,
-
-    /// 0.0–1.0 heuristic completeness score.
-    ///
-    /// This is not a formal metric; it is a heuristic combining:
-    ///   - lobe kind
-    ///   - criticality
-    ///   - size
-    ///   - file count
     pub completeness: f32,
 }
 
 /// High-level model of Syntra Kernel’s ecosystem health.
-///
-/// This model is produced by scanning the repository and aggregating
-/// structural information about each lobe. It is used by:
-///   • The `ecosystem` terminal command
-///   • The Self-Modification Engine (Axiom Six)
-///   • Future evolution planners and dashboards
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[cfg_attr(feature = "agi", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Debug, Clone, Default)]
 pub struct EcosystemModel {
-    /// All lobes discovered or expected in the ecosystem.
     pub lobes: Vec<EcosystemLobe>,
-
-    /// Names of lobes that are expected but missing.
     pub missing: Vec<String>,
-
-    /// Names of lobes that exist but appear incomplete.
     pub incomplete: Vec<String>,
-
-    /// Human-readable upgrade recommendations.
     pub upgrade_recommendations: Vec<String>,
-
-    /// 0.0–1.0 overall ecosystem health score.
     pub health_score: f32,
 
-    /// Optional telemetry bus for emitting ecosystem health events.
-    #[serde(skip)]
+    #[cfg_attr(feature = "agi", serde(skip))]
     pub telemetry: Option<TelemetryBus>,
 }
 
 impl EcosystemModel {
-    /// Create a new, empty ecosystem model without telemetry.
     pub fn new() -> Self {
         Self {
             lobes: Vec::new(),
@@ -164,7 +96,6 @@ impl EcosystemModel {
         }
     }
 
-    /// Create a new ecosystem model with telemetry enabled.
     pub fn with_telemetry(telemetry: TelemetryBus) -> Self {
         Self {
             lobes: Vec::new(),
@@ -177,15 +108,6 @@ impl EcosystemModel {
     }
 
     /// Scan the repository root and populate the ecosystem model.
-    ///
-    /// This function:
-    ///   - Checks for expected lobes.
-    ///   - Computes size and file counts.
-    ///   - Estimates completeness per lobe.
-    ///   - Populates missing/incomplete lists.
-    ///   - Generates upgrade recommendations.
-    ///   - Computes an overall health score.
-    ///   - Emits rich telemetry about ecosystem health.
     pub fn scan_repo(&mut self, root: impl AsRef<Path>) {
         let root = root.as_ref();
 
@@ -202,88 +124,25 @@ impl EcosystemModel {
         self.upgrade_recommendations.clear();
         self.health_score = 0.0;
 
-        // Expected lobes in the Syntra Kernel ecosystem.
-        // This list can evolve as the architecture grows.
         let expected_lobes: Vec<(String, &str, LobeKind, Criticality, Vec<String>)> = vec![
-            (
-                "AGI Core".into(),
-                "src/agi_core",
-                LobeKind::Core,
-                Criticality::Essential,
-                vec!["agi".into(), "core".into()],
-            ),
-            (
-                "Cortex".into(),
-                "src/cortex",
-                LobeKind::Core,
-                Criticality::Essential,
-                vec!["cortex".into(), "introspection".into()],
-            ),
-            (
-                "Runtime".into(),
-                "src/runtime",
-                LobeKind::Runtime,
-                Criticality::Essential,
-                vec!["actors".into(), "scheduler".into()],
-            ),
-            (
-                "Renderer".into(),
-                "src/renderer",
-                LobeKind::Interface,
-                Criticality::Important,
-                vec!["gpu".into(), "viewport".into()],
-            ),
-            (
-                "Browser".into(),
-                "src/browser",
-                LobeKind::Interface,
-                Criticality::Important,
-                vec!["session".into(), "ui".into()],
-            ),
-            (
-                "Terminal".into(),
-                "src/terminal",
-                LobeKind::Interface,
-                Criticality::Important,
-                vec!["cli".into(), "shell".into()],
-            ),
-            (
-                "Utilities".into(),
-                "src/utilities",
-                LobeKind::Core,
-                Criticality::Important,
-                vec!["logging".into(), "helpers".into()],
-            ),
-            (
-                "Compiler Pipeline".into(),
-                "src/parser",
-                LobeKind::Compiler,
-                Criticality::Important,
-                vec!["lexer".into(), "ast".into(), "types".into()],
-            ),
-            (
-                "Dataset".into(),
-                "src/dataset",
-                LobeKind::Data,
-                Criticality::Optional,
-                vec!["storage".into(), "cache".into()],
-            ),
-            (
-                "Docs".into(),
-                "docs",
-                LobeKind::Docs,
-                Criticality::Important,
-                vec!["documentation".into()],
-            ),
+            ("AGI Core".into(), "src/agi_core", LobeKind::Core, Criticality::Essential, vec!["agi".into(), "core".into()]),
+            ("Cortex".into(), "src/cortex", LobeKind::Core, Criticality::Essential, vec!["cortex".into(), "introspection".into()]),
+            ("Runtime".into(), "src/runtime", LobeKind::Runtime, Criticality::Essential, vec!["actors".into(), "scheduler".into()]),
+            ("Renderer".into(), "src/renderer", LobeKind::Interface, Criticality::Important, vec!["gpu".into(), "viewport".into()]),
+            ("Browser".into(), "src/browser", LobeKind::Interface, Criticality::Important, vec!["session".into(), "ui".into()]),
+            ("Terminal".into(), "src/terminal", LobeKind::Interface, Criticality::Important, vec!["cli".into(), "shell".into()]),
+            ("Utilities".into(), "src/utilities", LobeKind::Core, Criticality::Important, vec!["logging".into(), "helpers".into()]),
+            ("Compiler Pipeline".into(), "src/parser", LobeKind::Compiler, Criticality::Important, vec!["lexer".into(), "ast".into(), "types".into()]),
+            ("Dataset".into(), "src/dataset", LobeKind::Data, Criticality::Optional, vec!["storage".into(), "cache".into()]),
+            ("Docs".into(), "docs", LobeKind::Docs, Criticality::Important, vec!["documentation".into()]),
         ];
 
         for (name, rel_path, kind, criticality, tags) in expected_lobes {
             let full_path = root.join(rel_path);
 
             if !full_path.exists() {
-                // Lobe is missing entirely.
                 self.missing.push(name.clone());
-                let lobe = EcosystemLobe {
+                self.lobes.push(EcosystemLobe {
                     name: name.clone(),
                     path: full_path.clone(),
                     present: false,
@@ -294,17 +153,12 @@ impl EcosystemModel {
                     criticality: criticality.clone(),
                     tags: tags.clone(),
                     completeness: 0.0,
-                };
-                self.lobes.push(lobe);
+                });
 
                 if let Some(t) = &self.telemetry {
                     t.log(
                         TelemetryLevel::Warn,
-                        format!(
-                            "Ecosystem lobe missing: '{}' at '{}'",
-                            name,
-                            full_path.display()
-                        ),
+                        format!("Ecosystem lobe missing: '{}' at '{}'", name, full_path.display()),
                     );
                 }
 
@@ -372,11 +226,7 @@ impl EcosystemModel {
             let blocked = self.missing.len() + self.incomplete.len();
             let allowed = total.saturating_sub(blocked);
 
-            t.record(TelemetryEvent::EvolutionSummary {
-                total,
-                allowed,
-                blocked,
-            });
+            t.record(TelemetryEvent::EvolutionSummary { total, allowed, blocked });
 
             t.log(
                 TelemetryLevel::Info,
@@ -390,10 +240,6 @@ impl EcosystemModel {
         }
     }
 
-    /// Generate human-readable upgrade recommendations based on lobe status.
-    ///
-    /// These recommendations are intentionally high-level and are meant to
-    /// guide evolution proposals and developer attention.
     fn generate_recommendations(&mut self) {
         for lobe in &self.lobes {
             if !lobe.present {
@@ -420,8 +266,6 @@ impl EcosystemModel {
         }
     }
 
-    /// Compute the overall ecosystem health score as a weighted average
-    /// of lobe completeness, weighted by criticality.
     fn compute_health_score(&mut self) {
         if self.lobes.is_empty() {
             self.health_score = 0.0;
@@ -448,9 +292,6 @@ impl EcosystemModel {
         };
     }
 
-    /// Produce a human-readable diagnostic summary of the ecosystem.
-    ///
-    /// This is what the `ecosystem` terminal command will typically print.
     pub fn diagnostic_summary(&self) -> String {
         let mut out = String::new();
 
@@ -492,8 +333,6 @@ impl EcosystemModel {
 }
 
 /// Recursively compute total size and file count for a directory.
-///
-/// This is a simple filesystem walker; it does not interpret file contents.
 fn scan_dir_stats(path: &Path) -> (u64, u64) {
     let mut size_bytes = 0u64;
     let mut file_count = 0u64;
@@ -518,11 +357,6 @@ fn scan_dir_stats(path: &Path) -> (u64, u64) {
 }
 
 /// Heuristically compute a completeness score for a lobe.
-///
-/// Factors:
-///   - Lobe kind (Core, Interface, etc.)
-///   - Criticality (Essential, Important, Optional)
-///   - Log-scaled size and file count
 fn compute_completeness(
     kind: &LobeKind,
     criticality: &Criticality,
@@ -545,7 +379,6 @@ fn compute_completeness(
         Criticality::Optional => 0.05,
     };
 
-    // Log-scaled factors to avoid over-weighting very large lobes.
     let size_factor = ((size_bytes as f32).ln() / 14.0).clamp(0.0, 0.4);
     let file_factor = ((file_count as f32).ln() / 6.0).clamp(0.0, 0.4);
 
