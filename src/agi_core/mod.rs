@@ -175,7 +175,6 @@ impl ThoughtStream {
 // CortexOrchestrator — High-Level Evolution & Self-Healing Flow
 // ================================================================================================
 //
-// This is the “conductor” that ties together:
 //   - Intent → AdvisorySelfModEngine → EvolutionPlan
 //   - SandboxEngine → build/test/diff
 //   - SelfHealingAdvisor → human-readable diagnosis & proposals
@@ -208,35 +207,87 @@ impl CortexOrchestrator {
         }
     }
 
-    /// Run a full evolution + self-healing cycle for a given intent.
-    ///
-    /// High-level flow:
-    ///   1) Use advisory engine to generate an EvolutionPlan.
-    ///   2) Execute the plan in a sandbox (no live mutations).
-    ///   3) Analyze sandbox result with SelfHealingAdvisor.
-    ///   4) Return a HealingReport that can be shown to a human operator.
-    ///
-    /// Live application (SelfModEngine on the real tree) is intentionally *not*
-    /// done here; it should only happen after explicit human approval.
+    /// Run a single evolution + self-healing cycle for a given intent.
     pub fn run_evolution_cycle(
         &mut self,
+        label: &str,
         intent: &Intent,
         context: &Context,
     ) -> anyhow::Result<HealingReport> {
-        // 1) Generate an evolution plan from the advisory engine.
         let plan = self.advisory.propose_evolution(intent, context, &self.policy)?;
 
-        // Log the plan into the ThoughtStream for introspection.
         if let Some(plan_view) = plan.intent_plan() {
             self.thought_stream.push(plan_view.clone());
         }
 
-        // 2) Run the plan inside a sandbox.
-        let sandbox_result = self.sandbox_engine.run_with_plan(&plan)?;
-
-        // 3) Ask the self-healing advisor to interpret the outcome.
+        let sandbox_result = self.sandbox_engine.run_with_plan(&plan, label, 1)?;
         let report = self.healing_advisor.analyze(&plan, &sandbox_result)?;
-
         Ok(report)
+    }
+
+    /// Run an evolution cycle with retries if build/tests fail.
+    pub fn run_evolution_cycle_with_retries(
+        &mut self,
+        label: &str,
+        intent: &Intent,
+        context: &Context,
+        max_retries: u32,
+    ) -> anyhow::Result<Vec<HealingReport>> {
+        let plan = self.advisory.propose_evolution(intent, context, &self.policy)?;
+
+        if let Some(plan_view) = plan.intent_plan() {
+            self.thought_stream.push(plan_view.clone());
+        }
+
+        let mut reports = Vec::new();
+
+        for attempt in 1..=max_retries {
+            let sandbox_result = self
+                .sandbox_engine
+                .run_with_plan(&plan, label, attempt)?;
+            let report = self.healing_advisor.analyze(&plan, &sandbox_result)?;
+            let all_ok = report.build_ok && report.test_ok;
+
+            reports.push(report);
+
+            if all_ok {
+                break;
+            }
+        }
+
+        Ok(reports)
+    }
+
+    /// Run multiple alternative plans and collect reports.
+    pub fn run_multiple_plans(
+        &mut self,
+        labeled_plans: &[(String, EvolutionPlan)],
+    ) -> anyhow::Result<Vec<HealingReport>> {
+        let mut reports = Vec::new();
+
+        for (label, plan) in labeled_plans {
+            if let Some(plan_view) = plan.intent_plan() {
+                self.thought_stream.push(plan_view.clone());
+            }
+
+            let sandbox_result = self
+                .sandbox_engine
+                .run_with_plan(plan, label, 1)?;
+            let report = self.healing_advisor.analyze(plan, &sandbox_result)?;
+            reports.push(report);
+        }
+
+        Ok(reports)
+    }
+
+    /// Live-apply a previously approved EvolutionPlan to the real tree.
+    pub fn apply_live_after_approval(
+        &self,
+        plan: &EvolutionPlan,
+        live_root: &std::path::Path,
+    ) -> anyhow::Result<()> {
+        let engine = SelfModEngine::new(live_root.to_path_buf(), self.policy.clone());
+        engine.apply_plan(plan)?;
+        Ok(())
     }
 }
