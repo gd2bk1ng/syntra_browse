@@ -35,13 +35,14 @@ pub mod features;
 pub mod feedback;
 pub mod intent;
 pub mod intent_log;
-pub mod node_rs;
+pub mod node;                 // corrected from node_rs
 pub mod planner;
 pub mod providers;
 pub mod reasoner;
 pub mod routing;
 pub mod safety;
 pub mod self_mod;
+pub mod self_mod_policy;      // ★ NEW: Syntra’s constitutional self‑mod policy
 pub mod telemetry;
 pub mod theme;
 
@@ -53,11 +54,7 @@ pub mod theme;
 pub use intent::{debug_plan, Intent, IntentPlan, Context, PlanNode};
 pub use intent_log::IntentLog;
 
-// pub use intent::{debug_plan, Intent, IntentLog, IntentPlan, Context, PlanNode}; ( optional: needs further testing..)
-
-
-// Reasoner trait must be exported from its defining module (intent.rs)
-// pub use crate::agi_core::intent::Reasoner; (optional: needs further testing... )
+// Reasoner trait
 pub use intent::Reasoner;
 
 // Concrete Reasoner implementations
@@ -74,6 +71,9 @@ pub use self_mod::{
     ChangeKind, ChangeProposal, CircularDependency, DeadCodeReport, EvolutionPlan,
     RefactorSuggestion, SelfModEngine,
 };
+
+// Self‑modification policy (constitutional layer)
+pub use self_mod_policy::{SelfModPolicy, SelfModMode};
 
 // Safety & governance
 pub use safety::{SafetyGate, SafetyLevel, SafetyPolicy, SafetyRule, SafetyVerdict};
