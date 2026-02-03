@@ -10,25 +10,26 @@
 //   Author:      Alexandr Roussinov (gd2bk1ng)
 //
 //   Description:
-//       Provides a high-level architectural map of Syntra’s internal structure. This module
-//       defines the conceptual regions, lobes, subsystems, and their relationships.
+//       Defines a high-level architectural map of Syntra’s internal structure. The map is
+//       dynamically populated by the ArchitectureMapBuilder using filesystem scanning,
+//       semantic classification, symbol indexing, and dependency analysis.
 //
-//       The ArchitectureMap is used by:
-//         • SemanticGraphBuilder
+//       Key concepts:
+//         • ArchRegion        — High-level regions (Cortex, AgiCore, Lobe, Utility, Sandbox…)
+//         • ArchNode          — A subsystem or module within the architecture
+//         • ArchRelation      — Directed relationships between nodes
+//         • Protected regions — Regions that require human consent for modification
+//
+//       This map is Syntra’s “blueprint memory” and is used by:
 //         • AdvisorySelfModEngine
 //         • SelfHealingAdvisor
+//         • RefactorEngine
 //         • EvolutionPredictor
 //         • RiskAnalyzer
 //
-//       It acts as Syntra’s “blueprint memory,” enabling her to reason about:
-//         • What each subsystem is responsible for
-//         • How lobes relate to each other
-//         • Which regions are protected or critical
-//         • Where evolution is safe vs. high-risk
-//
 //   Notes:
-//       - Pure metadata; no filesystem scanning.
-//       - Designed for long-term stability and introspection.
+//       - Pure metadata container; population is delegated to ArchitectureMapBuilder.
+//       - Supports marking regions as protected for human-supervised changes only.
 //       - MIT & Apache 2.0 dual-licensed.
 // ================================================================================================
 //
@@ -41,7 +42,7 @@
 #![allow(dead_code)]
 
 use serde::{Serialize, Deserialize};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 /// High-level architectural region.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
@@ -64,6 +65,8 @@ pub struct ArchNode {
     pub region: ArchRegion,
     pub description: String,
     pub path_hint: Option<String>,
+    /// Whether this node is considered protected (requires human consent to modify).
+    pub protected: bool,
 }
 
 /// Relationship between architectural nodes.
@@ -88,17 +91,27 @@ pub struct ArchRelation {
 pub struct ArchitectureMap {
     pub nodes: HashMap<String, ArchNode>,
     pub relations: Vec<ArchRelation>,
+    /// Regions that are globally considered protected.
+    pub protected_regions: HashSet<ArchRegion>,
 }
 
 impl ArchitectureMap {
     pub fn new() -> Self {
+        let mut protected_regions = HashSet::new();
+        protected_regions.insert(ArchRegion::AgiCore);
+        protected_regions.insert(ArchRegion::Cortex);
+
         Self {
             nodes: HashMap::new(),
             relations: Vec::new(),
+            protected_regions,
         }
     }
 
-    pub fn add_node(&mut self, node: ArchNode) {
+    pub fn add_node(&mut self, mut node: ArchNode) {
+        if self.protected_regions.contains(&node.region) {
+            node.protected = true;
+        }
         self.nodes.insert(node.id.clone(), node);
     }
 
@@ -133,50 +146,13 @@ impl ArchitectureMap {
             .filter(|r| r.to == id)
             .collect()
     }
+
+    /// Check if a node is protected (either by region or explicit flag).
+    pub fn is_node_protected(&self, id: &str) -> bool {
+        if let Some(node) = self.nodes.get(id) {
+            node.protected || self.protected_regions.contains(&node.region)
+        } else {
+            false
+        }
+    }
 }
-
-/// Default architecture map for Syntra.
-/// This is her “blueprint memory.”
-pub fn default_architecture_map() -> ArchitectureMap {
-    let mut map = ArchitectureMap::new();
-
-    // Core regions
-    map.add_node(ArchNode {
-        id: "cortex".into(),
-        region: ArchRegion::Cortex,
-        description: "High-level orchestration, evolution cycles, self-healing.",
-        path_hint: Some("src/agi_core/".into()),
-    });
-
-    map.add_node(ArchNode {
-        id: "agi_core".into(),
-        region: ArchRegion::AgiCore,
-        description: "Unified cognition: intent, planning, reasoning, safety.",
-        path_hint: Some("src/agi_core/".into()),
-    });
-
-    // Utilities
-    map.add_node(ArchNode {
-        id: "utilities".into(),
-        region: ArchRegion::Utility,
-        description: "Diagnostics, logging, snapshots, introspection, semantic graph.",
-        path_hint: Some("src/utilities/".into()),
-    });
-
-    // Sandbox
-    map.add_node(ArchNode {
-        id: "sandbox".into(),
-        region: ArchRegion::Sandbox,
-        description: "Safe execution environment for evolution testing.",
-        path_hint: Some("src/agi_core/sandbox/".into()),
-    });
-
-    // Relations
-    map.add_relation("cortex", "agi_core", ArchRelationKind::DependsOn);
-    map.add_relation("cortex", "utilities", ArchRelationKind::DependsOn);
-    map.add_relation("cortex", "sandbox", ArchRelationKind::Supervises);
-    map.add_relation("utilities", "agi_core", ArchRelationKind::CommunicatesWith);
-
-    map
-}
-
