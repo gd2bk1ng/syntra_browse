@@ -3,7 +3,7 @@
 //   ------------------------------------------------------------------------------------------------
 //        .\s/.
 //       :: S ::
-//        '/s'
+//        '/s\'
 //
 //   File:        src/agi_core/self_mod_policy.rs
 //   Module:      AGI Core - Self-Modification Policy
