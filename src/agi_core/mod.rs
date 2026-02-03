@@ -50,10 +50,15 @@ pub mod theme;
 // ================================================================================================
 
 // Intent system
-pub use intent::{debug_plan, Intent, IntentLog, IntentPlan, Context, PlanNode};
+pub use intent::{debug_plan, Intent, IntentPlan, Context, PlanNode};
+pub use intent_log::IntentLog;
+
+// pub use intent::{debug_plan, Intent, IntentLog, IntentPlan, Context, PlanNode}; ( optional: needs further testing..)
+
 
 // Reasoner trait must be exported from its defining module (intent.rs)
-pub use crate::agi_core::intent::Reasoner;
+// pub use crate::agi_core::intent::Reasoner; (optional: needs further testing... )
+pub use intent::Reasoner;
 
 // Concrete Reasoner implementations
 pub use reasoner::{NullReasoner, ProbReasoner};
