@@ -22,12 +22,13 @@
 //       This is the core of Syntra’s self-healing and self-evolving loop.
 //
 //   Overview:
-//       - SandboxConfig      — configuration for sandbox runs.
-//       - SandboxResult      — outcome of a sandbox execution.
-//       - SandboxEngine      — orchestrates sandbox lifecycle.
-//       - run_build()        — run `cargo build` in sandbox.
-//       - run_tests()        — run `cargo test` in sandbox.
-//       - apply_plan()       — apply EvolutionPlan inside sandbox.
+//       - SandboxConfig       — configuration for sandbox runs.
+//       - SandboxResult       — outcome of a sandbox execution.
+//       - SandboxEngine       — orchestrates sandbox lifecycle.
+//       - run_with_plan()     — run a single plan.
+//       - run_with_plans()    — run multiple plans sequentially.
+//       - run_build()         — run `cargo build` in sandbox.
+//       - run_tests()         — run `cargo test` in sandbox.
 //
 //   Notes:
 //       - All mutations happen in the sandbox, never in the live tree.
@@ -50,7 +51,7 @@ use crate::agi_core::{
 };
 use crate::utilities::{
     baseline_snapshot::BaselineSnapshot,
-    fs_utils::{copy_tree, remove_tree, ensure_dir},
+    fs_utils::{copy_tree, ensure_dir},
     path_utils::normalize_path,
 };
 
@@ -66,8 +67,6 @@ pub struct SandboxConfig {
     pub live_root: PathBuf,
     /// Root directory where sandboxes are created.
     pub sandbox_root: PathBuf,
-    /// Optional name/label for this sandbox run.
-    pub label: Option<String>,
     /// Whether to run `cargo build`.
     pub run_build: bool,
     /// Whether to run `cargo test`.
@@ -78,6 +77,8 @@ pub struct SandboxConfig {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SandboxResult {
     pub sandbox_path: String,
+    pub plan_label: String,
+    pub attempt: u32,
     pub build_ok: bool,
     pub test_ok: bool,
     pub build_output: String,
@@ -96,15 +97,22 @@ impl SandboxEngine {
         Self { config, policy }
     }
 
-    /// Run a full sandbox cycle:
+    /// Run a single evolution plan in a fresh sandbox.
+    ///
+    /// Flow:
     ///   - clone live tree
     ///   - take baseline snapshot
     ///   - apply evolution plan in sandbox
     ///   - run build/tests
     ///   - compute diff
     ///   - return structured result
-    pub fn run_with_plan(&self, plan: &EvolutionPlan) -> anyhow::Result<SandboxResult> {
-        let sandbox_dir = self.create_sandbox_dir()?;
+    pub fn run_with_plan(
+        &self,
+        plan: &EvolutionPlan,
+        plan_label: &str,
+        attempt: u32,
+    ) -> anyhow::Result<SandboxResult> {
+        let sandbox_dir = self.create_sandbox_dir(plan_label, attempt)?;
 
         // 1) Copy live tree into sandbox
         copy_tree(&self.config.live_root, &sandbox_dir)?;
@@ -142,6 +150,8 @@ impl SandboxEngine {
 
         Ok(SandboxResult {
             sandbox_path: normalize_path(&sandbox_dir),
+            plan_label: plan_label.to_string(),
+            attempt,
             build_ok,
             test_ok,
             build_output,
@@ -150,16 +160,27 @@ impl SandboxEngine {
         })
     }
 
-    /// Create a unique sandbox directory.
-    fn create_sandbox_dir(&self) -> anyhow::Result<PathBuf> {
+    /// Run multiple labeled plans sequentially and return all results.
+    pub fn run_with_plans(
+        &self,
+        plans: &[(String, EvolutionPlan)],
+    ) -> anyhow::Result<Vec<SandboxResult>> {
+        let mut results = Vec::new();
+        for (label, plan) in plans {
+            let res = self.run_with_plan(plan, label, 1)?;
+            results.push(res);
+        }
+        Ok(results)
+    }
+
+    /// Create a unique sandbox directory for a given plan/attempt.
+    fn create_sandbox_dir(&self, label: &str, attempt: u32) -> anyhow::Result<PathBuf> {
         ensure_dir(&self.config.sandbox_root)?;
         let id = Uuid::new_v4().to_string();
-        let label = self
+        let dir = self
             .config
-            .label
-            .clone()
-            .unwrap_or_else(|| "sandbox".to_string());
-        let dir = self.config.sandbox_root.join(format!("{}_{}", label, id));
+            .sandbox_root
+            .join(format!("{}_attempt{}_{}", label, attempt, id));
         ensure_dir(&dir)?;
         Ok(dir)
     }
@@ -197,4 +218,3 @@ fn process_output(output: Output) -> (bool, String) {
 
     (ok, buf)
 }
-
