@@ -22,6 +22,8 @@
 //       - Updated to include unified self‑modification architecture:
 //             AdvisorySelfModEngine  (high‑level cognition)
 //             SelfModEngine          (policy‑aware executor)
+//       - Extended with SandboxEngine + SelfHealingAdvisor + CortexOrchestrator
+//         for self‑healing, self‑testing evolution cycles.
 // ================================================================================================
 
 #![allow(dead_code)]
@@ -51,6 +53,10 @@ pub mod self_mod;
 pub mod self_mod_policy;
 pub mod telemetry;
 pub mod theme;
+
+// Sandbox execution + Self‑healing advisor
+pub mod sandbox;
+pub mod self_healing_advisor;
 
 // ================================================================================================
 // Public Exports — clean, correct, no missing symbols
@@ -128,6 +134,12 @@ pub use theme::{AgiTheme, ThemeColor};
 // Commands (AGI control commands)
 pub use commands::{AgiCommand, CommandResult};
 
+// Sandbox engine
+pub use sandbox::{SandboxConfig, SandboxEngine, SandboxResult};
+
+// Self‑healing advisor
+pub use self_healing_advisor::{SelfHealingAdvisor, HealingReport};
+
 // ================================================================================================
 // ThoughtStream (Cortex-Level Introspection)
 // ================================================================================================
@@ -156,5 +168,75 @@ impl ThoughtStream {
 
     pub fn all(&self) -> &[CoreIntentPlan] {
         self.log.entries()
+    }
+}
+
+// ================================================================================================
+// CortexOrchestrator — High-Level Evolution & Self-Healing Flow
+// ================================================================================================
+//
+// This is the “conductor” that ties together:
+//   - Intent → AdvisorySelfModEngine → EvolutionPlan
+//   - SandboxEngine → build/test/diff
+//   - SelfHealingAdvisor → human-readable diagnosis & proposals
+//   - (optionally) SelfModEngine → live application after approval
+// ================================================================================================
+
+#[derive(Debug)]
+pub struct CortexOrchestrator {
+    pub advisory: AdvisorySelfModEngine,
+    pub sandbox_engine: SandboxEngine,
+    pub healing_advisor: SelfHealingAdvisor,
+    pub policy: SelfModPolicy,
+    pub thought_stream: ThoughtStream,
+}
+
+impl CortexOrchestrator {
+    pub fn new(
+        advisory: AdvisorySelfModEngine,
+        sandbox_engine: SandboxEngine,
+        healing_advisor: SelfHealingAdvisor,
+        policy: SelfModPolicy,
+        thought_stream_capacity: usize,
+    ) -> Self {
+        Self {
+            advisory,
+            sandbox_engine,
+            healing_advisor,
+            policy,
+            thought_stream: ThoughtStream::new(thought_stream_capacity),
+        }
+    }
+
+    /// Run a full evolution + self-healing cycle for a given intent.
+    ///
+    /// High-level flow:
+    ///   1) Use advisory engine to generate an EvolutionPlan.
+    ///   2) Execute the plan in a sandbox (no live mutations).
+    ///   3) Analyze sandbox result with SelfHealingAdvisor.
+    ///   4) Return a HealingReport that can be shown to a human operator.
+    ///
+    /// Live application (SelfModEngine on the real tree) is intentionally *not*
+    /// done here; it should only happen after explicit human approval.
+    pub fn run_evolution_cycle(
+        &mut self,
+        intent: &Intent,
+        context: &Context,
+    ) -> anyhow::Result<HealingReport> {
+        // 1) Generate an evolution plan from the advisory engine.
+        let plan = self.advisory.propose_evolution(intent, context, &self.policy)?;
+
+        // Log the plan into the ThoughtStream for introspection.
+        if let Some(plan_view) = plan.intent_plan() {
+            self.thought_stream.push(plan_view.clone());
+        }
+
+        // 2) Run the plan inside a sandbox.
+        let sandbox_result = self.sandbox_engine.run_with_plan(&plan)?;
+
+        // 3) Ask the self-healing advisor to interpret the outcome.
+        let report = self.healing_advisor.analyze(&plan, &sandbox_result)?;
+
+        Ok(report)
     }
 }
