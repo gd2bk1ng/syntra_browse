@@ -22,7 +22,7 @@
 //       - BaselineSnapshot: top‑level structure containing all file entries.
 //       - FileEntry: metadata for each file (hash, size, mode).
 //       - scan_tree(): recursively scans Syntra’s filesystem.
-//       - compare(): computes diffs between snapshots.
+//       - diff(): computes diffs between snapshots.
 //       - Integration with SelfModPolicy for forbidden/propose/self_mod classification.
 //
 //   Notes:
@@ -71,6 +71,8 @@ impl BaselineSnapshot {
     }
 
     /// Scans the filesystem from the given root and builds a complete snapshot.
+    ///
+    /// Forbidden paths are skipped entirely.
     pub fn scan_tree(root: &Path, policy: &SelfModPolicy) -> anyhow::Result<Self> {
         let mut snapshot = BaselineSnapshot::new();
         let mut stack = vec![root.to_path_buf()];
@@ -81,20 +83,29 @@ impl BaselineSnapshot {
                     let entry = entry?;
                     stack.push(entry.path());
                 }
-            } else if path.is_file() {
-                let rel = path.strip_prefix(root).unwrap_or(&path);
-                let rel_str = rel.to_string_lossy().replace('\\', "/");
+                continue;
+            }
+
+            if path.is_file() {
+                let rel = pathdiff::diff_paths(&path, root)
+                    .unwrap_or_else(|| PathBuf::from(""))
+                    .to_string_lossy()
+                    .replace('\\', "/");
+
+                // Skip forbidden files entirely
+                let mode = policy.mode_for(&rel);
+                if mode == SelfModMode::Forbidden {
+                    continue;
+                }
 
                 let metadata = fs::metadata(&path)?;
                 let size = metadata.len();
                 let hash = compute_file_hash(&path)?;
 
-                let mode = policy.mode_for(rel);
-
                 snapshot.files.insert(
-                    rel_str.clone(),
+                    rel.clone(),
                     FileEntry {
-                        path: rel_str,
+                        path: rel,
                         size,
                         hash,
                         mode,
@@ -107,28 +118,27 @@ impl BaselineSnapshot {
     }
 
     /// Computes differences between two snapshots.
-    pub fn compare(&self, other: &BaselineSnapshot) -> SnapshotDiff {
+    pub fn diff(&self, other: &BaselineSnapshot) -> SnapshotDiff {
         let mut added = Vec::new();
         let mut removed = Vec::new();
         let mut modified = Vec::new();
 
-        for (path, entry) in &other.files {
-            if !self.files.contains_key(path) {
-                added.push(entry.clone());
-            }
-        }
-
-        for (path, entry) in &self.files {
-            if !other.files.contains_key(path) {
-                removed.push(entry.clone());
-            }
-        }
-
-        for (path, old_entry) in &self.files {
-            if let Some(new_entry) = other.files.get(path) {
-                if old_entry.hash != new_entry.hash {
-                    modified.push((old_entry.clone(), new_entry.clone()));
+        // Added or modified
+        for (path, new_entry) in &other.files {
+            match self.files.get(path) {
+                None => added.push(new_entry.clone()),
+                Some(old_entry) => {
+                    if old_entry.hash != new_entry.hash {
+                        modified.push((old_entry.clone(), new_entry.clone()));
+                    }
                 }
+            }
+        }
+
+        // Removed
+        for (path, old_entry) in &self.files {
+            if !other.files.contains_key(path) {
+                removed.push(old_entry.clone());
             }
         }
 
@@ -141,7 +151,7 @@ impl BaselineSnapshot {
 }
 
 /// Represents differences between two snapshots.
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SnapshotDiff {
     pub added: Vec<FileEntry>,
     pub removed: Vec<FileEntry>,
