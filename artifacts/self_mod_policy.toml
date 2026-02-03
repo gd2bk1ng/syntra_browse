@@ -1,0 +1,72 @@
+# ================================================================================================
+#   SYNTRA KERNEL — SELF-MOD POLICY (CONSTITUTION)
+#   ------------------------------------------------------------------------------------------------
+#        .\s/.
+#       :: S ::
+#        '/s'
+#
+#   File:        artifacts/self_mod_policy.toml
+#   Module:      AGI Core - Self-Modification Policy (Config)
+#   Description: Declarative policy defining which parts of Syntra may be self-modified, which are
+#                propose-only, and which are strictly forbidden. This file is read by
+#                src/agi_core/self_mod_policy.rs at startup.
+#
+#   Notes:
+#     - Fully customizable and extensible.
+#     - Part of the Syntra Kernel AGI architecture.
+#     - All components follow Axiom Three (Reasoning), Axiom Five (Intent),
+#       Axiom Six (Self‑Modification), and Axiom Seven (Safety).
+# ================================================================================================
+
+[global]
+# Master switch for self-modification capabilities.
+# If false, Syntra may still analyze and propose changes, but must not apply them.
+allow_self_mod = true
+
+[paths]
+
+# ================================================================================================
+# ABSOLUTE NO-GO ZONE — READ-ONLY, NEVER MODIFIED
+# ================================================================================================
+
+"LICENSE"              = { mode = "forbidden" }
+"README.md"            = { mode = "forbidden" }
+"CHANGELOG.md"         = { mode = "forbidden" }
+"roadmap.md"           = { mode = "forbidden" }
+"codex/**"             = { mode = "forbidden" }
+"docs/**"              = { mode = "forbidden" }
+".github/**"           = { mode = "forbidden" }
+"artifacts/self_mod_policy.toml" = { mode = "forbidden" }
+
+# ================================================================================================
+# PROPOSE-ONLY ZONE — SYNTRA MAY SUGGEST, HUMAN APPLIES
+# ================================================================================================
+
+"Cargo.toml"           = { mode = "propose_only" }
+"build.rs"             = { mode = "propose_only" }
+"clippy.toml"          = { mode = "propose_only" }
+"rustfmt.toml"         = { mode = "propose_only" }
+"Makefile"             = { mode = "propose_only" }
+".gitattributes"       = { mode = "propose_only" }
+".gitignore"           = { mode = "propose_only" }
+"artifacts/pipeline_blueprint.md" = { mode = "propose_only" }
+
+# ================================================================================================
+# FULL SELF-MOD ZONE — SYNTRA MAY MODIFY WITH HUMAN APPROVAL
+# ================================================================================================
+
+"src/**"               = { mode = "self_mod" }
+"benches/**"           = { mode = "self_mod" }
+"trials/**"            = { mode = "self_mod" }
+"examples/**"          = { mode = "self_mod" }
+"frontend/**"          = { mode = "self_mod" }
+"terminal/**"          = { mode = "self_mod" }
+"config/**"            = { mode = "self_mod" }
+
+# ================================================================================================
+# FUTURE EXTENSIONS — RESERVED FOR LATER EVOLUTION
+# ================================================================================================
+
+# "plugins/**"         = { mode = "self_mod" }
+# "syntra_core/**"     = { mode = "self_mod" }
+# "syntra_renderer/**" = { mode = "self_mod" }
