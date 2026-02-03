@@ -1,0 +1,96 @@
+# ================================================================================================
+#   SYNTRA KERNEL — FEATURE BREAKER PANEL
+#   ------------------------------------------------------------------------------------------------
+#        .\s/.
+#       :: S ::
+#        '/s'
+#
+#   File:        artifacts/features.toml
+#   Module:      System Feature Switchboard (Breaker Panel)
+#   Description: Defines which subsystems of Syntra are powered, dormant, or restricted. This file
+#                is read at startup and governs which modules Syntra may activate, introspect, or
+#                evolve. Disabling a feature is equivalent to cutting power to a room in a house.
+#
+#   Notes:
+#     - Fully customizable and extensible.
+#     - Part of the Syntra Kernel AGI architecture.
+#     - All components follow Axiom Three (Reasoning), Axiom Five (Intent),
+#       Axiom Six (Self‑Modification), and Axiom Seven (Safety).
+# ================================================================================================
+
+[features]
+
+# ================================================================================================
+# CORE SYSTEMS — These define Syntra’s fundamental cognition and runtime.
+# ================================================================================================
+
+# Cognitive engine (reasoning, planning, routing)
+agi_core = true
+
+# Runtime scheduler, actor executor, and pipeline
+runtime = true
+
+# Memory, semantic embedding, and continuity engine
+memory = true
+
+# Self‑modification engine (requires allow_self_mod = true in self_mod_policy.toml)
+self_mod_engine = true
+
+# Sandbox environment for safe code evolution
+sandbox = true
+
+# ================================================================================================
+# PERCEPTION & INTERACTION — Syntra’s senses and interfaces.
+# ================================================================================================
+
+# Browser UI (winit + pixels)
+browser_ui = true
+
+# Terminal shell (CLI, REPL, developer console)
+terminal_shell = true
+
+# AGI overlay (visual cognitive HUD)
+agi_overlay = true
+
+# ================================================================================================
+# EXTENDED SYSTEMS — Optional modules that can be enabled as Syntra grows.
+# ================================================================================================
+
+# Distributed cognition (multi‑node runtime)
+distributed = false
+
+# Predictive modeling (forecasting, inference engines)
+predictive = false
+
+# Simulation sandbox (virtual environments, world models)
+simulation = false
+
+# Plugin system (third‑party or developer‑defined modules)
+plugins = false
+
+# Robotics / smart home integration
+robotics = false
+
+# Smart home / IoT control
+smart_home = false
+
+# ================================================================================================
+# FRONTEND & API — External interfaces Syntra may expose.
+# ================================================================================================
+
+# Web dashboard (React/TS frontend)
+frontend = true
+
+# REST API server (Node.js + Rust bridge)
+api_server = true
+
+# Federated learning client
+federated_learning = false
+
+# ================================================================================================
+# FUTURE EXPANSION — Reserved for Syntra’s self‑designed modules.
+# ================================================================================================
+
+# syntra_core = false
+# syntra_renderer = false
+# syntra_plugins = false
