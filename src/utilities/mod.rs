@@ -22,34 +22,41 @@
 //       external Git repositories (including Syntra’s own public kernel).
 //
 //   Overview:
-//       - logging               — Human-readable & JSON-style structured logging.
-//       - diagnostics           — Diagnostic event bus for internal health signals.
-//       - ecosystem             — Filesystem introspection utilities for self-awareness.
-//       - tracing               — Lightweight tracing hooks for internal instrumentation.
-//       - evolution_log         — Records Syntra’s self-modification events.
-//       - baseline_snapshot     — Syntra’s filesystem self-image for evolution & safety.
-//       - fs_utils              — Safe reads/writes, atomic updates, sandbox copying.
-//       - path_utils            — Cross-platform path normalization & matching.
-//       - dependency_graph      — Structural view of crates/modules/dependencies.
-//       - semantic_fs           — Semantic roles over the filesystem (lobes, core, utilities).
-//       - code_index            — Symbol-level index for refactors and analysis.
-//       - introspection         — Unified self-awareness/introspection hub.
-//       - semantic_graph        — High-level semantic graph of Syntra’s architecture.
-//       - semantic_graph_builder— Builder that fuses indices into a semantic graph.
-//       - architecture_map      — Dynamic architectural blueprint with protected regions.
-//       - architecture_map_builder
-//                              — Builds ArchitectureMap from snapshot + semantics + deps.
-//       - complexity_analyzer   — Structural complexity metrics.
-//       - code_metrics          — Quantitative metrics (LOC, fan-in/out, hotspots).
-//       - change_impact_graph   — Ripple-effect modeling for changes.
-//       - refactor_engine       — Refactor planning and (future) application engine.
-//       - refactor_rules        — Constitutional constraints for refactors.
-//       - pattern_detector      — Structural pattern and smell detector.
-//       - risk_analyzer         — Risk scoring for modules, dependencies, and plans.
-//       - evolution_predictor   — Impact estimation for evolution and refactor plans.
-//       - git_history           — Git history & churn analysis (real commit-based metrics).
-//       - repo_sync             — Repo sync, detection of new/changed files, supervised pushes.
-//       - publish_policy        — Rules for what may be published to Syntra’s public repo.
+//       - logging                 — Human-readable & JSON-style structured logging.
+//       - diagnostics             — Diagnostic event bus for internal health signals.
+//       - ecosystem               — Filesystem introspection utilities for self-awareness.
+//       - tracing                 — Lightweight tracing hooks for internal instrumentation.
+//       - evolution_log           — Records Syntra’s self-modification events.
+//       - baseline_snapshot       — Syntra’s filesystem self-image for evolution & safety.
+//       - fs_utils                — Safe reads/writes, atomic updates, sandbox copying.
+//       - path_utils              — Cross-platform path normalization & matching.
+//       - dependency_graph        — Structural view of crates/modules/dependencies.
+//       - semantic_fs             — Semantic roles over the filesystem (lobes, core, utilities).
+//       - code_index              — Symbol-level index for refactors and analysis.
+//       - introspection           — Unified self-awareness/introspection hub.
+//       - semantic_graph          — High-level semantic graph of Syntra’s architecture.
+//       - semantic_graph_builder  — Builder that fuses indices into a semantic graph.
+//       - architecture_map        — Dynamic architectural blueprint with protected regions.
+//       - architecture_map_builder— Builds ArchitectureMap from snapshot + semantics + deps.
+//       - complexity_analyzer     — Structural complexity metrics.
+//       - code_metrics            — Quantitative metrics (LOC, fan-in/out, hotspots).
+//       - change_impact_graph     — Ripple-effect modeling for changes.
+//       - refactor_engine         — Refactor planning and (future) application engine.
+//       - refactor_rules          — Constitutional constraints for refactors.
+//       - pattern_detector        — Structural pattern and smell detector.
+//       - risk_analyzer           — Risk scoring for modules, dependencies, and plans.
+//       - evolution_predictor     — Impact estimation for evolution and refactor plans.
+//       - git_history             — Git history & churn analysis (real commit-based metrics).
+//       - git_backend_git2        — Concrete Git backend using git2 (read-only).
+//       - repo_sync               — Repo sync, detection of new/changed files, supervised pushes.
+//       - publish_policy          — Rules for what may be published to Syntra’s public repo.
+//       - remote_backend_github   — GitHub remote backend (API + remote diffing).
+//       - github_user_verification— GitHub identity & trust engine.
+//       - github_signature_validation
+//                                — Commit signature validation & tamper risk.
+//       - tamper_monitor          — Advanced tamper detection & integrity reporting.
+//       - integrity_daemon        — Periodic watchdog that can lock self-modification.
+//       - self_mod_gate           — Unified permission gate for all self-mod flows.
 //
 //   Notes:
 //       - Dependency-minimal and ASCII-safe for long-term stability.
@@ -102,10 +109,17 @@ pub mod pattern_detector;
 pub mod risk_analyzer;
 pub mod evolution_predictor;
 
-// Git-aware utilities (to be implemented with strict human-gated policies)
+// Git-aware utilities (with strict human-gated policies)
 pub mod git_history;
+pub mod git_backend_git2;
 pub mod repo_sync;
 pub mod publish_policy;
+pub mod remote_backend_github;
+pub mod github_user_verification;
+pub mod github_signature_validation;
+pub mod tamper_monitor;
+pub mod integrity_daemon;
+pub mod self_mod_gate;
 
 // ================================================================================================
 // Re-exports — Common utilities exposed for convenience
@@ -292,11 +306,19 @@ pub use git_history::{
     FileChurn,
 };
 
+// Git backend (git2-based, read-only)
+pub use git_backend_git2::GitBackendGit2;
+
 // Repo Sync (local <-> remote, supervised)
 pub use repo_sync::{
     RepoSyncEngine,
     PendingChange,
     SyncPlan,
+    ChangeKind,
+    SyncAction,
+    SyncActionKind,
+    RemoteRepoBackend,
+    NoopRemoteRepoBackend,
 };
 
 // Publish Policy (what may be published to Syntra’s public repo)
@@ -304,4 +326,52 @@ pub use publish_policy::{
     PublishPolicy,
     PublishDecision,
     PublishScope,
+    PublishEvaluation,
+};
+
+// GitHub remote backend
+pub use remote_backend_github::{
+    GitHubRemoteBackend,
+    GitHubRemoteConfig,
+    ContributorVerification,
+};
+
+// GitHub user verification & trust
+pub use github_user_verification::{
+    GitHubUserVerifier,
+    GitHubVerificationConfig,
+    GitHubUserVerification,
+    TrustLevel,
+};
+
+// GitHub signature validation & tamper risk
+pub use github_signature_validation::{
+    SignatureValidator,
+    SignatureValidationConfig,
+    CommitSignatureReport,
+    SignatureStatus,
+    TamperRisk,
+};
+
+// Tamper monitor
+pub use tamper_monitor::{
+    TamperMonitor,
+    TamperReport,
+    IntegrityStatus,
+    IntegrityAnomaly,
+};
+
+// Integrity daemon (watchdog)
+pub use integrity_daemon::{
+    IntegrityDaemon,
+    SelfModMode,
+};
+
+// Self-modification gate
+pub use self_mod_gate::{
+    SelfModGate,
+    SelfModRequest,
+    SelfModDecision,
+    SelfModDecisionKind,
+    SelfModKind,
 };
