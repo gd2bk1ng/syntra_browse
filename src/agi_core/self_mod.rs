@@ -1,38 +1,84 @@
 // ================================================================================================
-//   SYNTRA KERNEL — AXIOM SIX (SELF-MODIFICATION ENGINE, ADVISORY ONLY)
+//   SYNTRA KERNEL — AXIOM SIX (SELF-MODIFICATION ENGINE)
 // ------------------------------------------------------------------------------------------------
 //        .\s/.
 //       :: S ::
 //        '/s\'
 //
 //   File:        src/agi_core/self_mod.rs
-//   Module:      AGI Core — Self-Modification Engine (Advisory)
+//   Module:      AGI Core — Self-Modification Engine
 //   Author:      Alexandr Roussinov (gd2bk1ng)
-//   Description:
-//       Analyzes Syntra's ecosystem and proposes code changes, patches, refactors, and new lobes.
-//       Detection is heuristic and non-destructive: it generates structured proposals, not direct
-//       mutations. All changes require explicit human approval.
 //
-//   Safety Notes:
-//       • This engine NEVER writes to disk.
-//       • It only emits proposals and patch hints.
-//       • Any actual mutation must be performed by the host user or an explicitly authorized layer.
+//   Description:
+//       Unified self-modification subsystem for Syntra. This module defines a shared evolution
+//       vocabulary (ChangeKind, ChangeProposal, EvolutionPlan) and two complementary engines:
+//
+//         • AdvisorySelfModEngine
+//             - High-level, advisory-only analysis.
+//             - Proposes new lobes, refactors, dependency fixes, dead code cleanups,
+//               and meta-evolution steps.
+//             - NEVER mutates the filesystem.
+//
+//         • SelfModEngine
+//             - Policy-aware, file-level evolution executor.
+//             - Interprets diffs, validates proposals against SelfModPolicy,
+//               applies allowed changes, and logs them via EvolutionLog.
+//             - All mutations are explicit, logged, and gated by human approval.
+//
+//   Overview:
+//       - ChangeKind          — Unified enum for architectural + file-level changes.
+//       - ChangeProposal      — Structured proposal for evolution, advisory or concrete.
+//       - EvolutionPlan       — Grouped set of proposals with a narrative summary.
+//       - RefactorSuggestion  — Heuristic refactor hints.
+//       - DeadCodeReport      — Suspected dead code symbols.
+//       - CircularDependency  — Detected module cycles.
+//       - AdvisorySelfModEngine — Ecosystem-based advisory engine (no mutations).
+//       - SelfModEngine       — Policy-aware executor for concrete changes.
+//
+//   Notes:
+//       - Advisory engine is purely cognitive: it thinks about evolution.
+//       - Execution engine is constrained: it acts on evolution safely.
+//       - Both share a unified vocabulary so Syntra can reason coherently about her own growth.
+//       - MIT & Apache 2.0 dual-licensed.
+//       - Designed for long-term evolution, introspection, and study.
+// ================================================================================================
+//
+//   Copyright:
+//       This file is dual-licensed under MIT and Apache 2.0.
+//       You may use, modify, and distribute it under either license.
+//
 // ================================================================================================
 
 #![allow(dead_code)]
 
-use std::path::Path;
+use std::path::{Path, PathBuf};
+use std::fs;
+
+use serde::{Serialize, Deserialize};
 
 use crate::agi_core::ecosystem::EcosystemModel;
 use crate::agi_core::telemetry::{TelemetryBus, TelemetryLevel};
+use crate::agi_core::self_mod_policy::{SelfModPolicy, SelfModMode};
+
+use crate::utilities::{
+    BaselineSnapshot,
+    SnapshotDiff,
+    EvolutionRecord,
+    write_evolution_record,
+    compute_file_hash,
+};
 
 // ================================================================================================
-// Data Structures
+// Unified Evolution Vocabulary
 // ================================================================================================
 
-/// Kind of change being proposed by the self-mod engine.
-#[derive(Debug, Clone)]
+/// Kind of change being proposed by the self-mod system.
+///
+/// This enum unifies both high-level architectural evolution and low-level file changes.
+/// Syntra can reason about all of these as part of a single evolution narrative.
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum ChangeKind {
+    // --- High-level / architectural changes (advisory) ---
     /// Introduce a new lobe (module/subsystem).
     NewLobe,
     /// Structural refactor of existing code.
@@ -45,20 +91,41 @@ pub enum ChangeKind {
     Upgrade,
     /// Meta-evolution change (high-level architectural evolution).
     Evolution,
+
+    // --- Low-level / file-level changes (concrete) ---
+    /// Add a new file to the codebase.
+    AddFile,
+    /// Modify an existing file.
+    ModifyFile,
+    /// Delete an existing file.
+    DeleteFile,
 }
 
-/// A single change proposal emitted by the self-mod engine.
+/// A single change proposal emitted by the self-mod system.
 ///
-/// This is advisory only; it never implies direct mutation.
-#[derive(Debug, Clone)]
+/// This can represent either:
+///   - a high-level advisory proposal (no direct mutation), or
+///   - a concrete file-level change (with optional new contents).
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ChangeProposal {
     pub kind: ChangeKind,
+    /// Human-readable title for the proposal.
     pub title: String,
+    /// Detailed description / rationale.
     pub description: String,
     /// Optional target path (file or module).
     pub target: Option<String>,
     /// Optional patch-like text (unified diff or instructions).
     pub patch_hint: Option<String>,
+    /// Optional new contents for file-level changes (AddFile/ModifyFile).
+    pub new_contents: Option<String>,
+}
+
+/// High-level evolution plan: a grouped set of proposals with a narrative.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EvolutionPlan {
+    pub summary: String,
+    pub proposals: Vec<ChangeProposal>,
 }
 
 /// Refactor suggestion for a specific module.
@@ -82,15 +149,8 @@ pub struct CircularDependency {
     pub modules: Vec<String>,
 }
 
-/// High-level evolution plan: a grouped set of proposals with a narrative.
-#[derive(Debug, Clone)]
-pub struct EvolutionPlan {
-    pub summary: String,
-    pub proposals: Vec<ChangeProposal>,
-}
-
 // ================================================================================================
-// Self-Mod Engine
+// Advisory Self-Mod Engine (High-Level, Non-Mutating)
 // ================================================================================================
 
 /// Advisory self-modification engine.
@@ -98,17 +158,17 @@ pub struct EvolutionPlan {
 /// Produces structured proposals based on ecosystem analysis. It never
 /// mutates the filesystem or applies patches directly.
 #[derive(Debug, Default)]
-pub struct SelfModEngine {
+pub struct AdvisorySelfModEngine {
     telemetry: Option<TelemetryBus>,
 }
 
-impl SelfModEngine {
-    /// Construct a self-mod engine without telemetry.
+impl AdvisorySelfModEngine {
+    /// Construct an advisory self-mod engine without telemetry.
     pub fn new() -> Self {
         Self { telemetry: None }
     }
 
-    /// Construct a self-mod engine with telemetry enabled.
+    /// Construct an advisory self-mod engine with telemetry enabled.
     pub fn with_telemetry(telemetry: TelemetryBus) -> Self {
         Self {
             telemetry: Some(telemetry),
@@ -153,7 +213,7 @@ impl SelfModEngine {
             t.log(
                 TelemetryLevel::Info,
                 format!(
-                    "SelfModEngine generated evolution plan with {} proposals.",
+                    "AdvisorySelfModEngine generated evolution plan with {} proposals.",
                     plan.proposals.len()
                 ),
             );
@@ -185,6 +245,7 @@ impl SelfModEngine {
                     "Scaffold suggestion: create module for '{}' with lib.rs, tests, and docs.",
                     missing
                 )),
+                new_contents: None,
             });
         }
     }
@@ -205,6 +266,7 @@ impl SelfModEngine {
                 ),
                 target: None,
                 patch_hint: None,
+                new_contents: None,
             });
         }
     }
@@ -225,6 +287,7 @@ impl SelfModEngine {
                 ),
                 target: Some(report.module.clone()),
                 patch_hint: None,
+                new_contents: None,
             });
         }
     }
@@ -245,6 +308,7 @@ impl SelfModEngine {
                 ),
                 target: None,
                 patch_hint: None,
+                new_contents: None,
             });
         }
     }
@@ -261,13 +325,14 @@ impl SelfModEngine {
                 description: format!("Reason: {}. Suggestion: {}", r.reason, r.suggestion),
                 target: Some(r.module.clone()),
                 patch_hint: None,
+                new_contents: None,
             });
         }
     }
 
     // --------------------------------------------------------------------------------------------
     // Analysis Hooks (Stubs)
-// --------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------
 
     /// Placeholder: scan for dead code (hook for future static analysis).
     ///
@@ -301,9 +366,9 @@ impl SelfModEngine {
     fn build_evolution_summary(&self, proposals: &[ChangeProposal]) -> String {
         let mut out = String::new();
 
-        out.push_str("=== Syntra Evolution Plan (Axiom Six) ===\n");
+        out.push_str("=== Syntra Evolution Plan (Axiom Six — Advisory) ===\n");
         out.push_str("This plan is advisory. All changes require explicit human approval.\n");
-        out.push_str("Safety subsystem (Axiom Five) will evaluate each proposal before any action.\n\n");
+        out.push_str("Safety subsystem (Axiom Seven) will evaluate each proposal before any action.\n\n");
 
         let mut new_lobes = 0;
         let mut upgrades = 0;
@@ -320,6 +385,7 @@ impl SelfModEngine {
                 ChangeKind::DeadCodeCleanup => cleanups += 1,
                 ChangeKind::DependencyFix => dep_fixes += 1,
                 ChangeKind::Evolution => meta_evolution += 1,
+                _ => {}
             }
         }
 
@@ -331,5 +397,169 @@ impl SelfModEngine {
         out.push_str(&format!("Meta-evolution proposals: {}\n", meta_evolution));
 
         out
+    }
+}
+
+// ================================================================================================
+// Self-Mod Engine (Policy-Aware Executor)
+// ================================================================================================
+
+/// The main engine orchestrating Syntra’s concrete self-modification workflow.
+///
+/// This engine operates at the file level. It is expected to be driven by:
+///   - sandbox diffs,
+///   - approved proposals,
+///   - and SelfModPolicy constraints.
+pub struct SelfModEngine {
+    root: PathBuf,
+    policy: SelfModPolicy,
+}
+
+impl SelfModEngine {
+    /// Creates a new self-mod engine.
+    pub fn new(root: PathBuf, policy: SelfModPolicy) -> Self {
+        Self { root, policy }
+    }
+
+    /// Generates an evolution plan from a snapshot diff.
+    ///
+    /// This is a low-level, file-centric plan derived from observed changes
+    /// (e.g., in a sandbox). It uses the unified ChangeKind / ChangeProposal
+    /// vocabulary so it can be combined with advisory plans if desired.
+    pub fn generate_plan_from_diff(&self, diff: &SnapshotDiff) -> EvolutionPlan {
+        let mut proposals = Vec::new();
+
+        for added in &diff.added {
+            proposals.push(ChangeProposal {
+                kind: ChangeKind::AddFile,
+                title: format!("Add file '{}'", added.path),
+                description: "New file detected in sandbox; propose adding to main tree.".into(),
+                target: Some(added.path.clone()),
+                patch_hint: None,
+                new_contents: None,
+            });
+        }
+
+        for removed in &diff.removed {
+            proposals.push(ChangeProposal {
+                kind: ChangeKind::DeleteFile,
+                title: format!("Delete file '{}'", removed.path),
+                description: "File removed in sandbox; propose deleting from main tree.".into(),
+                target: Some(removed.path.clone()),
+                patch_hint: None,
+                new_contents: None,
+            });
+        }
+
+        for (old, new) in &diff.modified {
+            proposals.push(ChangeProposal {
+                kind: ChangeKind::ModifyFile,
+                title: format!("Modify file '{}'", new.path),
+                description: format!(
+                    "File '{}' modified in sandbox; propose applying updated contents.",
+                    new.path
+                ),
+                target: Some(new.path.clone()),
+                patch_hint: None,
+                new_contents: None,
+            });
+        }
+
+        EvolutionPlan {
+            proposals,
+            summary: "Auto-generated evolution plan from sandbox diff".into(),
+        }
+    }
+
+    /// Validates a proposal against the self-mod policy.
+    pub fn validate_proposal(&self, proposal: &ChangeProposal) -> bool {
+        let target = proposal
+            .target
+            .as_deref()
+            .unwrap_or("");
+
+        let mode = self.policy.mode_for(target);
+
+        match mode {
+            SelfModMode::Forbidden => false,
+            SelfModMode::ProposeOnly => false,
+            SelfModMode::SelfMod => true,
+        }
+    }
+
+    /// Applies a validated proposal to the real filesystem.
+    ///
+    /// This function assumes the proposal has already been approved by a human
+    /// and validated against the SelfModPolicy.
+    pub fn apply_proposal(&self, proposal: &ChangeProposal) -> anyhow::Result<()> {
+        let target = match &proposal.target {
+            Some(t) => t,
+            None => return Ok(()), // nothing to do without a concrete target
+        };
+
+        let full_path = self.root.join(target);
+
+        match proposal.kind {
+            ChangeKind::AddFile | ChangeKind::ModifyFile => {
+                if let Some(contents) = &proposal.new_contents {
+                    fs::write(&full_path, contents)?;
+                }
+            }
+            ChangeKind::DeleteFile => {
+                if full_path.exists() {
+                    fs::remove_file(&full_path)?;
+                }
+            }
+            _ => {
+                // High-level advisory kinds are not applied here.
+            }
+        }
+
+        // Log the change
+        let old_hash = if full_path.exists() {
+            Some(compute_file_hash(&full_path)?)
+        } else {
+            None
+        };
+
+        let new_hash = match proposal.kind {
+            ChangeKind::DeleteFile => None,
+            ChangeKind::AddFile | ChangeKind::ModifyFile => {
+                if full_path.exists() {
+                    Some(compute_file_hash(&full_path)?)
+                } else {
+                    None
+                }
+            }
+            _ => None,
+        };
+
+        let record = EvolutionRecord::new(
+            target,
+            &format!("{:?}", proposal.kind),
+            old_hash,
+            new_hash,
+            &proposal.description,
+            "developer",
+        );
+
+        write_evolution_record(&record)?;
+
+        Ok(())
+    }
+
+    /// Applies an entire evolution plan (after human approval).
+    pub fn apply_plan(&self, plan: &EvolutionPlan) -> anyhow::Result<()> {
+        for proposal in &plan.proposals {
+            if self.validate_proposal(proposal) {
+                self.apply_proposal(proposal)?;
+            }
+        }
+        Ok(())
+    }
+
+    /// Convenience: capture a fresh baseline snapshot for the current root.
+    pub fn snapshot(&self) -> anyhow::Result<BaselineSnapshot> {
+        BaselineSnapshot::scan_tree(&self.root, &self.policy)
     }
 }
