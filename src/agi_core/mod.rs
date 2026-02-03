@@ -1,21 +1,27 @@
 // ================================================================================================
 //   SYNTRA KERNEL — AGI CORE (UNIFIED COGNITION)
-//   ------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
 //        .\s/.
 //       :: S ::
 //        '/s\'
 //
 //   File:        src/agi_core/mod.rs
 //   Module:      AGI Core — Unified Cognition
-//   Description: Central cognitive subsystem of the Syntra Kernel. Integrates:
-//                  • Axiom Three  — foundational reasoning interface
-//                  • Axiom Five   — semantic intent engine
-//                  • Axiom Six    — self‑modification & evolution engine
-//                  • Axiom Seven  — safety & governance layer
+//   Author:      Alexandr Roussinov (gd2bk1ng)
+//
+//   Description:
+//       Central cognitive subsystem of the Syntra Kernel. Integrates:
+//         • Axiom Three  — foundational reasoning interface
+//         • Axiom Five   — semantic intent engine
+//         • Axiom Six    — self‑modification & evolution engine
+//         • Axiom Seven  — safety & governance layer
 //
 //   Notes:
-//     - This subsystem is intentionally modular and future‑proof.
-//     - All AGI Core modules are declared here for clarity and stability.
+//       - This subsystem is intentionally modular and future‑proof.
+//       - All AGI Core modules are declared here for clarity and stability.
+//       - Updated to include unified self‑modification architecture:
+//             AdvisorySelfModEngine  (high‑level cognition)
+//             SelfModEngine          (policy‑aware executor)
 // ================================================================================================
 
 #![allow(dead_code)]
@@ -35,14 +41,14 @@ pub mod features;
 pub mod feedback;
 pub mod intent;
 pub mod intent_log;
-pub mod node;                 // corrected from node_rs
+pub mod node;
 pub mod planner;
 pub mod providers;
 pub mod reasoner;
 pub mod routing;
 pub mod safety;
 pub mod self_mod;
-pub mod self_mod_policy;      // ★ NEW: Syntra’s constitutional self‑mod policy
+pub mod self_mod_policy;
 pub mod telemetry;
 pub mod theme;
 
@@ -66,16 +72,33 @@ pub use ecosystem::{EcosystemLobe, EcosystemModel};
 // Behavioral profiles
 pub use behavioral_profile::{CreatorProfile, TypingPattern};
 
-// Self‑modification engine
+// ================================================================================================
+// Self‑Modification (Axiom Six)
+// ================================================================================================
+//
+// Unified evolution vocabulary + two engines:
+//   • AdvisorySelfModEngine — high‑level, non‑mutating, architectural reasoning
+//   • SelfModEngine         — policy‑aware executor for concrete changes
+//
+
 pub use self_mod::{
-    ChangeKind, ChangeProposal, CircularDependency, DeadCodeReport, EvolutionPlan,
-    RefactorSuggestion, SelfModEngine,
+    ChangeKind,
+    ChangeProposal,
+    EvolutionPlan,
+    RefactorSuggestion,
+    DeadCodeReport,
+    CircularDependency,
+    AdvisorySelfModEngine,
+    SelfModEngine,
 };
 
 // Self‑modification policy (constitutional layer)
 pub use self_mod_policy::{SelfModPolicy, SelfModMode};
 
-// Safety & governance
+// ================================================================================================
+// Safety & Governance (Axiom Seven)
+// ================================================================================================
+
 pub use safety::{SafetyGate, SafetyLevel, SafetyPolicy, SafetyRule, SafetyVerdict};
 
 // Telemetry
