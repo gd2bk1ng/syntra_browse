@@ -16,14 +16,26 @@
 //         • Axiom Six    — self‑modification & evolution engine
 //         • Axiom Seven  — safety & governance layer
 //
+//       This module wires together:
+//         • Intent, planning, routing, and reasoning
+//         • Ecosystem and behavioral profiling
+//         • Self‑modification engines and orchestrators
+//         • Safety, sandboxing, and self‑healing
+//
 //   Notes:
-//       - This subsystem is intentionally modular and future‑proof.
-//       - All AGI Core modules are declared here for clarity and stability.
-//       - Updated to include unified self‑modification architecture:
+//       - All AGI Core modules are declared and re‑exported here for clarity and stability.
+//       - Self‑modification stack now includes:
 //             AdvisorySelfModEngine  (high‑level cognition)
 //             SelfModEngine          (policy‑aware executor)
+//             SelfModOrchestrator    (goal‑driven evolution engine)
 //       - Extended with SandboxEngine + SelfHealingAdvisor + CortexOrchestrator
 //         for self‑healing, self‑testing evolution cycles.
+// ================================================================================================
+//
+//   Copyright:
+//       This file is dual-licensed under MIT and Apache 2.0.
+//       You may use, modify, and distribute it under either license.
+//
 // ================================================================================================
 
 #![allow(dead_code)]
@@ -50,6 +62,8 @@ pub mod reasoner;
 pub mod routing;
 pub mod safety;
 pub mod self_mod;
+pub mod self_mod_engine;
+pub mod self_mod_orchestrator;
 pub mod self_mod_policy;
 pub mod telemetry;
 pub mod theme;
@@ -82,9 +96,10 @@ pub use behavioral_profile::{CreatorProfile, TypingPattern};
 // Self‑Modification (Axiom Six)
 // ================================================================================================
 //
-// Unified evolution vocabulary + two engines:
-//   • AdvisorySelfModEngine — high‑level, non‑mutating, architectural reasoning
-//   • SelfModEngine         — policy‑aware executor for concrete changes
+// Unified evolution vocabulary + engines:
+//   • AdvisorySelfModEngine  — high‑level, non‑mutating, architectural reasoning
+//   • SelfModEngine          — policy‑aware executor for concrete changes
+//   • SelfModOrchestrator    — goal‑driven evolution engine using utilities + gates
 //
 
 pub use self_mod::{
@@ -95,7 +110,15 @@ pub use self_mod::{
     DeadCodeReport,
     CircularDependency,
     AdvisorySelfModEngine,
-    SelfModEngine,
+};
+
+pub use self_mod_engine::SelfModEngine;
+
+pub use self_mod_orchestrator::{
+    SelfModOrchestrator,
+    SelfModOrchestratorConfig,
+    EvolutionGoal,
+    EvolutionProposal,
 };
 
 // Self‑modification policy (constitutional layer)
