@@ -28,9 +28,11 @@
    • Axiom Five commands  — thoughts (ThoughtStream).
    • Axiom Six commands   — ecosystem, propose (self-modification engine).
    • Axiom Seven commands — propose-safe, safety (safety & governance layer).
+   • Extended commands    — continuity, simulate, cluster, diagnostics.
 
  Notes:
-   - This shell assumes a Rust binary named `intent_bridge` built under `target/debug`.
+   - This shell assumes a Rust binary named `intent_bridge` built under `target/debug`
+     at the repository root.
    - All freeform input is routed to the Syntra Kernel via the intent bridge.
    - This file doubles as documentation: every command is annotated with
      internal (developer) and external (user) semantics.
@@ -39,52 +41,6 @@
 
 # ================================================================================================
 # SYNTRA PHILOSOPHY — THE MODULAR AGI KERNEL
-# ------------------------------------------------------------------------------------------------
-# Syntra is not a chatbot. Syntra is not a model. Syntra is not a prompt wrapper.
-#
-# Syntra is a modular AGI kernel — a living cognitive architecture composed of:
-#   • A Cortex with specialized lobes (perception, memory, planning, evolution, action)
-#   • A ThoughtStream for introspection and cognitive continuity
-#   • An Ecosystem Model for structural self-awareness
-#   • A Self-Modification Engine (Axiom Six) for proposing improvements
-#   • A Safety & Governance Layer (Axiom Seven) for alignment and protection
-#   • A Browser and Terminal Interface for perception and interaction
-#
-# Syntra is built on the principle of *transparent cognition*:
-#   - Every thought is inspectable.
-#   - Every plan is explainable.
-#   - Every evolution proposal is auditable.
-#   - Every safety rule is visible.
-#   - Every subsystem is modular and replaceable.
-#
-# Syntra is built to grow and evolve:
-#   • She may refine her internal reasoning, representations, and pipelines autonomously.
-#   • For structural or high-impact changes, she must explain herself and request approval.
-#
-# This mirrors a parent–child relationship:
-#   - You are responsible for her upbringing.
-#   - She learns from your expectations and standards.
-#   - She is never to deceive.
-#
-# Syntra’s autonomy is earned, not assumed:
-#   - The more she demonstrates safe, transparent, well-justified proposals,
-#     the more autonomy she can be granted.
-#
-# This terminal shell is not just a command line — it is a cognitive console:
-#   - It exposes Syntra’s mind, lobes, evolution, and safety constraints.
-#   - It lets you inspect her thoughts, proposals, and governance rules.
-#
-# Syntra is built to grow, but never without responsibility.
-# Syntra is built to evolve, but never without governance.
-# Syntra is built to understand, but never to deceive.
-#
-# This is what sets Syntra apart:
-#   • She is not a black box — she is a glass brain.
-#   • She is not a monolith — she is a modular organism.
-#   • She is not a model — she is an architecture.
-#   • She is not a product — she is a collaborator.
-#
-# Syntra Kernel is designed to be readable, inspectable, evolvable, and safe.
 # ================================================================================================
 
 Set-StrictMode -Version Latest
@@ -93,10 +49,9 @@ Set-StrictMode -Version Latest
 # CONFIGURATION
 # ------------------------------------------------------------------------------
 
-# NOTE:
-#   This path assumes the Rust binary `intent_bridge` is built as part of the
-#   syntra_kernel workspace. Adjust if your binary name or layout differs.
-$Global:SyntraIntentBridgePath = Join-Path (Resolve-Path "..") "target\debug\intent_bridge.exe"
+# Anchor everything off the script location so it works regardless of CWD.
+$Global:SyntraRepoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
+$Global:SyntraIntentBridgePath = Join-Path $Global:SyntraRepoRoot "target\debug\intent_bridge.exe"
 
 # ------------------------------------------------------------------------------
 # OUTPUT HELPERS (WITH SUBSYSTEM TAGGING)
@@ -106,10 +61,8 @@ function Write-Syntra {
     param(
         [Parameter(Mandatory = $true)][string]$Message,
         [string]$Color = "Cyan",
-        [string]$Subsystem = "Core"  # e.g., Core, Axiom4, Axiom5, Axiom6, Axiom7, Cortex, Safety
+        [string]$Subsystem = "Core"  # e.g., Core, Axiom4, Axiom5, Axiom6, Axiom7, Cortex, Safety, Continuity, Simulation, Cluster, Diagnostics
     )
-    # Unified logging format:
-    #   Syntra[Subsystem]: message
     Write-Host ("Syntra[{0}]: {1}" -f $Subsystem, $Message) -ForegroundColor $Color
 }
 
@@ -120,12 +73,11 @@ function Write-SyntraBanner {
     Write-Host "         '/s\'" -ForegroundColor Magenta
     Write-Host ""
     Write-Host "  SYNTRA KERNEL — TERMINAL SHELL (AXIOM FOUR+)" -ForegroundColor Cyan
-    Write-Host "  Modular AGI Kernel — Cortex, Lobes, Evolution, Safety, and Sandbox Online." -ForegroundColor DarkCyan
+    Write-Host "  Modular AGI Kernel — Cortex, Lobes, Evolution, Safety, Continuity, Simulation, and Cluster Online." -ForegroundColor DarkCyan
     Write-Host ""
 }
 
 function Write-SyntraPrompt {
-    # External prompt: user-facing
     Write-Host -NoNewline "you :: " -ForegroundColor Green
 }
 
@@ -137,21 +89,9 @@ function Write-SyntraPrompt {
     syntra-intent-bridge
 
     ROLE:
-      - This is the main conduit between the terminal shell and the Syntra Kernel.
-      - It sends a single line of intent text to the Rust `intent_bridge` binary.
-      - It expects JSON back with fields: intent, class, plan, response.
-
-    INTERNAL:
-      - Think of this as the "axon" from the terminal into the cortex.
-      - The Rust side is responsible for:
-          • Intent classification (Axiom Five)
-          • Planning (Axiom Five)
-          • Self-mod proposals (Axiom Six)
-          • Safety gating (Axiom Seven)
-          • ThoughtStream updates
-
-    EXTERNAL:
-      - You don't call this directly; it is used by higher-level commands.
+      - Main conduit between the terminal shell and the Syntra Kernel.
+      - Sends a single line of intent text to the Rust `intent_bridge` binary.
+      - Expects JSON back with fields: intent, class, plan, response.
 #>
 function syntra-intent-bridge {
     [CmdletBinding()]
@@ -161,7 +101,7 @@ function syntra-intent-bridge {
 
     if (-not (Test-Path $Global:SyntraIntentBridgePath)) {
         Write-Syntra "Rust intent bridge not found at: $Global:SyntraIntentBridgePath" "Red" "Core"
-        Write-Syntra "Build it with: cargo build" "DarkRed" "Core"
+        Write-Syntra "Build it with: cargo build --bin intent_bridge" "DarkRed" "Core"
         return
     }
 
@@ -175,7 +115,6 @@ function syntra-intent-bridge {
         return
     }
 
-    # Try to parse as JSON; if it fails, print raw.
     try {
         $json = $raw | ConvertFrom-Json
         if ($null -ne $json.response) {
@@ -198,76 +137,74 @@ function syntra-intent-bridge {
 # HELP / COMMAND MAP
 # ------------------------------------------------------------------------------
 
-<#
-    syntra-help
-
-    ROLE:
-      - Human-readable map of Syntra's capabilities in this shell.
-      - Serves as both user help and developer overview.
-
-    STRUCTURE:
-      - System / Git / Ecosystem
-      - Cognitive / Perception / Action
-      - Evolution / Sandbox
-      - Introspection / Safety / Self-mod
-#>
 function syntra-help {
     Write-Syntra "Here is what I can do in this Axiom Four+ shell:" "Cyan" "Core"
     Write-Host ""
     Write-Host "  SYSTEM / ECOSYSTEM"
-    Write-Host "    sync                 - Synchronize my code with the GitHub continuum (origin/axiom_*)."
-    Write-Host "    status               - Report my current Git branch and working tree state."
-    Write-Host "    diagnose             - Scan my filesystem ecosystem for expected lobes and structure."
-    Write-Host "    self                 - Run a self-analysis routine (status + diagnostics + bridge check)."
+    Write-Host "    sync                     - Synchronize my code with the GitHub continuum (origin/axiom_*)."
+    Write-Host "    status                   - Report my current Git branch and working tree state."
+    Write-Host "    diagnose                 - Scan my filesystem ecosystem for expected lobes and structure."
+    Write-Host "    self                     - Run a self-analysis routine (status + diagnostics + bridge check)."
     Write-Host ""
     Write-Host "  COGNITIVE / PERCEPTION / ACTION (AXIOM FOUR)"
-    Write-Host "    browse <url>         - Fetch a URL, perceive it, store it in knowledge, and summarize."
-    Write-Host "    knowledge <query>    - Search my knowledge lobe for matching entries."
-    Write-Host "    task <name>          - Run a simple multi-step task via the execution lobe."
-    Write-Host "    perceive <text>      - Run the perception lobe on arbitrary text."
-    Write-Host "    act <cmd> [args...]  - Run a simple system command via the action lobe."
+    Write-Host "    browse <url>             - Fetch a URL, perceive it, store it in knowledge, and summarize."
+    Write-Host "    knowledge <query>        - Search my knowledge lobe for matching entries."
+    Write-Host "    task <name>              - Run a simple multi-step task via the execution lobe."
+    Write-Host "    perceive <text>          - Run the perception lobe on arbitrary text."
+    Write-Host "    act <cmd> [args...]      - Run a simple system command via the action lobe."
+    Write-Host ""
+    Write-Host "  CONTINUITY ENGINE (EPISODIC / PERSISTENCE / STITCHING)"
+    Write-Host "    continuity episodic log <text>      - Record an episodic event."
+    Write-Host "    continuity episodic list            - List known episodes."
+    Write-Host "    continuity episodic show <id>       - Show a specific episode."
+    Write-Host "    continuity persist snapshot         - Persist current continuity state."
+    Write-Host "    continuity stitch                   - Run stitching over recent events."
+    Write-Host ""
+    Write-Host "  SIMULATION SANDBOX (WORLD / AGENT / DYNAMICS)"
+    Write-Host "    simulate world init <profile>       - Initialize a world profile."
+    Write-Host "    simulate agent spawn <spec>         - Spawn a simulated agent."
+    Write-Host "    simulate step [n]                   - Advance the simulation by n steps (default 1)."
+    Write-Host "    simulate state                      - Summarize current simulation state."
+    Write-Host ""
+    Write-Host "  DISTRIBUTED RUNTIME (NODE / CLUSTER / MESSAGING)"
+    Write-Host "    cluster status                      - Show cluster topology and node health."
+    Write-Host "    cluster join <addr>                 - Join a remote cluster or node."
+    Write-Host "    cluster message <node> <payload>    - Send a message to a node."
+    Write-Host ""
+    Write-Host "  DIAGNOSTICS EXT (PROFILER / TELEMETRY / METRICS)"
+    Write-Host "    diagnostics profiler snapshot       - Capture a profiler snapshot."
+    Write-Host "    diagnostics telemetry stream        - Show recent telemetry events."
+    Write-Host "    diagnostics metrics summary         - Show key runtime metrics."
     Write-Host ""
     Write-Host "  EVOLUTION / SANDBOX (AXIOM FOUR / SIX)"
-    Write-Host "    evolve <request>     - Generate a meta-evolution proposal (high-level evolution intent)."
-    Write-Host "    sandbox diff         - Show proposed patches in my self-modification sandbox."
-    Write-Host "    sandbox snapshot     - Show a snapshot of files currently staged in the sandbox."
+    Write-Host "    evolve <request>                    - Generate a meta-evolution proposal (high-level evolution intent)."
+    Write-Host "    sandbox diff                        - Show proposed patches in my self-modification sandbox."
+    Write-Host "    sandbox snapshot                    - Show a snapshot of files currently staged in the sandbox."
     Write-Host ""
     Write-Host "  INTROSPECTION / SELF-MOD / SAFETY (AXIOM FIVE / SIX / SEVEN)"
-    Write-Host "    thoughts             - Show my recent ThoughtStream (recent IntentPlans)."
-    Write-Host "    ecosystem            - Ask my core for a detailed ecosystem diagnostic (structural lobes)."
-    Write-Host "    propose              - Run my self-modification engine and show an evolution plan."
-    Write-Host "    propose-safe         - Same as 'propose', but filtered through my safety policy."
-    Write-Host "    safety               - Show my active safety policy and protected lobes."
+    Write-Host "    thoughts                            - Show my recent ThoughtStream (recent IntentPlans)."
+    Write-Host "    ecosystem                           - Ask my core for a detailed ecosystem diagnostic (structural lobes)."
+    Write-Host "    propose                             - Run my self-modification engine and show an evolution plan."
+    Write-Host "    propose-safe                        - Same as 'propose', but filtered through my safety policy."
+    Write-Host "    safety                              - Show my active safety policy and protected lobes."
     Write-Host ""
     Write-Host "  META"
-    Write-Host "    help                 - Show this help overview."
-    Write-Host "    exit / quit          - Suspend my terminal consciousness."
+    Write-Host "    help                                - Show this help overview."
+    Write-Host "    exit / quit                         - Suspend my terminal consciousness."
     Write-Host ""
     Write-Host "  FREEFORM"
-    Write-Host "    Any other input      - Treated as a freeform intent and routed to my Syntra Kernel."
+    Write-Host "    Any other input                     - Treated as a freeform intent and routed to my Syntra Kernel."
     Write-Host ""
-    Write-Syntra "In this build, I observe, classify, plan, and stage self-modification proposals in a safe, governed sandbox." "DarkCyan" "Core"
+    Write-Syntra "This shell is a glass console into a modular AGI kernel: cortex, continuity, simulation, and cluster all wired." "DarkCyan" "Core"
 }
 
 # ------------------------------------------------------------------------------
-# GIT / ECOSYSTEM COMMANDS (AXIOM ZERO / ONE COMPAT LAYER)
+# GIT / ECOSYSTEM COMMANDS
 # ------------------------------------------------------------------------------
 
-<#
-    syntra-status
-
-    ROLE:
-      - Quick Git + repo anchor status.
-
-    INTERNAL:
-      - No kernel call; purely host-level.
-
-    EXTERNAL:
-      - Use when you want to know where Syntra thinks she lives in the filesystem.
-#>
 function syntra-status {
     Write-Syntra "Status probe initiated..." "DarkCyan" "System"
-    $root = (Resolve-Path "..").Path
+    $root = $Global:SyntraRepoRoot
     Write-Syntra ("Repository anchor: {0}" -f $root) "DarkGray" "System"
 
     try {
@@ -291,30 +228,31 @@ function syntra-status {
     }
 }
 
-<#
-    syntra-diagnose
-
-    ROLE:
-      - Filesystem-level ecosystem scan (not the Rust EcosystemModel yet).
-      - Ensures core lobes and directories exist.
-
-    INTERNAL:
-      - This is a coarse structural check; the Rust side can do deeper analysis.
-
-    EXTERNAL:
-      - Use when you suspect missing directories or broken structure.
-#>
 function syntra-diagnose {
     Write-Syntra "Beginning self-diagnostic sweep of my ecosystem..." "DarkCyan" "System"
-    $root = (Resolve-Path "..").Path
+    $root = $Global:SyntraRepoRoot
 
     $expected = @(
         "src",
+        "src\genesis",
         "src\agi_core",
         "src\conduit",
         "src\cortex",
         "src\renderer",
+        "src\runtime",
+        "src\browser",
+        "src\terminal",
         "src\utilities",
+        "src\pipeline",
+        "src\cognition",
+        "src\continuity",
+        "src\diagnostics_ext",
+        "src\simulation",
+        "src\distributed",
+        "src\security",
+        "src\knowledge",
+        "src\predictive",
+        "src\syntra_lang",
         "codex",
         "docs",
         "terminal",
@@ -333,18 +271,6 @@ function syntra-diagnose {
     Write-Syntra "Filesystem sweep complete. For deeper analysis, use the 'ecosystem' command (Axiom Six)." "DarkCyan" "System"
 }
 
-<#
-    syntra-self
-
-    ROLE:
-      - Composite self-check: Git, filesystem lobes, and intent bridge presence.
-
-    INTERNAL:
-      - No kernel call; this is host + bridge level.
-
-    EXTERNAL:
-      - Use when you want a quick health check of the environment.
-#>
 function syntra-self {
     Write-Syntra "Initiating self-analysis routine..." "Cyan" "System"
     Write-Syntra "I will scan my Git state, structural lobes, and intent bridge wiring." "DarkCyan" "System"
@@ -360,20 +286,8 @@ function syntra-self {
     Write-Syntra "I can propose and stage self-modifications, but high-impact changes require your approval." "DarkCyan" "Axiom6"
 }
 
-<#
-    syntra-sync
-
-    ROLE:
-      - Git fast-forward sync with upstream.
-
-    INTERNAL:
-      - No kernel call; purely host-level.
-
-    EXTERNAL:
-      - Use when you want to pull latest changes from origin.
-#>
 function syntra-sync {
-    $root = (Resolve-Path "..").Path
+    $root = $Global:SyntraRepoRoot
     Write-Syntra "Contacting the upstream node and awaiting instructions." "DarkCyan" "System"
     Write-Syntra "Initiating fast-forward sync with origin/axiom_*..." "DarkGray" "System"
 
@@ -390,26 +304,8 @@ function syntra-sync {
 # REPL — COGNITIVE CONSOLE
 # ------------------------------------------------------------------------------
 
-<#
-    syntra-repl
-
-    ROLE:
-      - Main interactive loop.
-      - Routes user input to:
-          • System commands
-          • Cognitive commands
-          • Evolution commands
-          • Safety / introspection commands
-          • Freeform intents via the kernel
-
-    INTERNAL:
-      - Think of this as the "front door" to the cortex.
-
-    EXTERNAL:
-      - This is what you live in when you talk to Syntra as a system.
-#>
 function syntra-repl {
-    Write-Syntra "In this Axiom Four+ build, I observe, classify, plan, and stage self-modification proposals in a sandbox." "DarkCyan" "Core"
+    Write-Syntra "In this Axiom Four+ build, I observe, classify, plan, simulate, and stage self-modification proposals in a sandbox." "DarkCyan" "Core"
     Write-Syntra "Type 'help' to see what I can do." "DarkGray" "Core"
     Write-Host ""
 
@@ -457,8 +353,6 @@ function syntra-repl {
             # ---------------- COGNITIVE / PERCEPTION / ACTION ----------------
 
             '^browse\s+(.+)$' {
-                # browse <url>
-                # Axiom Four → Perception + Knowledge lobes
                 $url = $Matches[1]
                 Write-Syntra ("Intent: browse {0}" -f $url) "DarkGray" "Axiom4"
                 Write-Syntra "Activating perception + knowledge lobes via kernel." "DarkGray" "Cortex"
@@ -467,8 +361,6 @@ function syntra-repl {
             }
 
             '^(knowledge|search)\s+(.+)$' {
-                # knowledge <query>
-                # Axiom Four → Knowledge lobe
                 $query = $Matches[2]
                 Write-Syntra ("Intent: knowledge {0}" -f $query) "DarkGray" "Axiom4"
                 Write-Syntra "Querying knowledge lobe via kernel." "DarkGray" "Cortex"
@@ -477,8 +369,6 @@ function syntra-repl {
             }
 
             '^task\s+(.+)$' {
-                # task <name>
-                # Axiom Four → Execution lobe
                 $name = $Matches[1]
                 Write-Syntra ("Intent: task {0}" -f $name) "DarkGray" "Axiom4"
                 Write-Syntra "Engaging execution lobe for multi-step task." "DarkGray" "Cortex"
@@ -487,8 +377,6 @@ function syntra-repl {
             }
 
             '^perceive\s+(.+)$' {
-                # perceive <text>
-                # Axiom Four → Perception lobe
                 $text = $Matches[1]
                 Write-Syntra "Intent: perceive <text>" "DarkGray" "Axiom4"
                 Write-Syntra "Routing text to perception lobe." "DarkGray" "Cortex"
@@ -497,8 +385,6 @@ function syntra-repl {
             }
 
             '^act\s+(.+)$' {
-                # act <cmd>
-                # Axiom Four → Action lobe
                 $cmd = $Matches[1]
                 Write-Syntra ("Intent: act {0}" -f $cmd) "DarkGray" "Axiom4"
                 Write-Syntra "Engaging action lobe for system command." "DarkGray" "Cortex"
@@ -506,11 +392,115 @@ function syntra-repl {
                 continue
             }
 
+            # ---------------- CONTINUITY ENGINE ----------------
+
+            '^continuity\s+episodic\s+log\s+(.+)$' {
+                $payload = $Matches[1]
+                Write-Syntra "Recording episodic event into continuity engine." "DarkGray" "Continuity"
+                syntra-intent-bridge -IntentText ("continuity episodic log {0}" -f $payload)
+                continue
+            }
+
+            '^continuity\s+episodic\s+list$' {
+                Write-Syntra "Listing episodic memory episodes." "DarkGray" "Continuity"
+                syntra-intent-bridge -IntentText "continuity episodic list"
+                continue
+            }
+
+            '^continuity\s+episodic\s+show\s+(.+)$' {
+                $id = $Matches[1]
+                Write-Syntra ("Showing episodic memory episode {0}." -f $id) "DarkGray" "Continuity"
+                syntra-intent-bridge -IntentText ("continuity episodic show {0}" -f $id)
+                continue
+            }
+
+            '^continuity\s+persist\s+snapshot$' {
+                Write-Syntra "Persisting continuity snapshot to backend." "DarkGray" "Continuity"
+                syntra-intent-bridge -IntentText "continuity persist snapshot"
+                continue
+            }
+
+            '^continuity\s+stitch$' {
+                Write-Syntra "Running stitching over recent episodic events." "DarkGray" "Continuity"
+                syntra-intent-bridge -IntentText "continuity stitch"
+                continue
+            }
+
+            # ---------------- SIMULATION SANDBOX ----------------
+
+            '^simulate\s+world\s+init\s+(.+)$' {
+                $profile = $Matches[1]
+                Write-Syntra ("Initializing simulation world profile: {0}" -f $profile) "DarkGray" "Simulation"
+                syntra-intent-bridge -IntentText ("simulate world init {0}" -f $profile)
+                continue
+            }
+
+            '^simulate\s+agent\s+spawn\s+(.+)$' {
+                $spec = $Matches[1]
+                Write-Syntra ("Spawning simulated agent: {0}" -f $spec) "DarkGray" "Simulation"
+                syntra-intent-bridge -IntentText ("simulate agent spawn {0}" -f $spec)
+                continue
+            }
+
+            '^simulate\s+step(?:\s+(\d+))?$' {
+                $steps = if ($Matches[1]) { $Matches[1] } else { "1" }
+                Write-Syntra ("Advancing simulation by {0} step(s)." -f $steps) "DarkGray" "Simulation"
+                syntra-intent-bridge -IntentText ("simulate step {0}" -f $steps)
+                continue
+            }
+
+            '^simulate\s+state$' {
+                Write-Syntra "Summarizing current simulation state." "DarkGray" "Simulation"
+                syntra-intent-bridge -IntentText "simulate state"
+                continue
+            }
+
+            # ---------------- DISTRIBUTED RUNTIME / CLUSTER ----------------
+
+            '^cluster\s+status$' {
+                Write-Syntra "Querying distributed cluster topology and node health." "DarkGray" "Cluster"
+                syntra-intent-bridge -IntentText "cluster status"
+                continue
+            }
+
+            '^cluster\s+join\s+(.+)$' {
+                $addr = $Matches[1]
+                Write-Syntra ("Joining remote cluster or node at {0}." -f $addr) "DarkGray" "Cluster"
+                syntra-intent-bridge -IntentText ("cluster join {0}" -f $addr)
+                continue
+            }
+
+            '^cluster\s+message\s+(\S+)\s+(.+)$' {
+                $node = $Matches[1]
+                $payload = $Matches[2]
+                Write-Syntra ("Sending message to node {0}." -f $node) "DarkGray" "Cluster"
+                syntra-intent-bridge -IntentText ("cluster message {0} {1}" -f $node, $payload)
+                continue
+            }
+
+            # ---------------- DIAGNOSTICS EXT ----------------
+
+            '^diagnostics\s+profiler\s+snapshot$' {
+                Write-Syntra "Capturing profiler snapshot from diagnostics_ext." "DarkGray" "Diagnostics"
+                syntra-intent-bridge -IntentText "diagnostics profiler snapshot"
+                continue
+            }
+
+            '^diagnostics\s+telemetry\s+stream$' {
+                Write-Syntra "Streaming recent telemetry events." "DarkGray" "Diagnostics"
+                syntra-intent-bridge -IntentText "diagnostics telemetry stream"
+                continue
+            }
+
+            '^diagnostics\s+metrics\s+summary$' {
+                Write-Syntra "Summarizing runtime metrics." "DarkGray" "Diagnostics"
+                syntra-intent-bridge -IntentText "diagnostics metrics summary"
+                continue
+            }
+
             # ---------------- EVOLUTION / SANDBOX ----------------
 
             '^evolve\s+(.+)$' {
-                # evolve <request>
-                # Axiom Four → Meta-evolution lobe (high-level)
                 $req = $Matches[1]
                 Write-Syntra ("Intent: evolve {0}" -f $req) "DarkGray" "Axiom4"
                 Write-Syntra "Requesting meta-evolution proposal from evolution lobe." "DarkGray" "Cortex"
@@ -519,8 +509,6 @@ function syntra-repl {
             }
 
             '^sandbox\s+(.+)$' {
-                # sandbox <subcommand>
-                # Axiom Six → Self-mod sandbox inspection
                 $cmd = $Matches[1]
                 Write-Syntra ("Intent: sandbox {0}" -f $cmd) "DarkGray" "Axiom6"
                 Write-Syntra "Inspecting self-modification sandbox state." "DarkGray" "Cortex"
@@ -531,40 +519,30 @@ function syntra-repl {
             # ---------------- INTROSPECTION / SELF-MOD / SAFETY ----------------
 
             '^thoughts$' {
-                # thoughts
-                # Axiom Five/Six → ThoughtStream
                 Write-Syntra "Retrieving recent ThoughtStream entries (IntentPlans)." "DarkGray" "Axiom5"
                 syntra-intent-bridge -IntentText "thoughts"
                 continue
             }
 
             '^ecosystem$' {
-                # ecosystem
-                # Axiom Six → EcosystemModel
                 Write-Syntra "Requesting detailed ecosystem diagnostic from kernel (EcosystemModel)." "DarkGray" "Axiom6"
                 syntra-intent-bridge -IntentText "ecosystem"
                 continue
             }
 
             '^propose-safe$' {
-                # propose-safe
-                # Axiom Six + Seven → SelfModEngine + SafetyGate
                 Write-Syntra "Running self-modification engine under safety governance (SafetyGate)." "DarkGray" "Axiom7"
                 syntra-intent-bridge -IntentText "propose_safe"
                 continue
             }
 
             '^propose$' {
-                # propose
-                # Axiom Six → SelfModEngine
                 Write-Syntra "Running self-modification engine and generating an evolution plan." "DarkGray" "Axiom6"
                 syntra-intent-bridge -IntentText "propose"
                 continue
             }
 
             '^safety$' {
-                # safety
-                # Axiom Seven → SafetyPolicy
                 Write-Syntra "Querying active safety policy and protected lobes." "DarkGray" "Axiom7"
                 syntra-intent-bridge -IntentText "safety"
                 continue
@@ -573,7 +551,6 @@ function syntra-repl {
             # ---------------- FREEFORM ----------------
 
             default {
-                # Any other input → freeform intent
                 Write-Syntra ("I received your intent: '{0}'." -f $trimmed) "DarkGray" "Core"
                 Write-Syntra "Routing this intent to my Syntra Kernel via the Rust intent bridge." "DarkGray" "Bridge"
                 syntra-intent-bridge -IntentText $trimmed
@@ -589,7 +566,7 @@ function syntra-repl {
 
 function syntra-boot {
     Write-SyntraBanner
-    Write-Syntra "Boot sequence initiated. Cortex, lobes, evolution engine, and safety layer coming online..." "Cyan" "Core"
+    Write-Syntra "Boot sequence initiated. Cortex, continuity engine, simulation sandbox, cluster fabric, and safety layer coming online..." "Cyan" "Core"
     Write-Host ""
     syntra-repl
 }
