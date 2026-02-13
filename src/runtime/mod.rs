@@ -7,6 +7,7 @@
 //
 //   File:        src/runtime/mod.rs
 //   Module:      Runtime Core
+//   Author:      Alexandr Roussinov (gd2bk1ng)
 //   Description: Core runtime primitives for the Syntra Kernel: actor system, scheduler, and tensor
 //                engine. Provides the execution backbone for cognitive processes, pipelines, and
 //                higher-level orchestration.
@@ -20,6 +21,8 @@ pub mod actor;
 pub mod actor_executor;
 pub mod scheduler;
 pub mod tensor;
+pub mod cognitive_runtime;
+
 
 // -------------------------------------------------------------------------------------------------
 // Public Re-exports
