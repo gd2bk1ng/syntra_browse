@@ -15,14 +15,52 @@
      - Axiom Three keeps this synchronous and conceptual.
    ================================================================================================ */
 
-pub struct Scheduler;
+use std::time::{Duration, Instant};
+use std::thread::sleep;
+
+use super::actor::ActorSystem;
+
+pub struct Scheduler {
+    pub actors: ActorSystem,
+    pub tick_rate: Duration,
+    running: bool,
+}
 
 impl Scheduler {
-    pub fn new() -> Self {
-        Scheduler
+    pub fn new(tick_rate: Duration) -> Self {
+        Self {
+            actors: ActorSystem::new(),
+            tick_rate,
+            running: false,
+        }
+    }
+
+    pub fn run(&mut self) {
+        self.running = true;
+        println!("Syntra Kernel Scheduler started.");
+
+        while self.running {
+            let start = Instant::now();
+
+            self.tick();
+
+            let elapsed = start.elapsed();
+            if elapsed < self.tick_rate {
+                sleep(self.tick_rate - elapsed);
+            }
+        }
     }
 
     pub fn tick(&mut self) {
-        // Future: drive actor system, timers, IO, GPU queues.
+        // The kernel heartbeat
+        // Every subsystem will hang off this moment of time.
+
+        // For now we simply broadcast a "system tick"
+        // (we'll wire cognition here next)
+        println!("[kernel] tick");
+    }
+
+    pub fn stop(&mut self) {
+        self.running = false;
     }
 }
