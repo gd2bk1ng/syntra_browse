@@ -6,7 +6,7 @@ use crate::security::capability::Capability;
 #[derive(Debug, Clone)]
 pub enum Permission { Allow, Deny }
 
-#[derive[Debug, Clone, Default)]
+#[derive(Debug, Clone, Default)]
 pub struct Policy;
 
 impl Policy {
