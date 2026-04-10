@@ -19,5 +19,5 @@ pub mod persistence;
 pub mod stitching;
 
 pub use episodic::EpisodicMemory;
-pub use persistence::StateStore;
-pub use stitching::SessionStitcher;
+pub use persistence::InMemoryPersistence as StateStore;
+pub use stitching::TimeWindowSticher as SessionStitcher;
