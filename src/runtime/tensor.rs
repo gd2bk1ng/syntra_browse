@@ -1,5 +1,5 @@
 /* ================================================================================================
-   SYNTRA BROWSER - AXIOM THREE
+   SYNTRA KERNEL - AXIOM THREE
    ------------------------------------------------------------------------------------------------
    SIGIL:
          .\s/.
@@ -7,7 +7,7 @@
          '/s\'
 
    File:        src/runtime/tensor.rs
-   Module:      Tensor Engine Skeleton
+   Module:      Syntra Kernel :: Tensor Engine Skeleton
    Author:      Alexandr Roussinov (gd2bk1ng)
    Description: Minimal tensor abstraction for future GPU-accelerated operations in Syntra.
 
@@ -21,6 +21,8 @@ pub struct Tensor {
     pub data: Vec<f32>,
 }
 
+pub type TensorShape = Vec<usize>;
+
 impl Tensor {
     pub fn zeros(shape: &[usize]) -> Self {
         let size: usize = shape.iter().product();
@@ -30,3 +32,4 @@ impl Tensor {
         }
     }
 }
+
