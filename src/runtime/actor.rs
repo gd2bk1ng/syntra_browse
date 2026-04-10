@@ -1,5 +1,5 @@
 /* ================================================================================================
-   SYNTRA BROWSER - AXIOM THREE
+   SYNTRA KERNEL - AXIOM THREE
    ------------------------------------------------------------------------------------------------
    SIGIL:
          .\s/.
@@ -7,7 +7,7 @@
          '/s\'
 
    File:        src/runtime/actor.rs
-   Module:      Actor System Skeleton
+   Module:      Syntra Kernel :: Actor System Skeleton
    Author:      Alexandr Roussinov (gd2bk1ng)
    Description: Minimal actor system skeleton for Syntra. Defines ActorId, Message, and a basic
                 ActorSystem trait for future async/tab orchestration.
@@ -26,6 +26,8 @@ pub enum Message {
     Text(String),
     Intent(String),
 }
+
+pub type ActorMessage = Message;
 
 pub trait Actor {
     fn id(&self) -> ActorId;
