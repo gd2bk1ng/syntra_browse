@@ -3,10 +3,11 @@
 //   ------------------------------------------------------------------------------------------------
 //        .\s/.
 //       :: S ::
-//        '/s'
+//        '/s\'
 //
 //   File:        src/diagnostics_ext/mod.rs
-//   Module:      Syntra Kernel — Advanced Diagnostics
+//   Module:      Syntra Kernel :: Advanced Diagnostics
+//   Author:      Alexandr Roussinov (gd2bk1ng)
 //   Description: High-resolution profiling, telemetry, and performance analytics.
 //                Complements the basic utilities diagnostics.
 //
@@ -18,6 +19,7 @@ pub mod profiler;
 pub mod telemetry;
 pub mod metrics;
 
-pub use metrics::MetricCollector;
+pub use metrics::MetricsRegistry as MetricCollector;
 pub use profiler::Profiler;
-pub use telemetry::TelemetryStream;
+pub use telemetry::TelemetryBus as TelemetryStream;
+
