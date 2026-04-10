@@ -6,10 +6,11 @@
 //        '/s\'
 //
 //   File:        src/continuity/mod.rs
-//   Module:      Syntra Kernel — Continuity Engine
+//   Module:      Syntra Kernel - Continuity Engine
+//   Author:      Alexandr Roussinov (gd2bk1ng)
 //   Description: Long-term state persistence, episodic memory, and session stitching.
 //                Provides temporal coherence across cognitive cycles.
-//   Author:      Alexandr Roussinov (gd2bk1ng)
+//
 //   Notes:
 //     - Future integration: distributed continuity, cross-device state sync.
 // ================================================================================================
