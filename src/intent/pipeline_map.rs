@@ -1,10 +1,11 @@
 // file: src/intent/pipeline_map.rs
 // This is the binding layer.
 // This is static resolution — and that’s exactly what we want.
+// Author: Alexandr Roussinov (gd2bk1ng)
 
 use crate::intent::intent::Intent;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Pipeline {
     RenderPipeline,
     InspectionPipeline,
