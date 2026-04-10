@@ -117,7 +117,7 @@ pub trait FeedbackUpdateStrategy: Send + Sync {
 }
 
 // ================================================================================================
-- Feedback Store (In-Memory, Versioned)
+// Feedback Store (In-Memory, Versioned)
 // ================================================================================================
 
 /// In-memory store for feedback with versioned, timestamped batches.
