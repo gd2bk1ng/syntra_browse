@@ -1,5 +1,5 @@
 /* ================================================================================================
-   SYNTRA BROWSER - AXIOM THREE
+   SYNTRA KERNEL - AXIOM THREE
    ------------------------------------------------------------------------------------------------
    SIGIL:
          .\s/.
@@ -7,7 +7,7 @@
          '/s\'
 
    File:        src/runtime/scheduler.rs
-   Module:      Scheduler Skeleton
+   Module:      Syntra Kernel :: Scheduler Skeleton
    Author:      Alexandr Roussinov (gd2bk1ng)
    Description: High-level scheduler skeleton for coordinating actors, timers, and IO in Syntra.
 
@@ -25,6 +25,13 @@ pub struct Scheduler {
     pub tick_rate: Duration,
     running: bool,
 }
+
+#[derive(Debug, Clone, Copy)]
+pub struct SchedulerConfig {
+   pub tick_rate: Duration,
+}
+
+pub type RuntimeScheduler = Scheduler;
 
 impl Scheduler {
     pub fn new(tick_rate: Duration) -> Self {
