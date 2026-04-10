@@ -1,12 +1,12 @@
 // ================================================================================================
-//   SYNTRA KERNEL — DISTRIBUTED NODE
-//   ------------------------------------------------------------------------------------------------
+//   SYNTRA KERNEL :: DISTRIBUTED NODE
+// ------------------------------------------------------------------------------------------------
 //        .\s/.
 //       :: S ::
 //        '/s\'
 //
 //   File:        src/distributed/node.rs
-//   Module:      Distributed — Node Abstraction
+//   Module:      Distributed :: Node Abstraction
 //   Author:      Alexandr Roussinov (gd2bk1ng)
 //   Description: Represents a single Syntra node in a distributed cluster. Nodes can send and
 //                receive messages via the messaging layer and participate in cluster operations.
@@ -14,7 +14,8 @@
 
 use std::collections::VecDeque;
 
-use crate::distributed::messaging::{Message, MessageBus, NodeId};
+pub use crate::distributed::messaging::NodeId;
+use crate::distributed:messaging::{Message, MessageBus};
 
 /// Local view of a node in the cluster.
 pub struct Node {
@@ -55,3 +56,4 @@ impl Node {
         bus.send(msg);
     }
 }
+
